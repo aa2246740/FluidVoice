@@ -48,6 +48,108 @@ final class MeetingRecoveryTests: XCTestCase {
         await coordinator.shutdownForTermination()
     }
 
+    func testRecoveredWriterDuringStartKeepsHistoryWithoutDegradingRecording() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = MeetingSessionStore(rootDirectory: dir)
+        let capture = StubCaptureController()
+        var microphone = self.makeMicrophoneTrack(chunks: [])
+        microphone.health.status = .healthy
+        capture.startResult = MeetingCaptureStartResult(tracks: [microphone], firstPresentationTime: nil)
+        capture.startupEvents = [
+            .interrupted(kind: .writerFailure, trackID: microphone.id, detail: "Temporary writer failure"),
+            .trackHealth(trackID: microphone.id, health: microphone.health),
+        ]
+        let coordinator = MeetingSessionCoordinator(
+            store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+        )
+        capture.onStart = { @MainActor in
+            for _ in 0..<100 {
+                if coordinator.activeSession?.events.count == 1 { break }
+                await Task.yield()
+            }
+            XCTAssertEqual(coordinator.activeSession?.events.count, 1)
+        }
+
+        let started = try await coordinator.startRecording(configuration: self.makeConfiguration())
+        XCTAssertEqual(started.events.map(\.kind), [.writerFailure])
+        XCTAssertEqual(started.state, .recording)
+        XCTAssertEqual(coordinator.state, .recording(started.id))
+        XCTAssertEqual(coordinator.trackHealth[.microphone]?.status, .healthy)
+        let persisted = try await store.load(id: started.id)
+        XCTAssertEqual(persisted?.state, .recording)
+        XCTAssertEqual(persisted?.events.map(\.kind), [.writerFailure])
+        await coordinator.shutdownForTermination()
+    }
+
+    func testStartupWriterFailureWithoutHealthyTrackRemainsDegraded() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = MeetingSessionStore(rootDirectory: dir)
+        let capture = StubCaptureController()
+        let microphone = self.makeMicrophoneTrack(chunks: [])
+        capture.startResult = MeetingCaptureStartResult(tracks: [microphone], firstPresentationTime: nil)
+        capture.startupEvents = [
+            .interrupted(kind: .writerFailure, trackID: microphone.id, detail: "No successful writes yet"),
+        ]
+        let coordinator = MeetingSessionCoordinator(
+            store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+        )
+        capture.onStart = { @MainActor in
+            for _ in 0..<100 {
+                if coordinator.activeSession?.events.count == 1 { break }
+                await Task.yield()
+            }
+            XCTAssertEqual(coordinator.activeSession?.events.count, 1)
+        }
+
+        let started = try await coordinator.startRecording(configuration: self.makeConfiguration())
+        XCTAssertEqual(started.state, .recordingDegraded)
+        XCTAssertEqual(coordinator.state, .recordingDegraded(started.id))
+        let persisted = try await store.load(id: started.id)
+        XCTAssertEqual(persisted?.state, .recordingDegraded)
+        XCTAssertEqual(persisted?.events.map(\.kind), [.writerFailure])
+        await coordinator.shutdownForTermination()
+    }
+
+    func testCaptureStartFailurePersistsStartupWriterEvent() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = MeetingSessionStore(rootDirectory: dir)
+        let capture = StubCaptureController()
+        let trackID = UUID()
+        capture.startError = MeetingCaptureError.captureStartFailed("Capture could not finish starting")
+        capture.startupEvents = [
+            .interrupted(kind: .writerFailure, trackID: trackID, detail: "Unsupported PCM format"),
+        ]
+        let coordinator = MeetingSessionCoordinator(
+            store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+        )
+        capture.onStart = { @MainActor in
+            for _ in 0..<100 {
+                if coordinator.activeSession?.events.count == 1 { break }
+                await Task.yield()
+            }
+            XCTAssertEqual(coordinator.activeSession?.events.count, 1)
+        }
+
+        do {
+            _ = try await coordinator.startRecording(configuration: self.makeConfiguration())
+            XCTFail("Expected capture startup to fail")
+        } catch let error as MeetingCaptureError {
+            guard case .captureStartFailed = error else { return XCTFail("Unexpected capture error: \(error)") }
+        }
+        let sessions = try await store.loadAll()
+        XCTAssertEqual(sessions.count, 1)
+        let failed = try XCTUnwrap(sessions.first)
+        XCTAssertEqual(failed.state, .failed)
+        XCTAssertEqual(failed.events.map(\.kind), [.writerFailure])
+        XCTAssertEqual(failed.events.first?.trackID, trackID)
+        XCTAssertEqual(failed.events.first?.detail, "Unsupported PCM format")
+        XCTAssertEqual(failed.failures.last?.domain, .capture)
+        XCTAssertNil(coordinator.activeSession)
+    }
+
     func testPersistenceCoalescesSlowStoreAndFlushesNewestSnapshot() async throws {
         let dir = self.makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }

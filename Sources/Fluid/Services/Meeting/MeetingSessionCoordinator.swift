@@ -486,8 +486,13 @@ final class MeetingSessionCoordinator: ObservableObject {
             if let firstPresentationTime = startResult.firstPresentationTime {
                 session.timebase.firstPresentationTime = firstPresentationTime
             }
+            let hasUnrecoveredWriterFailure = session.events.contains { event in
+                event.kind == .writerFailure && !session.audioTracks.contains {
+                    $0.id == event.trackID && $0.health.status == .healthy
+                }
+            }
             let startedDegraded = session.audioTracks.contains { $0.health.status == .degraded }
-                || session.events.contains { $0.kind == .writerFailure }
+                || hasUnrecoveredWriterFailure
             session.state = startedDegraded ? .recordingDegraded : .recording
             if startedDegraded { self.degradeReason = .sticky }
             session.updatedAt = Date()
@@ -551,6 +556,9 @@ final class MeetingSessionCoordinator: ObservableObject {
                         session.endedAt = session.endedAt ?? Date()
                     }
                 }
+            }
+            if let latestSession = self.activeSession, latestSession.id == session.id {
+                session.events = latestSession.events
             }
             let hasRecoverableAudio = Self.hasRecoverableAudio(session)
             let failureDomain: MeetingFailureDomain = captureStarted
