@@ -160,40 +160,104 @@ final class MeetingRecoveryTests: XCTestCase {
     }
 
     func testStartupWriterRecoveryDoesNotClearAnotherInterruption() async throws {
-        let dir = self.makeTempDirectory()
-        defer { try? FileManager.default.removeItem(at: dir) }
-        let store = MeetingSessionStore(rootDirectory: dir)
-        let capture = StubCaptureController()
-        let microphone = self.makeMicrophoneTrack(chunks: [])
-        capture.startResult = MeetingCaptureStartResult(tracks: [microphone], firstPresentationTime: nil)
-        capture.startupEvents = [.interrupted(kind: .writerFailure, trackID: microphone.id, detail: "Startup failure")]
-        let coordinator = MeetingSessionCoordinator(
-            store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
-        )
-        capture.onStart = { @MainActor in
-            for _ in 0..<100 {
-                if coordinator.activeSession?.events.count == 1 { break }
-                await Task.yield()
+        for (interruptDuringStart, sourceLost) in [(false, false), (true, false), (false, true), (true, true)] {
+            let dir = self.makeTempDirectory()
+            defer { try? FileManager.default.removeItem(at: dir) }
+            let store = MeetingSessionStore(rootDirectory: dir)
+            let capture = StubCaptureController()
+            let microphone = self.makeMicrophoneTrack(chunks: [])
+            capture.startResult = MeetingCaptureStartResult(tracks: [microphone], firstPresentationTime: nil)
+            capture.startupEvents = [.interrupted(kind: .writerFailure, trackID: microphone.id, detail: "Startup failure")]
+            if sourceLost { capture.startupEvents.append(.interrupted(kind: .sourceLost, trackID: nil, detail: nil)) }
+            let diskFull = MeetingCaptureEvent.interrupted(kind: .diskExhausted, trackID: nil, detail: "Disk full")
+            if interruptDuringStart { capture.startupEvents.append(diskFull) }
+            capture.onStart = { @MainActor in await self.drainCaptureEvents() }
+            let coordinator = MeetingSessionCoordinator(
+                store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+            )
+            let started = try await coordinator.startRecording(configuration: self.makeConfiguration())
+            if !interruptDuringStart {
+                capture.emit(diskFull)
+                await self.drainCaptureEvents()
             }
-            XCTAssertEqual(coordinator.activeSession?.events.count, 1)
+            XCTAssertEqual(coordinator.activeSession?.events.count, sourceLost ? 3 : 2)
+            var healthy = microphone.health
+            healthy.status = .healthy
+            capture.emit(.trackHealth(trackID: microphone.id, health: healthy))
+            await self.drainCaptureEvents()
+            XCTAssertEqual(coordinator.trackHealth[.microphone]?.status, .healthy)
+            XCTAssertEqual(coordinator.state, .recordingDegraded(started.id))
+            if sourceLost {
+                capture.emit(.interrupted(kind: .sourceRecovered, trackID: nil, detail: nil))
+                await self.drainCaptureEvents()
+                XCTAssertEqual(coordinator.state, .recordingDegraded(started.id), "Source recovery cannot clear a disk failure")
+            }
+            await coordinator.shutdownForTermination()
         }
-        let started = try await coordinator.startRecording(configuration: self.makeConfiguration())
-        capture.emit(.interrupted(kind: .diskExhausted, trackID: nil, detail: "Disk full"))
-        for _ in 0..<100 {
-            if coordinator.activeSession?.events.count == 2 { break }
-            await Task.yield()
+    }
+
+    func testStartupSourceLossAndWriterFailureRequireBothRecoveries() async throws {
+        for (writerDuringStart, sourceDuringStart) in [(false, false), (true, false), (false, true), (true, true)] {
+            for sourceRecoversFirst in [false, true] {
+                let dir = self.makeTempDirectory()
+                defer { try? FileManager.default.removeItem(at: dir) }
+                let store = MeetingSessionStore(rootDirectory: dir)
+                let capture = StubCaptureController()
+                var microphone = self.makeMicrophoneTrack(chunks: [])
+                microphone.health.status = .healthy
+                var applicationAudio = self.makeMicrophoneTrack(chunks: [])
+                applicationAudio.kind = .applicationAudio
+                applicationAudio.health.status = .healthy
+                capture.startResult = MeetingCaptureStartResult(tracks: [microphone, applicationAudio], firstPresentationTime: nil)
+                capture.startupEvents = [
+                    .interrupted(kind: .writerFailure, trackID: microphone.id, detail: "Startup writer failure"),
+                    .interrupted(kind: .sourceLost, trackID: nil, detail: "Application audio source lost"),
+                ]
+                let writerRecovery = MeetingCaptureEvent.trackHealth(trackID: microphone.id, health: microphone.health)
+                let sourceRecovery = MeetingCaptureEvent.interrupted(kind: .sourceRecovered, trackID: nil, detail: nil)
+                let recoveries: [(event: MeetingCaptureEvent, duringStart: Bool)] = sourceRecoversFirst
+                    ? [(sourceRecovery, sourceDuringStart), (writerRecovery, writerDuringStart)]
+                    : [(writerRecovery, writerDuringStart), (sourceRecovery, sourceDuringStart)]
+                capture.startupEvents += recoveries.filter(\.duringStart).map(\.event)
+                capture.onStart = { @MainActor in await self.drainCaptureEvents() }
+                let coordinator = MeetingSessionCoordinator(
+                    store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+                )
+
+                var configuration = self.makeConfiguration()
+                configuration.mode = .onlineCall
+                configuration.application = MeetingApplicationIdentity(bundleIdentifier: "us.zoom.xos", displayName: "Zoom")
+                let started = try await coordinator.startRecording(configuration: configuration)
+                let expectedStart: MeetingSessionState = writerDuringStart && sourceDuringStart ? .recording : .recordingDegraded
+                XCTAssertEqual(started.state, expectedStart)
+                let persisted = try await store.load(id: started.id)
+                XCTAssertEqual(persisted?.state, expectedStart)
+                if !writerDuringStart {
+                    var degraded = microphone.health
+                    degraded.status = .degraded
+                    capture.emit(.trackHealth(trackID: microphone.id, health: degraded))
+                    await self.drainCaptureEvents()
+                    XCTAssertEqual(coordinator.state, .recordingDegraded(started.id))
+                }
+                let pendingRecoveries = recoveries.filter { !$0.duringStart }
+                for (index, recovery) in pendingRecoveries.enumerated() {
+                    capture.emit(recovery.event)
+                    await self.drainCaptureEvents()
+                    let expected: MeetingCoordinatorState = index == pendingRecoveries.count - 1
+                        ? .recording(started.id) : .recordingDegraded(started.id)
+                    XCTAssertEqual(coordinator.state, expected, "Both the writer and the lost source must recover")
+                }
+                XCTAssertEqual(coordinator.state, .recording(started.id))
+                XCTAssertEqual(coordinator.activeSession?.events.map(\.kind), [.writerFailure, .sourceLost, .sourceRecovered])
+                await coordinator.shutdownForTermination()
+            }
         }
-        XCTAssertEqual(coordinator.activeSession?.events.count, 2)
-        var healthy = microphone.health
-        healthy.status = .healthy
-        capture.emit(.trackHealth(trackID: microphone.id, health: healthy))
-        for _ in 0..<100 {
-            if coordinator.trackHealth[.microphone]?.status == .healthy { break }
-            await Task.yield()
+    }
+
+    private func drainCaptureEvents() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
         }
-        XCTAssertEqual(coordinator.trackHealth[.microphone]?.status, .healthy)
-        XCTAssertEqual(coordinator.state, .recordingDegraded(started.id))
-        await coordinator.shutdownForTermination()
     }
 
     func testCaptureStartFailurePersistsStartupWriterEvent() async throws {

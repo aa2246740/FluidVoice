@@ -492,10 +492,10 @@ final class MeetingSessionCoordinator: ObservableObject {
             let hasOtherDegradedTrack = session.audioTracks.contains {
                 $0.health.status == .degraded && !self.startupWriterFailures.contains($0.id)
             }
-            let startedDegraded = hasOtherDegradedTrack || !self.startupWriterFailures.isEmpty
+            let startedDegraded = self.degradeReason != nil || hasOtherDegradedTrack || !self.startupWriterFailures.isEmpty
             session.state = startedDegraded ? .recordingDegraded : .recording
             if startedDegraded {
-                self.degradeReason = hasOtherDegradedTrack ? .sticky : .startupWriterFailure
+                self.degradeReason = hasOtherDegradedTrack ? .sticky : (self.degradeReason ?? .startupWriterFailure)
             }
             session.updatedAt = Date()
             self.activeSession = session
@@ -1726,7 +1726,7 @@ final class MeetingSessionCoordinator: ObservableObject {
                 self.state = .recordingDegraded(session.id)
                 if watchdogTripped {
                     self.degradeReason = self.degradeReason ?? .silence
-                } else if self.degradeReason != .startupWriterFailure || !self.startupWriterFailures.contains(trackID) {
+                } else if !self.startupWriterFailures.contains(trackID) {
                     self.degradeReason = .sticky
                 }
             } else if session.state == .recordingDegraded,
@@ -1783,16 +1783,23 @@ final class MeetingSessionCoordinator: ObservableObject {
                 self.degradeReason = nil
             }
         case let .interrupted(kind, trackID, detail):
-            if kind == .writerFailure, session.state == .preparing {
-                self.startupWriterFailures.insert(trackID)
-                if let trackID {
-                    var health = self.startupTrackHealth[trackID] ?? .waiting
-                    health.status = .degraded
-                    health.detail = detail
-                    self.startupTrackHealth[trackID] = health
+            if session.state == .preparing {
+                switch kind {
+                case .writerFailure:
+                    self.startupWriterFailures.insert(trackID)
+                    if let trackID {
+                        var health = self.startupTrackHealth[trackID] ?? .waiting
+                        health.status = .degraded
+                        health.detail = detail
+                        self.startupTrackHealth[trackID] = health
+                    }
+                case .sourceLost:
+                    self.degradeReason = self.degradeReason ?? .sourceLoss
+                case .sourceRecovered:
+                    if self.degradeReason == .sourceLoss { self.degradeReason = nil }
+                default:
+                    self.degradeReason = .sticky
                 }
-            } else if kind != .sourceRecovered, self.degradeReason == .startupWriterFailure {
-                self.degradeReason = .sticky
             }
             session.events.append(MeetingSessionEvent(
                 id: UUID(),
@@ -1813,16 +1820,23 @@ final class MeetingSessionCoordinator: ObservableObject {
                 self.beginUnexpectedStop(sessionID: session.id)
                 return
             } else if kind == .sourceRecovered, session.state == .recordingDegraded,
-                      self.degradeReason == .sourceLoss,
-                      !session.audioTracks.contains(where: { $0.health.status == .degraded })
+                      self.degradeReason == .sourceLoss
             {
-                session.state = .recording
-                self.state = .recording(session.id)
-                self.degradeReason = nil
-            } else if kind != .sourceRecovered, session.state == .recording {
+                if !self.startupWriterFailures.isEmpty {
+                    self.degradeReason = .startupWriterFailure
+                } else if !session.audioTracks.contains(where: { $0.health.status == .degraded }) {
+                    session.state = .recording
+                    self.state = .recording(session.id)
+                    self.degradeReason = nil
+                }
+            } else if kind != .sourceRecovered, session.state == .recording || session.state == .recordingDegraded {
                 session.state = .recordingDegraded
                 self.state = .recordingDegraded(session.id)
-                self.degradeReason = kind == .sourceLost ? (self.degradeReason ?? .sourceLoss) : .sticky
+                if kind == .sourceLost, self.degradeReason != .sticky {
+                    self.degradeReason = .sourceLoss
+                } else {
+                    self.degradeReason = .sticky
+                }
             }
         }
         session.updatedAt = Date()
