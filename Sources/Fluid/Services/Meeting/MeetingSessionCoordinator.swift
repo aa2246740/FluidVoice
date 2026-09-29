@@ -127,6 +127,7 @@ final class MeetingSessionCoordinator: ObservableObject {
     private enum DegradeReason { case silence, sourceLoss, startupWriterFailure, sticky }
 
     private var degradeReason: DegradeReason?
+    private var silenceWatchdogActive = false
     private var activityLease: MeetingAudioActivityLease?
     /// Reservation held from the public start entry point through every async start step.
     /// This closes the preflight/lease window where two starts could otherwise pass guards.
@@ -409,6 +410,7 @@ final class MeetingSessionCoordinator: ObservableObject {
         let generation = UUID()
         self.captureGeneration = generation
         self.degradeReason = nil
+        self.silenceWatchdogActive = false
         self.operationGeneration = generation
         if passiveOffer != nil {
             self.activeSession = nil
@@ -1715,6 +1717,9 @@ final class MeetingSessionCoordinator: ObservableObject {
                 && (self.trackHealth[.microphone]?.silentForSeconds).map {
                     $0 < Self.microphoneRecentActivityThresholdSeconds
                 } == true
+            if kind == .applicationAudio {
+                self.silenceWatchdogActive = watchdogTripped
+            }
             if watchdogTripped {
                 health.status = .degraded
                 health.detail = "No meeting audio is being captured while your microphone is active."
@@ -1828,6 +1833,10 @@ final class MeetingSessionCoordinator: ObservableObject {
                     session.state = .recording
                     self.state = .recording(session.id)
                     self.degradeReason = nil
+                } else if self.silenceWatchdogActive,
+                          !session.audioTracks.contains(where: { $0.kind != .applicationAudio && $0.health.status == .degraded })
+                {
+                    self.degradeReason = .silence
                 }
             } else if kind != .sourceRecovered, session.state == .recording || session.state == .recordingDegraded {
                 session.state = .recordingDegraded

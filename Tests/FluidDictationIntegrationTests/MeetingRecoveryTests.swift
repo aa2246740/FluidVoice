@@ -254,6 +254,54 @@ final class MeetingRecoveryTests: XCTestCase {
         }
     }
 
+    func testSourceRecoveryPreservesSilenceWatchdogRecovery() async throws {
+        for sourceLostFirst in [false, true] {
+            for sourceRecoversFirst in [false, true] {
+                let dir = self.makeTempDirectory()
+                defer { try? FileManager.default.removeItem(at: dir) }
+                let capture = StubCaptureController()
+                var microphone = self.makeMicrophoneTrack(chunks: [])
+                microphone.health.status = .healthy
+                microphone.health.silentForSeconds = 0
+                var applicationAudio = self.makeMicrophoneTrack(chunks: [])
+                applicationAudio.kind = .applicationAudio
+                applicationAudio.health.status = .healthy
+                applicationAudio.health.silentForSeconds = 0
+                capture.startResult = MeetingCaptureStartResult(tracks: [microphone, applicationAudio], firstPresentationTime: nil)
+                let coordinator = MeetingSessionCoordinator(
+                    store: MeetingSessionStore(rootDirectory: dir),
+                    capture: capture,
+                    processing: StubProcessingController(),
+                    audioArbiter: StubArbiter()
+                )
+                var configuration = self.makeConfiguration()
+                configuration.mode = .onlineCall
+                configuration.application = MeetingApplicationIdentity(bundleIdentifier: "us.zoom.xos", displayName: "Zoom")
+                let started = try await coordinator.startRecording(configuration: configuration)
+                var silentHealth = applicationAudio.health
+                silentHealth.silentForSeconds = 100
+                let silence = MeetingCaptureEvent.trackHealth(trackID: applicationAudio.id, health: silentHealth)
+                let sourceLoss = MeetingCaptureEvent.interrupted(kind: .sourceLost, trackID: nil, detail: nil)
+                for event in sourceLostFirst ? [sourceLoss, silence] : [silence, sourceLoss] {
+                    capture.emit(event)
+                    await self.drainCaptureEvents()
+                    XCTAssertEqual(coordinator.state, .recordingDegraded(started.id))
+                }
+                XCTAssertEqual(coordinator.trackHealth[.applicationAudio]?.status, .degraded)
+                let audioRecovery = MeetingCaptureEvent.trackHealth(trackID: applicationAudio.id, health: applicationAudio.health)
+                let sourceRecovery = MeetingCaptureEvent.interrupted(kind: .sourceRecovered, trackID: nil, detail: nil)
+                let recoveries = sourceRecoversFirst ? [sourceRecovery, audioRecovery] : [audioRecovery, sourceRecovery]
+                capture.emit(recoveries[0])
+                await self.drainCaptureEvents()
+                XCTAssertEqual(coordinator.state, .recordingDegraded(started.id), "Both the source and captured audio must recover")
+                capture.emit(recoveries[1])
+                await self.drainCaptureEvents()
+                XCTAssertEqual(coordinator.state, .recording(started.id))
+                await coordinator.shutdownForTermination()
+            }
+        }
+    }
+
     private func drainCaptureEvents() async {
         await withCheckedContinuation { continuation in
             DispatchQueue.main.async { continuation.resume() }
