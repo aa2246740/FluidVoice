@@ -11,6 +11,48 @@ import XCTest
 // Existing recovery suite shares setup across crash and corruption scenarios.
 // swiftlint:disable:next type_body_length
 final class MeetingRecoveryTests: XCTestCase {
+    func testVoiceProcessingFallbackDoesNotDegradeHealthyRecording() async throws {
+        for deliverDuringStart in [false, true] {
+            let dir = self.makeTempDirectory()
+            defer { try? FileManager.default.removeItem(at: dir) }
+            let store = MeetingSessionStore(rootDirectory: dir)
+            let capture = StubCaptureController()
+            var microphone = self.makeMicrophoneTrack(chunks: [])
+            microphone.health.status = .healthy
+            var applicationAudio = self.makeMicrophoneTrack(chunks: [])
+            applicationAudio.kind = .applicationAudio
+            applicationAudio.health.status = .healthy
+            capture.startResult = MeetingCaptureStartResult(tracks: [microphone, applicationAudio], firstPresentationTime: nil)
+            let fallback = MeetingCaptureEvent.interrupted(kind: .voiceProcessingDeclined, trackID: nil, detail: "The output device is Bluetooth.")
+            if deliverDuringStart { capture.startupEvents = [fallback] }
+            capture.onStart = { @MainActor in await self.drainCaptureEvents() }
+            let coordinator = MeetingSessionCoordinator(
+                store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+            )
+            var configuration = self.makeConfiguration()
+            configuration.mode = .onlineCall
+            configuration.application = MeetingApplicationIdentity(bundleIdentifier: "us.zoom.xos", displayName: "Zoom")
+
+            let started = try await coordinator.startRecording(configuration: configuration)
+            XCTAssertEqual(started.state, .recording)
+            let persisted = try await store.load(id: started.id)
+            XCTAssertEqual(persisted?.state, .recording)
+            if !deliverDuringStart {
+                capture.emit(fallback)
+                await self.drainCaptureEvents()
+            }
+            XCTAssertEqual(coordinator.state, .recording(started.id), "Selecting a supported fallback is not a capture failure")
+            XCTAssertEqual(coordinator.activeSession?.events.map(\.kind), [.voiceProcessingDeclined])
+            capture.emit(.trackHealth(trackID: microphone.id, health: microphone.health))
+            capture.emit(.trackHealth(trackID: applicationAudio.id, health: applicationAudio.health))
+            await self.drainCaptureEvents()
+            XCTAssertEqual(coordinator.state, .recording(started.id))
+            XCTAssertEqual(coordinator.trackHealth[.microphone]?.status, .healthy)
+            XCTAssertEqual(coordinator.trackHealth[.applicationAudio]?.status, .healthy)
+            await coordinator.shutdownForTermination()
+        }
+    }
+
     func testWriterFailureDuringStartPreservesEventAndDegradedHealth() async throws {
         let dir = self.makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }

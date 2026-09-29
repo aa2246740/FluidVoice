@@ -1802,6 +1802,8 @@ final class MeetingSessionCoordinator: ObservableObject {
                     self.degradeReason = self.degradeReason ?? .sourceLoss
                 case .sourceRecovered:
                     if self.degradeReason == .sourceLoss { self.degradeReason = nil }
+                case .voiceProcessingDeclined:
+                    break
                 default:
                     self.degradeReason = .sticky
                 }
@@ -1838,7 +1840,9 @@ final class MeetingSessionCoordinator: ObservableObject {
                 {
                     self.degradeReason = .silence
                 }
-            } else if kind != .sourceRecovered, session.state == .recording || session.state == .recordingDegraded {
+            } else if kind != .sourceRecovered, kind != .voiceProcessingDeclined,
+                      session.state == .recording || session.state == .recordingDegraded
+            {
                 session.state = .recordingDegraded
                 self.state = .recordingDegraded(session.id)
                 if kind == .sourceLost, self.degradeReason != .sticky {
