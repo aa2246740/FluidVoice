@@ -135,6 +135,7 @@ final class MeetingSessionCoordinator: ObservableObject {
     }
 
     private var liveTranscriptionCoordinator: MeetingLiveTranscriptionCoordinator?
+    private var startupTrackHealth: [MeetingAudioTrackID: MeetingTrackHealth] = [:]
     private var captureGeneration: UUID?
     private var operationGeneration: UUID?
     private var stopTask: Task<MeetingSession, Error>? {
@@ -147,8 +148,7 @@ final class MeetingSessionCoordinator: ObservableObject {
         willSet { if (newValue == nil) != (self.retryTask == nil) { self.objectWillChange.send() } }
     }
 
-    private var persistenceTail: Task<Void, Never>?
-    private var persistenceGeneration = 0
+    private let persistence: MeetingSessionPersistenceQueue
     private var restoreTask: Task<Void, Never>?
     private var isDeleting = false {
         willSet { if newValue != self.isDeleting { self.objectWillChange.send() } }
@@ -198,6 +198,7 @@ final class MeetingSessionCoordinator: ObservableObject {
         validateRecordingModels: @escaping @MainActor () async throws -> Void = {}
     ) {
         self.store = store
+        self.persistence = MeetingSessionPersistenceQueue(store: store)
         self.capture = capture
         self.processing = processing
         self.audioArbiter = audioArbiter
@@ -419,6 +420,8 @@ final class MeetingSessionCoordinator: ObservableObject {
             .retainUntil(startedAt: session.startedAt)
         self.activeSession = session
         self.state = .preparing(session.id)
+        self.startupTrackHealth.removeAll()
+        defer { self.startupTrackHealth.removeAll() }
         var captureStarted = false
         var captureStartAttempted = false
 
@@ -470,14 +473,27 @@ final class MeetingSessionCoordinator: ObservableObject {
                 liveTranscriptionCoordinator.setMicrophoneCaptureMethod(microphoneTrack.captureMethod)
             }
             session.audioTracks = startResult.tracks
+            for index in session.audioTracks.indices {
+                if let health = self.startupTrackHealth[session.audioTracks[index].id] {
+                    session.audioTracks[index].health = health
+                }
+            }
+            self.startupTrackHealth.removeAll()
+            // Capture can report its first writer failure before start() returns. Preserve that
+            // one-shot event and the settled writer health instead of replacing them with the
+            // original preparing snapshot.
+            session.events = self.activeSession?.events ?? session.events
             if let firstPresentationTime = startResult.firstPresentationTime {
                 session.timebase.firstPresentationTime = firstPresentationTime
             }
-            session.state = .recording
+            let startedDegraded = session.audioTracks.contains { $0.health.status == .degraded }
+                || session.events.contains { $0.kind == .writerFailure }
+            session.state = startedDegraded ? .recordingDegraded : .recording
+            if startedDegraded { self.degradeReason = .sticky }
             session.updatedAt = Date()
             self.activeSession = session
             self.trackHealth = Dictionary(uniqueKeysWithValues: session.audioTracks.map { ($0.kind, $0.health) })
-            self.state = .recording(session.id)
+            self.state = startedDegraded ? .recordingDegraded(session.id) : .recording(session.id)
             try await self.store.save(session)
             guard self.startReservation == reservation,
                   self.operationGeneration == generation, !Task.isCancelled
@@ -1673,7 +1689,12 @@ final class MeetingSessionCoordinator: ObservableObject {
         guard self.captureGeneration == generation, var session = self.activeSession else { return }
         switch event {
         case let .trackHealth(trackID, health):
-            guard let index = session.audioTracks.firstIndex(where: { $0.id == trackID }) else { return }
+            guard let index = session.audioTracks.firstIndex(where: { $0.id == trackID }) else {
+                if session.state == .preparing {
+                    self.startupTrackHealth[trackID] = health
+                }
+                return
+            }
             var health = health
             let kind = session.audioTracks[index].kind
             let watchdogTripped = kind == .applicationAudio && health.status != .degraded
@@ -1771,7 +1792,11 @@ final class MeetingSessionCoordinator: ObservableObject {
         }
         session.updatedAt = Date()
         self.activeSession = session
-        self.enqueuePersistence(session)
+        // startRecording persists the settled tracks and any startup events together. Queuing
+        // a preparing snapshot here could overwrite that newer state after start returns.
+        if session.state != .preparing {
+            self.enqueuePersistence(session)
+        }
     }
 
     private func beginUnexpectedStop(sessionID: MeetingSessionID) {
@@ -1855,24 +1880,11 @@ final class MeetingSessionCoordinator: ObservableObject {
     }
 
     private func enqueuePersistence(_ session: MeetingSession) {
-        self.persistenceGeneration += 1
-        let previous = self.persistenceTail
-        let store = self.store
-        self.persistenceTail = Task {
-            _ = await previous?.value
-            try? await store.save(session)
-        }
+        self.persistence.enqueue(session)
     }
 
     private func flushQueuedPersistence() async {
-        while let tail = self.persistenceTail {
-            let generation = self.persistenceGeneration
-            _ = await tail.value
-            if self.persistenceGeneration == generation {
-                self.persistenceTail = nil
-                return
-            }
-        }
+        await self.persistence.flush()
     }
 
     /// Must complete before any code path that calls into `processing.process`, so both live

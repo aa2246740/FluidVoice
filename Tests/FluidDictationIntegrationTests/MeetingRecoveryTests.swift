@@ -11,6 +11,143 @@ import XCTest
 // Existing recovery suite shares setup across crash and corruption scenarios.
 // swiftlint:disable:next type_body_length
 final class MeetingRecoveryTests: XCTestCase {
+    func testWriterFailureDuringStartPreservesEventAndDegradedHealth() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = MeetingSessionStore(rootDirectory: dir)
+        let capture = StubCaptureController()
+        let microphone = self.makeMicrophoneTrack(chunks: [])
+        var degradedHealth = microphone.health
+        degradedHealth.status = .degraded
+        degradedHealth.detail = "Unsupported PCM format"
+        // The snapshot can precede the writer failure while capture.start is still suspended.
+        capture.startResult = MeetingCaptureStartResult(tracks: [microphone], firstPresentationTime: nil)
+        capture.startupEvents = [
+            .trackHealth(trackID: microphone.id, health: degradedHealth),
+            .interrupted(kind: .writerFailure, trackID: microphone.id, detail: degradedHealth.detail),
+        ]
+        let coordinator = MeetingSessionCoordinator(
+            store: store, capture: capture, processing: StubProcessingController(), audioArbiter: StubArbiter()
+        )
+        capture.onStart = { @MainActor in
+            for _ in 0..<100 {
+                if coordinator.activeSession?.events.count == 1 { break }
+                await Task.yield()
+            }
+            XCTAssertEqual(coordinator.activeSession?.events.count, 1, "Deliver the failure while capture.start is suspended")
+        }
+        let started = try await coordinator.startRecording(configuration: self.makeConfiguration())
+        XCTAssertEqual(started.events.map(\.kind), [.writerFailure])
+        XCTAssertEqual(started.audioTracks.first?.health.status, .degraded)
+        XCTAssertEqual(coordinator.state, .recordingDegraded(started.id))
+        XCTAssertEqual(coordinator.trackHealth[.microphone]?.status, .degraded)
+        let persisted = try await store.load(id: started.id)
+        XCTAssertEqual(persisted?.state, .recordingDegraded)
+        XCTAssertEqual(persisted?.events.map(\.kind), [.writerFailure])
+        XCTAssertEqual(persisted?.audioTracks.first?.health.status, .degraded)
+        await coordinator.shutdownForTermination()
+    }
+
+    func testPersistenceCoalescesSlowStoreAndFlushesNewestSnapshot() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let realStore = MeetingSessionStore(rootDirectory: dir)
+        let recorder = EventRecorder()
+        let store = GatedThrowingSaveStore(inner: realStore, recorder: recorder)
+        let queue = MeetingSessionPersistenceQueue(store: store)
+        var session = self.makeSession(state: .recording, audioTracks: [self.makeMicrophoneTrack(chunks: [])])
+        session.events.append(MeetingSessionEvent(id: UUID(), occurredAt: Date(), kind: .writerFailure, trackID: nil, detail: "First failure"))
+        await store.closeGate()
+        queue.enqueue(session)
+        for _ in 0..<100 {
+            if await recorder.events.contains("store.save.start") { break }
+            await Task.yield()
+        }
+        let started = await recorder.events.contains("store.save.start")
+        XCTAssertTrue(started, "The first snapshot must be in flight before the burst")
+        for index in 1..<1_000 {
+            session.events.append(MeetingSessionEvent(id: UUID(), occurredAt: Date(), kind: .writerFailure, trackID: nil, detail: "Failure \(index)"))
+            queue.enqueue(session)
+        }
+        let firstFlush = Task { await queue.flush() }
+        let secondFlush = Task { await queue.flush() }
+        await store.openGate()
+        await firstFlush.value
+        await secondFlush.value
+
+        let savedCounts = await store.savedEventCounts
+        XCTAssertEqual(savedCounts, [1, 1_000], "Slow storage must not save or retain every intermediate snapshot")
+        let persisted = try await store.load(id: session.id)
+        XCTAssertEqual(persisted?.events.map(\.id), session.events.map(\.id))
+        XCTAssertEqual(persisted?.events.last?.detail, session.events.last?.detail)
+
+        // A direct terminal save after flush must never be overwritten by an older queued state.
+        session.state = .interrupted
+        session.endedAt = Date()
+        try await store.save(session)
+        await queue.flush()
+        let terminal = try await store.load(id: session.id)
+        XCTAssertEqual(terminal?.state, .interrupted)
+
+        session.title = "Worker restarted"
+        queue.enqueue(session)
+        await queue.flush()
+        let restarted = try await store.load(id: session.id)
+        XCTAssertEqual(restarted?.title, "Worker restarted")
+    }
+
+    func testPersistenceKeepsLatestSnapshotForEachSession() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let recorder = EventRecorder()
+        let store = GatedThrowingSaveStore(inner: MeetingSessionStore(rootDirectory: dir), recorder: recorder)
+        let queue = MeetingSessionPersistenceQueue(store: store)
+        var previous = self.makeSession(state: .interrupted, endedAt: Date(), audioTracks: [self.makeMicrophoneTrack(chunks: [])])
+        var current = self.makeSession(state: .recording, audioTracks: [self.makeMicrophoneTrack(chunks: [])])
+        await store.closeGate()
+        queue.enqueue(previous)
+        for _ in 0..<100 {
+            if await recorder.events.contains("store.save.start") { break }
+            await Task.yield()
+        }
+        let started = await recorder.events.contains("store.save.start")
+        XCTAssertTrue(started)
+        queue.enqueue(current)
+        previous.recoveryResolvedAt = Date()
+        queue.enqueue(previous)
+        current.title = "Newest recording snapshot"
+        queue.enqueue(current)
+        await store.openGate()
+        await queue.flush()
+        let persistedPrevious = try await store.load(id: previous.id)
+        let persistedCurrent = try await store.load(id: current.id)
+        XCTAssertNotNil(persistedPrevious?.recoveryResolvedAt)
+        XCTAssertEqual(persistedCurrent?.title, current.title)
+        let savedCounts = await store.savedEventCounts
+        XCTAssertEqual(savedCounts.count, 3, "One in-flight save and one pending save per session")
+    }
+
+    func testPersistenceContinuesAfterSaveFailure() async throws {
+        let dir = self.makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let recorder = EventRecorder()
+        let store = GatedThrowingSaveStore(inner: MeetingSessionStore(rootDirectory: dir), recorder: recorder)
+        let queue = MeetingSessionPersistenceQueue(store: store)
+        var session = self.makeSession(state: .recording, audioTracks: [self.makeMicrophoneTrack(chunks: [])])
+        let nextSession = self.makeSession(state: .recording, audioTracks: [self.makeMicrophoneTrack(chunks: [])])
+        await store.throwOnNextSave()
+        queue.enqueue(session)
+        queue.enqueue(nextSession)
+        await queue.flush()
+        let savedNext = try await store.load(id: nextSession.id)
+        XCTAssertEqual(savedNext?.id, nextSession.id, "A failed save must not strand another pending session")
+        session.title = "Recovered save"
+        queue.enqueue(session)
+        await queue.flush()
+        let persisted = try await store.load(id: session.id)
+        XCTAssertEqual(persisted?.title, session.title)
+    }
+
     func testFileTranscriptRenamePreservesSourceAndSelection() throws {
         let suite = "FileRenameTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
@@ -4061,6 +4198,7 @@ private actor EventRecorder {
 private final class StubCaptureController: MeetingCaptureControlling, @unchecked Sendable {
     var startResult = MeetingCaptureStartResult(tracks: [], firstPresentationTime: nil)
     var startError: Error?
+    var startupEvents: [MeetingCaptureEvent] = []
     var onStart: (@Sendable () async -> Void)?
     var preflightError: Error?
     var onPreflight: (@Sendable () async -> Void)?
@@ -4081,6 +4219,7 @@ private final class StubCaptureController: MeetingCaptureControlling, @unchecked
         liveAudioHandler: (@Sendable (MeetingAudioTrackKind, CMSampleBuffer) -> Void)?
     ) async throws -> MeetingCaptureStartResult {
         self.startCount += 1
+        for event in self.startupEvents { eventHandler(event) }
         await self.onStart?()
         if let startError { throw startError }
         return self.startResult
@@ -4433,6 +4572,7 @@ private actor GatedThrowingSaveStore: MeetingSessionStoring {
     private var isOpen = true
     private var continuation: CheckedContinuation<Void, Never>?
     private var throwOnNextSaveCount = 0
+    private(set) var savedEventCounts: [Int] = []
 
     init(inner: MeetingSessionStore, recorder: EventRecorder) {
         self.inner = inner
@@ -4459,6 +4599,7 @@ private actor GatedThrowingSaveStore: MeetingSessionStoring {
             await withCheckedContinuation { self.continuation = $0 }
         }
         try await self.inner.save(session)
+        self.savedEventCounts.append(session.events.count)
     }
 
     func load(id: MeetingSessionID) async throws -> MeetingSession? { try await self.inner.load(id: id) }
