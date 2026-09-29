@@ -124,7 +124,7 @@ final class MeetingSessionCoordinator: ObservableObject {
     private let audioArbiter: any MeetingAudioActivityArbitrating
     private let preferredMicrophoneUID: @MainActor () -> String?
 
-    private enum DegradeReason { case silence, sourceLoss, sticky }
+    private enum DegradeReason { case silence, sourceLoss, startupWriterFailure, sticky }
 
     private var degradeReason: DegradeReason?
     private var activityLease: MeetingAudioActivityLease?
@@ -136,6 +136,7 @@ final class MeetingSessionCoordinator: ObservableObject {
 
     private var liveTranscriptionCoordinator: MeetingLiveTranscriptionCoordinator?
     private var startupTrackHealth: [MeetingAudioTrackID: MeetingTrackHealth] = [:]
+    private var startupWriterFailures: Set<MeetingAudioTrackID?> = []
     private var captureGeneration: UUID?
     private var operationGeneration: UUID?
     private var stopTask: Task<MeetingSession, Error>? {
@@ -421,6 +422,7 @@ final class MeetingSessionCoordinator: ObservableObject {
         self.activeSession = session
         self.state = .preparing(session.id)
         self.startupTrackHealth.removeAll()
+        self.startupWriterFailures.removeAll()
         defer { self.startupTrackHealth.removeAll() }
         var captureStarted = false
         var captureStartAttempted = false
@@ -457,7 +459,8 @@ final class MeetingSessionCoordinator: ObservableObject {
                 configuration: configuration,
                 sessionDirectory: sessionDirectory,
                 eventHandler: { [weak self] event in
-                    Task { @MainActor [weak self] in
+                    // Preserve failure/recovery emission order across the capture-to-main hop.
+                    DispatchQueue.main.async { [weak self] in
                         self?.handleCaptureEvent(event, generation: generation)
                     }
                 },
@@ -486,15 +489,14 @@ final class MeetingSessionCoordinator: ObservableObject {
             if let firstPresentationTime = startResult.firstPresentationTime {
                 session.timebase.firstPresentationTime = firstPresentationTime
             }
-            let hasUnrecoveredWriterFailure = session.events.contains { event in
-                event.kind == .writerFailure && !session.audioTracks.contains {
-                    $0.id == event.trackID && $0.health.status == .healthy
-                }
+            let hasOtherDegradedTrack = session.audioTracks.contains {
+                $0.health.status == .degraded && !self.startupWriterFailures.contains($0.id)
             }
-            let startedDegraded = session.audioTracks.contains { $0.health.status == .degraded }
-                || hasUnrecoveredWriterFailure
+            let startedDegraded = hasOtherDegradedTrack || !self.startupWriterFailures.isEmpty
             session.state = startedDegraded ? .recordingDegraded : .recording
-            if startedDegraded { self.degradeReason = .sticky }
+            if startedDegraded {
+                self.degradeReason = hasOtherDegradedTrack ? .sticky : .startupWriterFailure
+            }
             session.updatedAt = Date()
             self.activeSession = session
             self.trackHealth = Dictionary(uniqueKeysWithValues: session.audioTracks.map { ($0.kind, $0.health) })
@@ -1697,6 +1699,9 @@ final class MeetingSessionCoordinator: ObservableObject {
         guard self.captureGeneration == generation, var session = self.activeSession else { return }
         switch event {
         case let .trackHealth(trackID, health):
+            if health.status == .healthy {
+                self.startupWriterFailures.remove(trackID)
+            }
             guard let index = session.audioTracks.firstIndex(where: { $0.id == trackID }) else {
                 if session.state == .preparing {
                     self.startupTrackHealth[trackID] = health
@@ -1719,8 +1724,19 @@ final class MeetingSessionCoordinator: ObservableObject {
             if health.status == .degraded {
                 session.state = .recordingDegraded
                 self.state = .recordingDegraded(session.id)
-                // Writer-reported degrades stay sticky; only watchdog degrades may self-restore.
-                self.degradeReason = watchdogTripped ? (self.degradeReason ?? .silence) : .sticky
+                if watchdogTripped {
+                    self.degradeReason = self.degradeReason ?? .silence
+                } else if self.degradeReason != .startupWriterFailure || !self.startupWriterFailures.contains(trackID) {
+                    self.degradeReason = .sticky
+                }
+            } else if session.state == .recordingDegraded,
+                      self.degradeReason == .startupWriterFailure,
+                      self.startupWriterFailures.isEmpty,
+                      !session.audioTracks.contains(where: { $0.health.status == .degraded })
+            {
+                session.state = .recording
+                self.state = .recording(session.id)
+                self.degradeReason = nil
             } else if kind == .applicationAudio, session.state == .recordingDegraded,
                       self.degradeReason == .silence,
                       (health.silentForSeconds ?? 0) < Self.silenceWatchdogThresholdSeconds,
@@ -1767,6 +1783,17 @@ final class MeetingSessionCoordinator: ObservableObject {
                 self.degradeReason = nil
             }
         case let .interrupted(kind, trackID, detail):
+            if kind == .writerFailure, session.state == .preparing {
+                self.startupWriterFailures.insert(trackID)
+                if let trackID {
+                    var health = self.startupTrackHealth[trackID] ?? .waiting
+                    health.status = .degraded
+                    health.detail = detail
+                    self.startupTrackHealth[trackID] = health
+                }
+            } else if kind != .sourceRecovered, self.degradeReason == .startupWriterFailure {
+                self.degradeReason = .sticky
+            }
             session.events.append(MeetingSessionEvent(
                 id: UUID(),
                 occurredAt: Date(),
