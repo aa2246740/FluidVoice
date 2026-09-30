@@ -1719,6 +1719,9 @@ extension AIEnhancementSettingsView {
         if id.contains("xai") || name.contains("xai") || name.contains("x.ai") {
             return Color(red: 0.95, green: 0.95, blue: 0.95) // Light gray
         }
+        if id.contains("dashscope") || name.contains("bailian") || name.contains("qwen") {
+            return Color(red: 0.38, green: 0.36, blue: 0.93) // Bailian purple
+        }
         if id.contains("ollama") || name.contains("ollama") {
             return Color(red: 0.95, green: 0.95, blue: 0.95) // Light gray
         }

@@ -367,6 +367,8 @@ extension VoiceEngineSettingsView {
                     .controlSize(.small)
                     .disabled(self.viewModel.asr.isCancellingModelPreparation)
                 }
+            } else if model.isCloudModel {
+                self.cloudSpeechModelActions(for: model, isActive: isActive, isSelected: isSelected)
             } else if model.isInstalled {
                 HStack(spacing: 8) {
                     if isActive {
@@ -471,6 +473,44 @@ extension VoiceEngineSettingsView {
         }
         .opacity(self.viewModel.asr.isRunning ? 0.6 : 1.0)
         .allowsHitTesting(!self.viewModel.asr.isRunning)
+    }
+
+    private func cloudSpeechModelActions(for model: SettingsStore.SpeechModel, isActive: Bool, isSelected: Bool) -> some View {
+        HStack(spacing: 8) {
+            Button {
+                self.cloudConfigModel = model
+            } label: {
+                Image(systemName: "key.fill")
+                    .font(.fluidSystem(size: 13))
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(self.voiceEngineTertiaryText)
+            .help("Configure API key")
+            .disabled(self.viewModel.areSpeechModelActionsBlocked)
+
+            if isActive {
+                Text("Active")
+                    .font(self.theme.typography.bodySmallStrong)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(Capsule().fill(Color.fluidGreen.opacity(0.25)))
+                    .foregroundStyle(Color.fluidGreen)
+            } else if model.isInstalled {
+                Button("Activate") {
+                    self.viewModel.activateSpeechModel(model)
+                }
+                .fluidGlassAction(quiet: true)
+                .disabled(self.viewModel.areSpeechModelActionsBlocked)
+            } else {
+                Button("Set API Key") {
+                    self.viewModel.previewSpeechModel = model
+                    self.cloudConfigModel = model
+                }
+                .fluidGlassAction(prominent: true)
+                .disabled(self.viewModel.areSpeechModelActionsBlocked)
+                .opacity(isSelected ? 1 : 0.85)
+            }
+        }
     }
 
     @ViewBuilder

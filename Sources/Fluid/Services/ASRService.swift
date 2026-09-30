@@ -984,6 +984,7 @@ final class ASRService: ObservableObject {
     private var nemotronProviders: [NemotronProvider.Mode: NemotronProvider] = [:]
     private var whisperProvider: WhisperProvider?
     private var appleSpeechProvider: AppleSpeechProvider?
+    private var cloudASRProviders: [CloudASRVendor: CloudASRProvider] = [:]
     /// Stored as Any? because @available cannot be applied to stored properties
     private var _appleSpeechAnalyzerProvider: Any?
 
@@ -1082,6 +1083,7 @@ final class ASRService: ObservableObject {
         self.nemotronProviders.removeAll()
         self.whisperProvider = nil
         self.appleSpeechProvider = nil
+        self.cloudASRProviders.removeAll()
         self._appleSpeechAnalyzerProvider = nil
         self.isAsrReady = false
         self.isLoadingModel = false
@@ -1114,9 +1116,20 @@ final class ASRService: ObservableObject {
             return self.getNemotronProvider(mode: model.nemotronProviderMode)
         case .qwen3Asr:
             return self.getFluidAudioProvider()
+        case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+            guard let vendor = model.cloudVendor else { return self.getWhisperProvider() }
+            return self.getCloudASRProvider(vendor: vendor)
         default:
             return self.getWhisperProvider()
         }
+    }
+
+    private func getCloudASRProvider(vendor: CloudASRVendor) -> CloudASRProvider {
+        if let existing = self.cloudASRProviders[vendor] { return existing }
+        let provider = CloudASRProvider(vendor: vendor)
+        self.cloudASRProviders[vendor] = provider
+        DebugLogger.shared.info("ASRService: Created cloud ASR provider [\(vendor.rawValue)]", source: "ASRService")
+        return provider
     }
 
     private func getFluidAudioProvider() -> FluidAudioProvider {
@@ -1245,6 +1258,9 @@ final class ASRService: ObservableObject {
         case .qwen3Asr:
             // Qwen support removed; route legacy requests to Parakeet v3.
             return FluidAudioProvider(modelOverride: .parakeetTDT, configureWordBoosting: false)
+        case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+            guard let vendor = model.cloudVendor else { return WhisperProvider(modelOverride: model) }
+            return CloudASRProvider(vendor: vendor)
         default:
             // Whisper models - create provider with specific model override
             return WhisperProvider(modelOverride: model)
@@ -1406,6 +1422,7 @@ final class ASRService: ObservableObject {
         self.externalCoreMLProvider = nil
         self.whisperProvider = nil
         self.appleSpeechProvider = nil
+        self.cloudASRProviders.removeAll()
         self._appleSpeechAnalyzerProvider = nil
 
         // CRITICAL FIX: Check if the NEW model's files exist on disk
@@ -4056,6 +4073,7 @@ final class ASRService: ObservableObject {
         self.nemotronProviders.removeAll()
         self.whisperProvider = nil
         self.appleSpeechProvider = nil
+        self.cloudASRProviders.removeAll()
         self._appleSpeechAnalyzerProvider = nil
         self.residentDictationModelID = nil
         self.isAsrReady = false

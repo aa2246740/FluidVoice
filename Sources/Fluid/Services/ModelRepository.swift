@@ -17,7 +17,7 @@ final class ModelRepository {
     /// All built-in provider IDs (not including custom/saved providers)
     static var builtInProviderIDs: [String] {
         var providers = [
-            "openai", "anthropic", "xai", "groq", "cerebras", "google", "openrouter", "ollama", "lmstudio",
+            "openai", "anthropic", "xai", "groq", "cerebras", "google", "openrouter", "dashscope", "ollama", "lmstudio",
         ]
         if PrivateFeatures.privateAIProvider {
             providers.insert(PrivateAIProviderFeature.shared.providerID, at: 0)
@@ -47,6 +47,8 @@ final class ModelRepository {
             return ["gemini-2.5-flash"]
         case "openrouter":
             return ["openai/gpt-oss-20b"]
+        case "dashscope":
+            return ["qwen-plus", "qwen-flash", "qwen-max", "qwen3-max", "qwen-turbo"]
         case "ollama", "lmstudio":
             // Local providers - models vary per user, they must add their own
             return []
@@ -89,6 +91,8 @@ final class ModelRepository {
             return "https://generativelanguage.googleapis.com/v1beta/openai"
         case "openrouter":
             return "https://openrouter.ai/api/v1"
+        case "dashscope":
+            return "https://dashscope.aliyuncs.com/compatible-mode/v1"
         case "ollama":
             return "http://localhost:11434/v1"
         case "lmstudio":
@@ -112,6 +116,7 @@ final class ModelRepository {
         case "cerebras": return "Cerebras"
         case "google": return "Google"
         case "openrouter": return "OpenRouter"
+        case "dashscope": return "Alibaba Bailian (Qwen)"
         case "ollama": return "Ollama"
         case "lmstudio": return "LM Studio"
         default: return providerID.capitalized
@@ -141,6 +146,8 @@ final class ModelRepository {
             return ("https://aistudio.google.com/apikey", "Get API Key")
         case "openrouter":
             return ("https://openrouter.ai/settings/keys", "Get API Key")
+        case "dashscope":
+            return ("https://bailian.console.aliyun.com/?tab=model#/api-key", "Get API Key")
         case "ollama":
             return ("https://docs.ollama.com/api/openai-compatibility", "Setup Guide")
         case "lmstudio":
@@ -175,6 +182,7 @@ final class ModelRepository {
             ("cerebras", "Cerebras"),
             ("google", "Google"),
             ("openrouter", "OpenRouter"),
+            ("dashscope", "Alibaba Bailian (Qwen)"),
             ("ollama", "Ollama"),
             ("lmstudio", "LM Studio"),
         ]
