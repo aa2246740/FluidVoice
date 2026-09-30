@@ -283,7 +283,8 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
         case "openai": return "OpenAI"
         case "groq": return "Groq"
         default:
-            return self.savedProviders.first(where: { $0.id == providerID })?.name ?? providerID.capitalized
+            return self.savedProviders.first(where: { $0.id == providerID })?.name
+                ?? ModelRepository.shared.displayName(for: providerID)
         }
     }
 
