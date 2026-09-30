@@ -60,7 +60,7 @@ struct MeetingDocumentTitle: View {
     @Environment(\.theme) private var theme
 
     var body: some View {
-        Text(self.title)
+        Text(self.title.fluidLocalized)
             .font(.system(.largeTitle, design: .serif).weight(.medium))
             .foregroundStyle(self.theme.palette.primaryText)
             .fixedSize(horizontal: false, vertical: true)
@@ -99,14 +99,14 @@ struct MeetingDocumentTabs: View {
         Button { self.selection = section } label: {
             HStack(spacing: self.theme.metrics.spacing.sm) {
                 Image(systemName: icon)
-                Text(title)
+                Text(title.fluidLocalized)
             }
             .font(self.theme.typography.bodySmallStrong)
             .frame(height: 20)
             .contentShape(Rectangle())
         }
         .buttonStyle(MeetingDocumentTabButtonStyle(isSelected: self.selection == section))
-        .accessibilityLabel(title)
+        .accessibilityLabel(title.fluidLocalized)
         .accessibilityAddTraits(self.selection == section ? .isSelected : [])
     }
 }

@@ -202,7 +202,7 @@ final class MeetingModelResidencyCoordinator {
                     // A failed load may still own partial allocations. Drain them before another
                     // participant restores, and report the unloaded fallback without losing output.
                     try? await participant.suspend()
-                    self.restorationErrors.append("\(participant.owner): \(error.localizedDescription)")
+                    self.restorationErrors.append(String.fluidLocalizedFormat("%@: %@", String(describing: participant.owner), String(describing: error.localizedDescription)))
                     DebugLogger.shared.warning("Meeting saved; \(participant.owner) model could not reload: \(error.localizedDescription)", source: "MeetingModelResidency")
                 }
             }

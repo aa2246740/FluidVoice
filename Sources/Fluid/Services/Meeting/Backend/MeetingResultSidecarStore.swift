@@ -39,7 +39,7 @@ nonisolated enum MeetingResultSidecarStoreError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case let .unsupportedReferenceFormatVersion(found):
-            return "Meeting result sidecar reference has unsupported format version \(found)."
+            return String.fluidLocalizedFormat("Meeting result sidecar reference has unsupported format version %@.", String(describing: found))
         case let .unexpectedFileName(expected, actual):
             return "Meeting result sidecar reference names \"\(actual)\"; expected \"\(expected)\"."
         case .pathEscapesSessionDirectory:
@@ -47,13 +47,13 @@ nonisolated enum MeetingResultSidecarStoreError: LocalizedError, Equatable {
         case .checksumMismatch:
             return "Meeting result sidecar content does not match its recorded SHA-256."
         case let .byteCountMismatch(expected, actual):
-            return "Meeting result sidecar is \(actual) bytes; expected \(expected)."
+            return String.fluidLocalizedFormat("Meeting result sidecar is %@ bytes; expected %@.", String(describing: actual), String(describing: expected))
         case let .attemptMismatch(expected, actual):
-            return "Meeting result sidecar carries attempt \(actual); expected \(expected)."
+            return String.fluidLocalizedFormat("Meeting result sidecar carries attempt %@; expected %@.", String(describing: actual), String(describing: expected))
         case let .backendMismatch(expected, actual):
             return "Meeting result sidecar carries backend \"\(actual)\"; expected \"\(expected)\"."
         case let .conflictingExistingSidecar(attemptID):
-            return "Meeting attempt \(attemptID) already has a different immutable result sidecar."
+            return String.fluidLocalizedFormat("Meeting attempt %@ already has a different immutable result sidecar.", String(describing: attemptID))
         case .durabilitySyncFailed:
             return "The meeting result sidecar could not be synchronized to durable storage."
         }

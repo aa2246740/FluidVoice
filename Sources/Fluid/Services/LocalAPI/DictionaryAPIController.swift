@@ -157,7 +157,7 @@ struct DictionaryAPIController: LocalAPIRouteHandler {
             NotificationCenter.default.post(name: .parakeetVocabularyDidChange, object: nil)
             return self.getReplacements()
         } catch {
-            return LocalAPI.error("Invalid replacement payload: \(error.localizedDescription)", status: 400)
+            return LocalAPI.error(String.fluidLocalizedFormat("Invalid replacement payload: %@", String(describing: error.localizedDescription)), status: 400)
         }
     }
 
@@ -166,7 +166,7 @@ struct DictionaryAPIController: LocalAPIRouteHandler {
             let entries = try ParakeetVocabularyStore.shared.loadUserBoostTerms().map(Self.apiEntry(from:))
             return LocalAPI.json(CustomWordsResponse(count: entries.count, items: entries))
         } catch {
-            return LocalAPI.error("Failed to load custom words: \(error.localizedDescription)", status: 500)
+            return LocalAPI.error(String.fluidLocalizedFormat("Failed to load custom words: %@", String(describing: error.localizedDescription)), status: 500)
         }
     }
 
@@ -187,7 +187,7 @@ struct DictionaryAPIController: LocalAPIRouteHandler {
             NotificationCenter.default.post(name: .parakeetVocabularyDidChange, object: nil)
             return self.getCustomWords()
         } catch {
-            return LocalAPI.error("Invalid custom words payload: \(error.localizedDescription)", status: 400)
+            return LocalAPI.error(String.fluidLocalizedFormat("Invalid custom words payload: %@", String(describing: error.localizedDescription)), status: 400)
         }
     }
 

@@ -249,7 +249,7 @@ final class SettingsStore: ObservableObject {
     enum DictationModeLabels {
         static let externalDefault = "Default"
         static let smart = "Smart"
-        static let smartWithModel = "\(smart) — Fluid-1"
+        static let smartWithModel = String.fluidLocalizedFormat("%@ — Fluid-1", String(describing: smart))
     }
 
     enum DictationPromptSelection: Equatable {
@@ -797,7 +797,7 @@ final class SettingsStore: ObservableObject {
         let model = modelName.replacingOccurrences(of: "Fluid-1 ", with: "")
         // An unroutable selection runs no cleanup at all, so it reads as Basic rather than
         // as a long "· Unavailable" line that overflows the pill.
-        return model.isEmpty ? "Basic" : "\(mode) · \(model)"
+        return model.isEmpty ? "Basic" : String.fluidLocalizedFormat("%@ · %@", String(describing: mode), String(describing: model))
     }
 
     func dictationPromptDisplayName(for slot: DictationShortcutSlot, appBundleID: String?) -> String {
@@ -4202,7 +4202,7 @@ final class SettingsStore: ObservableObject {
             } catch {
                 DebugLogger.shared
                     .error(
-                        "Failed to migrate API key for \(provider.name): \(error.localizedDescription)",
+                        String.fluidLocalizedFormat("Failed to migrate API key for %@: %@", String(describing: provider.name), String(describing: error.localizedDescription)),
                         source: "SettingsStore"
                     )
             }
@@ -4457,7 +4457,7 @@ final class SettingsStore: ObservableObject {
         } else {
             DebugLogger.shared
                 .warning(
-                    "⚠️ TransformProcessType failed (error: \(result)). This is expected on some macOS versions.",
+                    String.fluidLocalizedFormat("⚠️ TransformProcessType failed (error: %@). This is expected on some macOS versions.", String(describing: result)),
                     source: "SettingsStore"
                 )
             DebugLogger.shared.debug(
@@ -5036,8 +5036,27 @@ final class SettingsStore: ObservableObject {
         case whisperLargeTurbo = "whisper-large-turbo"
         case whisperLarge = "whisper-large"
 
+        // MARK: - Cloud APIs
+
+        case cloudVolcengine = "cloud-volcengine"
+        case cloudQwen3Asr = "cloud-qwen3-asr"
+        case cloudFishAudio = "cloud-fishaudio"
+
         var id: String {
             rawValue
+        }
+
+        var cloudVendor: CloudASRVendor? {
+            switch self {
+            case .cloudVolcengine: return .volcengine
+            case .cloudQwen3Asr: return .dashscope
+            case .cloudFishAudio: return .fishAudio
+            default: return nil
+            }
+        }
+
+        var isCloudModel: Bool {
+            self.cloudVendor != nil
         }
 
         // MARK: - Display Properties
@@ -5060,6 +5079,9 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return "Whisper Medium"
             case .whisperLargeTurbo: return "Whisper Large Turbo"
             case .whisperLarge: return "Whisper Large"
+            case .cloudVolcengine: return "Volcengine Doubao ASR (Cloud)"
+            case .cloudQwen3Asr: return "Qwen3-ASR Flash (Cloud)"
+            case .cloudFishAudio: return "Fish Audio ASR (Cloud)"
             }
         }
 
@@ -5076,6 +5098,9 @@ final class SettingsStore: ObservableObject {
             case .appleSpeechAnalyzer: return "EN, ES, FR, DE, IT, JA, KO, PT, ZH"
             case .whisperTiny, .whisperBase, .whisperSmall, .whisperMedium, .whisperLargeTurbo, .whisperLarge:
                 return "99 Languages"
+            case .cloudVolcengine: return "Chinese, Dialects, English + More"
+            case .cloudQwen3Asr: return "11 Languages + Chinese Dialects"
+            case .cloudFishAudio: return "Multilingual (Auto Detect)"
             }
         }
 
@@ -5097,6 +5122,7 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return "~793.0 MiB"
             case .whisperLargeTurbo: return "~845.3 MiB"
             case .whisperLarge: return "~1.55 GiB"
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return "Cloud API"
             }
         }
 
@@ -5116,6 +5142,7 @@ final class SettingsStore: ObservableObject {
             case .whisperLargeTurbo: return 886_381_760
             case .whisperLarge: return 1_668_741_440
             case .appleSpeech, .appleSpeechAnalyzer: return 0
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return 0
             }
         }
 
@@ -5129,7 +5156,7 @@ final class SettingsStore: ObservableObject {
         var isWhisperModel: Bool {
             switch self {
             case .parakeetTDT, .parakeetTDTv2, .parakeetRealtime, .qwen3Asr, .cohereTranscribeSixBit, .nemotronOffline, .nemotronStreaming, .nemotronStreaming320, .appleSpeech,
-                 .appleSpeechAnalyzer: return false
+                 .appleSpeechAnalyzer, .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return false
             default: return true
             }
         }
@@ -5260,6 +5287,9 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return "Medium Quality"
             case .whisperLargeTurbo: return "Higher Quality but Faster"
             case .whisperLarge: return "Maximum Accuracy"
+            case .cloudVolcengine: return "Volcengine - Cloud"
+            case .cloudQwen3Asr: return "Alibaba Bailian - Cloud"
+            case .cloudFishAudio: return "Fish Audio - Cloud"
             }
         }
 
@@ -5301,6 +5331,12 @@ final class SettingsStore: ObservableObject {
                 return "Near-maximum accuracy with optimized speed."
             case .whisperLarge:
                 return "Best possible accuracy. Large download and memory usage."
+            case .cloudVolcengine:
+                return "ByteDance Doubao large-model recognition (flash API). Strong on Mandarin, dialects and mixed Chinese-English. Requires internet and a Volcengine API key; billed per use."
+            case .cloudQwen3Asr:
+                return "Alibaba Bailian (DashScope) Qwen3-ASR-Flash. Multilingual with Chinese dialect support. Requires internet and a Bailian API key; billed per use."
+            case .cloudFishAudio:
+                return "Fish Audio speech-to-text API. Multilingual with automatic language detection. Requires internet and a Fish Audio API key; billed per use."
             }
         }
 
@@ -5329,6 +5365,8 @@ final class SettingsStore: ObservableObject {
                 return 6.0
             case .whisperLarge:
                 return 8.0
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+                return 1.0
             }
         }
 
@@ -5366,6 +5404,7 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return 2
             case .whisperLargeTurbo: return 3
             case .whisperLarge: return 1
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return 3
             }
         }
 
@@ -5387,6 +5426,7 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return 4
             case .whisperLargeTurbo: return 5
             case .whisperLarge: return 5
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return 5
             }
         }
 
@@ -5408,6 +5448,7 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return 0.40
             case .whisperLargeTurbo: return 0.65
             case .whisperLarge: return 0.20
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return 0.70
             }
         }
 
@@ -5429,6 +5470,8 @@ final class SettingsStore: ObservableObject {
             case .whisperMedium: return 0.80
             case .whisperLargeTurbo: return 0.95
             case .whisperLarge: return 1.00
+            case .cloudVolcengine, .cloudQwen3Asr: return 0.95
+            case .cloudFishAudio: return 0.90
             }
         }
 
@@ -5442,6 +5485,7 @@ final class SettingsStore: ObservableObject {
             case .cohereTranscribeSixBit: return "New"
             case .nemotronOffline, .nemotronStreaming, .nemotronStreaming320: return "New + Beta"
             case .appleSpeechAnalyzer: return "New"
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio: return "Cloud"
             default: return nil
             }
         }
@@ -5460,7 +5504,7 @@ final class SettingsStore: ObservableObject {
         /// Large Whisper models are too slow for streaming, so they only do final transcription on stop.
         var supportsStreaming: Bool {
             switch self {
-            case .qwen3Asr, .whisperMedium, .whisperLargeTurbo, .whisperLarge:
+            case .qwen3Asr, .whisperMedium, .whisperLargeTurbo, .whisperLarge, .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
                 return false // Too slow for real-time chunk processing
             default:
                 return true // All other models support streaming
@@ -5517,6 +5561,7 @@ final class SettingsStore: ObservableObject {
             case openai = "OpenAI"
             case qwen = "Qwen"
             case cohere = "Cohere"
+            case cloud = "Cloud"
         }
 
         /// Which provider this model belongs to
@@ -5532,6 +5577,8 @@ final class SettingsStore: ObservableObject {
                 return .cohere
             case .whisperTiny, .whisperBase, .whisperSmall, .whisperMedium, .whisperLargeTurbo, .whisperLarge:
                 return .openai
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+                return .cloud
             }
         }
 
@@ -5545,6 +5592,9 @@ final class SettingsStore: ObservableObject {
             switch self {
             case .appleSpeech, .appleSpeechAnalyzer:
                 return true
+            case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+                guard let vendor = self.cloudVendor else { return false }
+                return CloudASRSettings.shared.hasCredentials(for: vendor)
             case .parakeetTDT:
                 #if canImport(FluidAudio)
                 return Self.parakeetModelsExist(version: .v3)
@@ -5661,6 +5711,12 @@ final class SettingsStore: ObservableObject {
                 return "Apple"
             case .whisperTiny, .whisperBase, .whisperSmall, .whisperMedium, .whisperLargeTurbo, .whisperLarge:
                 return "OpenAI"
+            case .cloudVolcengine:
+                return "Volcengine"
+            case .cloudQwen3Asr:
+                return "Bailian"
+            case .cloudFishAudio:
+                return "Fish Audio"
             }
         }
 
@@ -5685,6 +5741,12 @@ final class SettingsStore: ObservableObject {
                 return "#A2AAAD" // Apple Gray
             case .whisperTiny, .whisperBase, .whisperSmall, .whisperMedium, .whisperLargeTurbo, .whisperLarge:
                 return "#10A37F" // OpenAI Teal
+            case .cloudVolcengine:
+                return "#3370FF"
+            case .cloudQwen3Asr:
+                return "#615CED"
+            case .cloudFishAudio:
+                return "#1F1F1F"
             }
         }
     }

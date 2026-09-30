@@ -527,7 +527,7 @@ final nonisolated class MeetingAudioChunkWriter: @unchecked Sendable {
                 failedChunk.sink.cancel()
                 self.applyFinalization(.failed(
                     Self.failedChunk(from: failedChunk),
-                    "PCM chunk write failed: \(error.localizedDescription)"
+                    String.fluidLocalizedFormat("PCM chunk write failed: %@", String(describing: error.localizedDescription))
                 ))
             }
             if !retiredChunk {
@@ -637,7 +637,7 @@ final nonisolated class MeetingAudioChunkWriter: @unchecked Sendable {
             activeChunk.sink.cancel()
             self.applyFinalization(.failed(
                 Self.failedChunk(from: activeChunk),
-                "PCM chunk checkpoint failed: \(error.localizedDescription)"
+                String.fluidLocalizedFormat("PCM chunk checkpoint failed: %@", String(describing: error.localizedDescription))
             ))
             return
         }
@@ -686,7 +686,7 @@ final nonisolated class MeetingAudioChunkWriter: @unchecked Sendable {
                     self.track.chunks[index].captureAnalysisAsset?.presence = .failed
                 }
                 self.track.health.status = .degraded
-                self.track.health.detail = "PCM chunk ledger terminal failed: \(error.localizedDescription)"
+                self.track.health.detail = String.fluidLocalizedFormat("PCM chunk ledger terminal failed: %@", String(describing: error.localizedDescription))
                 self.eventHandler(.interrupted(kind: .writerFailure, trackID: self.track.id, detail: self.track.health.detail ?? "PCM chunk ledger terminal failed."))
                 try? self.persistTrackManifest()
                 return
@@ -762,7 +762,7 @@ final nonisolated class MeetingAudioChunkWriter: @unchecked Sendable {
                 playbackArchiveAsset: nil
             ), activeChunk.format)
         case let .failure(error):
-            return .failed(self.failedChunk(from: activeChunk), "PCM chunk finalization failed: \(error)")
+            return .failed(self.failedChunk(from: activeChunk), String.fluidLocalizedFormat("PCM chunk finalization failed: %@", String(describing: error)))
         }
     }
 
@@ -818,7 +818,7 @@ final nonisolated class MeetingAudioChunkWriter: @unchecked Sendable {
         guard droppedCount > 0 else { return }
         self.track.health.status = .degraded
         self.track.health.droppedSampleCount += droppedCount
-        let detail = "Audio writer queue dropped \(droppedCount) samples while saturated."
+        let detail = String.fluidLocalizedFormat("Audio writer queue dropped %@ samples while saturated.", String(describing: droppedCount))
         self.track.health.detail = detail
         self.eventHandler(.interrupted(kind: .writerBackpressure, trackID: self.track.id, detail: detail))
         self.emitHealthIfNeeded(force: true)

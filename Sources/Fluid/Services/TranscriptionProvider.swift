@@ -226,7 +226,7 @@ extension TranscriptionProvider {
         throw NSError(
             domain: "TranscriptionProvider",
             code: -1,
-            userInfo: [NSLocalizedDescriptionKey: "\(self.name) does not implement native file transcription."]
+            userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("%@ does not implement native file transcription.", String(describing: self.name))]
         )
     }
 }

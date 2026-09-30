@@ -64,7 +64,7 @@ struct FluidIntelligenceDemoView: View {
                 .buttonStyle(.plain).disabled(self.busy).accessibilityLabel("Close demo")
             }
             Picker("Example", selection: self.$selected) {
-                ForEach(Self.examples.indices, id: \.self) { index in Text(Self.examples[index].title).tag(index) }
+                ForEach(Self.examples.indices, id: \.self) { index in Text(Self.examples[index].title.fluidLocalized).tag(index) }
             }
             .pickerStyle(.segmented).disabled(self.busy)
             ScrollView {
@@ -73,7 +73,7 @@ struct FluidIntelligenceDemoView: View {
                     self.textPanel(self.result.isEmpty ? "Example result" : "Your result", text: self.result.isEmpty ? Self.examples[self.selected].expected : self.result, accented: true)
                     Text("Illustrative examples. Run one to see your model’s actual output.")
                         .font(self.theme.typography.caption).foregroundStyle(.secondary)
-                    if !self.error.isEmpty { Text(self.error).font(self.theme.typography.bodySmall).foregroundStyle(.red) }
+                    if !self.error.isEmpty { Text(self.error.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(.red) }
                 }
                 .id(self.selected)
             }
@@ -109,7 +109,7 @@ struct FluidIntelligenceDemoView: View {
                     }
                 }
             }
-            Text(self.modelID == nil ? "A local Fluid Intelligence model is needed to try these examples." : "Practice stays here. Nothing is typed into another app or saved to history.")
+            Text((self.modelID == nil ? "A local Fluid Intelligence model is needed to try these examples." : "Practice stays here. Nothing is typed into another app or saved to history.").fluidLocalized)
                 .font(self.theme.typography.caption).foregroundStyle(.secondary)
             if self.modelID != nil, !self.asr.isAsrReady || self.asr.micStatus != .authorized {
                 Text("Voice practice needs a ready Voice Engine model and microphone access. You can still try the written examples.")
@@ -147,8 +147,8 @@ struct FluidIntelligenceDemoView: View {
 
     private func textPanel(_ title: String, text: String, accented: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title).font(self.theme.typography.captionStrong).foregroundStyle(accented ? self.theme.palette.accent : self.theme.palette.secondaryText)
-            Text(text).font(self.theme.typography.body).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+            Text(title.fluidLocalized).font(self.theme.typography.captionStrong).foregroundStyle(accented ? self.theme.palette.accent : self.theme.palette.secondaryText)
+            Text(text.fluidLocalized).font(self.theme.typography.body).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
         }
         .padding(18).frame(maxWidth: .infinity, alignment: .leading)
         .background(accented ? self.theme.palette.accent.opacity(0.07) : self.theme.palette.cardBackground, in: RoundedRectangle(cornerRadius: 16))

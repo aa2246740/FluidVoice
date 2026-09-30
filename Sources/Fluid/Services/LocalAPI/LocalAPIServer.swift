@@ -169,9 +169,9 @@ private final class LocalAPIConnectionHandler {
         headers["Content-Length"] = "\(body.count)"
         headers["Connection"] = "close"
 
-        let statusLine = "HTTP/1.1 \(response.status) \(Self.reasonPhrase(for: response.status))\r\n"
+        let statusLine = String.fluidLocalizedFormat("HTTP/1.1 %@ %@\r\n", String(describing: response.status), String(describing: Self.reasonPhrase(for: response.status)))
         let headerLines = headers
-            .map { "\($0.key): \($0.value)\r\n" }
+            .map { String.fluidLocalizedFormat("%@: %@\r\n", String(describing: $0.key), String(describing: $0.value)) }
             .sorted()
             .joined()
         var data = Data((statusLine + headerLines + "\r\n").utf8)

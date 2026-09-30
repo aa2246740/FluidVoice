@@ -1540,7 +1540,7 @@ final class MeetingSessionCoordinator: ObservableObject {
                     occurredAt: Date(),
                     kind: .writerFailure,
                     trackID: nil,
-                    detail: "\(result.skippedChunkIDs.count) audio chunk(s) could not be read and were skipped."
+                    detail: String.fluidLocalizedFormat("%@ audio chunk(s) could not be read and were skipped.", String(describing: result.skippedChunkIDs.count))
                 ))
                 let skipped = Set(result.skippedChunkIDs)
                 for trackIndex in session.audioTracks.indices {
@@ -1726,7 +1726,7 @@ final class MeetingSessionCoordinator: ObservableObject {
                 occurredAt: Date(),
                 kind: .microphoneChanged,
                 trackID: trackID,
-                detail: "Microphone capture switched to \(method.rawValue)."
+                detail: String.fluidLocalizedFormat("Microphone capture switched to %@.", String(describing: method.rawValue))
             ))
             // Only clear degradation this change plausibly caused — never a sticky one.
             if session.state == .recordingDegraded,

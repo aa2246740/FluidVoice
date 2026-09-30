@@ -237,7 +237,7 @@ actor MeetingLiveTrackEngine {
     private func markLoadFailed(kind: MeetingAudioTrackKind, error: Error) {
         guard !self.isStopped else { return }
         DebugLogger.shared.warning("Live captions model load failed: \(error)", source: "MeetingLive")
-        self.onDegraded?(kind, "Live captions could not load: \(error.localizedDescription)")
+        self.onDegraded?(kind, String.fluidLocalizedFormat("Live captions could not load: %@", String(describing: error.localizedDescription)))
     }
 
     private func drainLoop() async {
@@ -439,7 +439,7 @@ actor MeetingLiveTrackEngine {
     private func applyPendingResyncIfNeeded() async {
         guard self.pendingResync else { return }
         self.pendingResync = false
-        self.diag("queue saturated — resyncing after \(self.diagDrops) dropped samples")
+        self.diag(String.fluidLocalizedFormat("queue saturated — resyncing after %@ dropped samples", String(describing: self.diagDrops)))
         await self.resetUtterance()
         self.onDegraded?(self.kind, "Live captions dropped audio and resynced.")
     }

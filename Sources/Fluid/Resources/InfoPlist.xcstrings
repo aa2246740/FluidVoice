@@ -1,0 +1,66 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSAccessibilityUsageDescription" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluidVoice 需要辅助功能权限，用于监听全局快捷键并在录音结束后把文字输入到其他应用。"
+          }
+        }
+      }
+    },
+    "NSAppleEventsUsageDescription" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluidVoice 需要控制系统事件的权限，用于管理开机自启设置。"
+          }
+        }
+      }
+    },
+    "NSAudioCaptureUsageDescription" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluidVoice 需要系统音频权限来录制你明确选择的会议应用，会议音频只保留在这台 Mac 上。"
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluidVoice 需要麦克风权限来录制你的语音做语音转文字。音频只在本地处理，不会发送到外部服务器。"
+          }
+        }
+      }
+    },
+    "NSScreenCaptureUsageDescription" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluidVoice 需要屏幕与系统音频权限来录制你明确选择的会议应用的音频。"
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluidVoice 使用设备端语音识别，快速且私密地转写你的语音指令和文字。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

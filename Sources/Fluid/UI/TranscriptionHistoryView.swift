@@ -58,7 +58,7 @@ struct TranscriptionHistoryView: View {
                         .padding(12)
                 } else if let error = self.historyStore.persistenceError {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(error)
+                        Text(error.fluidLocalized)
                             .font(.fluidSystem(.caption))
                         Button("Retry saving history") {
                             self.historyStore.retryPersistence()
@@ -223,10 +223,10 @@ struct TranscriptionHistoryView: View {
                         HStack(spacing: 8) {
                             HistoryAppIcon(appName: entry.appName)
                             Spacer(minLength: 4)
-                            Text(entry.relativeTimeString)
+                            Text(entry.relativeTimeString.fluidLocalized)
                                 .font(self.theme.typography.caption).foregroundStyle(.secondary)
                         }
-                        Text(entry.previewText)
+                        Text(entry.previewText.fluidLocalized)
                             .font(self.theme.typography.body)
                             .lineLimit(2).multilineTextAlignment(.leading)
                         HStack(spacing: 10) {
@@ -242,11 +242,11 @@ struct TranscriptionHistoryView: View {
                             }
                             if entry.aiProcessingError != nil {
                                 Image(systemName: "exclamationmark.triangle")
-                                    .foregroundStyle(.orange).help(entry.aiProcessingError ?? "")
+                                    .foregroundStyle(.orange).help(entry.aiProcessingError ?? "".fluidLocalized)
                             }
                             Spacer(minLength: 0)
                             if self.settings.showHistoryPerformanceMetrics, let speed = entry.aiTokensPerSecond {
-                                Text(TranscriptionHistoryEntry.formattedTokensPerSecond(speed, compact: true))
+                                Text(TranscriptionHistoryEntry.formattedTokensPerSecond(speed, compact: true).fluidLocalized)
                                     .font(self.theme.typography.captionStrong)
                                     .foregroundStyle(self.theme.palette.accent)
                                     .monospacedDigit()
@@ -280,7 +280,7 @@ struct TranscriptionHistoryView: View {
                     }
                     .buttonStyle(.plain)
                     .help("Copy final text")
-                    .accessibilityLabel(self.copiedEntryID == entry.id ? "Copied" : "Copy final text")
+                    .accessibilityLabel((self.copiedEntryID == entry.id ? "Copied" : "Copy final text").fluidLocalized)
                     Button {
                         self.openFeedbackReport(for: entry)
                     } label: {
@@ -378,13 +378,13 @@ struct TranscriptionHistoryView: View {
                 .foregroundStyle(.tertiary)
 
             VStack(spacing: 4) {
-                Text(self.searchQuery.isEmpty ? "No History Yet" : "No Results")
+                Text((self.searchQuery.isEmpty ? "No History Yet" : "No Results").fluidLocalized)
                     .font(.fluidSystem(size: 14, weight: .semibold))
                     .foregroundStyle(.secondary)
 
-                Text(self.searchQuery.isEmpty
+                Text((self.searchQuery.isEmpty
                     ? "Your transcriptions will appear here"
-                    : "Try a different search term")
+                    : "Try a different search term").fluidLocalized)
                     .font(.fluidSystem(size: 12))
                     .foregroundStyle(.tertiary)
                     .multilineTextAlignment(.center)
@@ -453,7 +453,7 @@ struct TranscriptionHistoryView: View {
                     Label {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("AI enhancement failed—raw transcription was used").font(self.theme.typography.bodyStrong)
-                            Text(error).font(self.theme.typography.caption).textSelection(.enabled)
+                            Text(error.fluidLocalized).font(self.theme.typography.caption).textSelection(.enabled)
                         }
                     } icon: {
                         Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange)
@@ -518,7 +518,7 @@ struct TranscriptionHistoryView: View {
                 .background(self.theme.palette.accent.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
             VStack(alignment: .leading, spacing: 5) {
                 Text("Dictation details").font(self.theme.typography.title)
-                Text(entry.fullDateString).font(self.theme.typography.caption).foregroundStyle(.secondary)
+                Text(entry.fullDateString.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
             }
         }
     }
@@ -568,8 +568,8 @@ struct TranscriptionHistoryView: View {
             Image(systemName: icon).font(.fluidSystem(size: 18)).foregroundStyle(self.theme.palette.accent)
                 .frame(width: 24)
             VStack(alignment: .leading, spacing: 5) {
-                Text(label).font(self.theme.typography.caption).foregroundStyle(.secondary)
-                Text(value).font(self.theme.typography.bodyStrong).monospacedDigit()
+                Text(label.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
+                Text(value.fluidLocalized).font(self.theme.typography.bodyStrong).monospacedDigit()
             }
             Spacer(minLength: 0)
         }
@@ -638,10 +638,10 @@ struct TranscriptionHistoryView: View {
             try DictationAudioHistoryStore.shared.exportPair(entry: entry, to: url)
         } catch {
             let alert = NSAlert()
-            alert.messageText = "Pair Export Failed"
-            alert.informativeText = error.localizedDescription
+            alert.messageText = "Pair Export Failed".fluidLocalized
+            alert.informativeText = error.localizedDescription.fluidLocalized
             alert.alertStyle = .critical
-            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "OK".fluidLocalized)
             alert.runModal()
         }
     }
@@ -700,7 +700,7 @@ private struct TranscriptionFeedbackReportSheet: View {
             self.feedbackField(title: "Comment optional", text: self.$comment, height: 72)
 
             if let errorMessage {
-                Text(errorMessage)
+                Text(errorMessage.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .medium))
                     .foregroundStyle(.red)
                     .fixedSize(horizontal: false, vertical: true)
@@ -725,7 +725,7 @@ private struct TranscriptionFeedbackReportSheet: View {
                                 .controlSize(.small)
                                 .fixedSize()
                         }
-                        Text(self.isSending ? "Sending..." : "Send Example")
+                        Text((self.isSending ? "Sending..." : "Send Example").fluidLocalized)
                     }
                 }
                 .keyboardShortcut(.defaultAction)
@@ -767,7 +767,7 @@ private struct TranscriptionFeedbackReportSheet: View {
 
     private func feedbackField(title: String, text: Binding<String>, height: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(.fluidSystem(size: 11, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)

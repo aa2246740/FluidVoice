@@ -126,13 +126,13 @@ extension SettingsStore {
             lowercasedDescription.contains("sign") ||
             lowercasedDescription.contains("entitlement")
         {
-            return "FluidVoice could not \(action) launch at startup. This build may not be signed correctly for macOS Login Items."
+            return String.fluidLocalizedFormat("FluidVoice could not %@ launch at startup. This build may not be signed correctly for macOS Login Items.", String(describing: action))
         }
 
         if lowercasedDescription.contains("approval") ||
             lowercasedDescription.contains("authorize")
         {
-            return "macOS needs approval before FluidVoice can \(action) launch at startup. Check System Settings > General > Login Items."
+            return String.fluidLocalizedFormat("macOS needs approval before FluidVoice can %@ launch at startup. Check System Settings > General > Login Items.", String(describing: action))
         }
 
         return "FluidVoice could not \(action) launch at startup. macOS reported: \(nsError.localizedDescription)"

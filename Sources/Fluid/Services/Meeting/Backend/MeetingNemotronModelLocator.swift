@@ -34,12 +34,12 @@ nonisolated enum MeetingNemotronModelReadinessError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case let .modelNotInstalled(path):
-            return "The Nemotron diarization model is not installed at \(path). "
+            return String.fluidLocalizedFormat("The Nemotron diarization model is not installed at %@. ", String(describing: path))
                 + "Open FluidMeet settings to download the speaker model."
         case let .invalidModelPackage(reason):
-            return "The Nemotron diarization model package is invalid (\(reason))."
+            return String.fluidLocalizedFormat("The Nemotron diarization model package is invalid (%@).", String(describing: reason))
         case let .artifactChanged(path):
-            return "The Nemotron diarization model at \(path) changed since it was validated."
+            return String.fluidLocalizedFormat("The Nemotron diarization model at %@ changed since it was validated.", String(describing: path))
         }
     }
 }

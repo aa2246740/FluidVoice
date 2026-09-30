@@ -76,7 +76,7 @@ struct OverlayAppearanceEditor: View {
                                     cornerRadius: 12
                                 )
                             HStack(spacing: 4) {
-                                Text(material.displayName)
+                                Text(material.displayName.fluidLocalized)
                                     .font(self.theme.typography.caption)
                                     .multilineTextAlignment(.center)
                                 if self.settings.overlayMaterial == material {
@@ -95,14 +95,14 @@ struct OverlayAppearanceEditor: View {
                         .contentShape(RoundedRectangle(cornerRadius: 16))
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(material.displayName)
+                    .accessibilityLabel(material.displayName.fluidLocalized)
                     .accessibilityAddTraits(self.settings.overlayMaterial == material ? .isSelected : [])
                 }
             }
             .frame(maxWidth: 720)
             .frame(maxWidth: .infinity, alignment: .center)
 
-            Text(self.settings.overlayMaterial.detail)
+            Text(self.settings.overlayMaterial.detail.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
                 .foregroundStyle(self.theme.palette.secondaryText)
 
@@ -141,7 +141,7 @@ struct OverlayAppearanceEditor: View {
                                 .contentShape(Circle())
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(tint.rawValue.capitalized)
+                        .accessibilityLabel(tint.rawValue.capitalized.fluidLocalized)
                         .accessibilityAddTraits(self.settings.overlayTint == tint ? .isSelected : [])
                     }
                 }
@@ -207,7 +207,7 @@ struct OverlayAppearanceEditor: View {
                 Image(systemName: symbol)
                     .font(.fluidSystem(size: 12, weight: .semibold))
                     .foregroundStyle(selected ? (value == 1 ? Color.orange : Color.indigo) : self.theme.palette.secondaryText)
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .semibold))
             }
             .foregroundStyle(selected ? self.theme.palette.primaryText : self.theme.palette.secondaryText)
@@ -230,15 +230,15 @@ struct OverlayAppearanceEditor: View {
     private func knob(_ title: String, value: Binding<Double>, range: ClosedRange<Double>, low: String, high: String) -> some View {
         VStack(spacing: 6) {
             HStack {
-                Text(title).font(self.theme.typography.bodySmall)
+                Text(title.fluidLocalized).font(self.theme.typography.bodySmall)
                 Spacer()
                 Text("\(Int((value.wrappedValue * 100).rounded()))%")
                     .font(self.theme.typography.caption.monospacedDigit()).foregroundStyle(self.theme.palette.secondaryText)
             }
             HStack {
-                Text(low).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).frame(width: 48, alignment: .leading)
-                Slider(value: value, in: range, step: 0.05).accessibilityLabel(title)
-                Text(high).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).frame(width: 48, alignment: .trailing)
+                Text(low.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).frame(width: 48, alignment: .leading)
+                Slider(value: value, in: range, step: 0.05).accessibilityLabel(title.fluidLocalized)
+                Text(high.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).frame(width: 48, alignment: .trailing)
             }
         }
     }
@@ -254,7 +254,7 @@ private struct OverlayAppearanceSample: View {
     var body: some View {
         VStack(alignment: .leading, spacing: self.layout.vPadding / 2) {
             if self.layout.showsPreview {
-                Text(self.size == .large ? "A little space for your next big idea.\nMake every word feel like you." : "Make every word feel like you.")
+                Text((self.size == .large ? "A little space for your next big idea.\nMake every word feel like you." : "Make every word feel like you.").fluidLocalized)
                     .font(.fluidSystem(size: self.layout.transFontSize, weight: .medium))
                     .foregroundStyle(.white.opacity(0.96))
                     .lineLimit(self.size == .small ? 1 : 3)

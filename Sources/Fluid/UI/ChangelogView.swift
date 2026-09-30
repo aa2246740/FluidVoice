@@ -170,7 +170,7 @@ private struct ChangelogReleaseCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: self.theme.metrics.spacing.sm) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: self.theme.metrics.spacing.sm) {
-                            Text(self.release.title)
+                            Text(self.release.title.fluidLocalized)
                                 .font(self.theme.typography.sectionTitle)
                                 .foregroundStyle(self.theme.palette.primaryText)
                                 .lineLimit(2)
@@ -200,7 +200,7 @@ private struct ChangelogReleaseCard: View {
                             }
                         }
 
-                        Text(self.metadataText)
+                        Text(self.metadataText.fluidLocalized)
                             .font(self.theme.typography.caption)
                             .foregroundStyle(self.theme.palette.tertiaryText)
                     }
@@ -229,7 +229,7 @@ private struct ChangelogReleaseCard: View {
 
     private var metadataText: String {
         if let publishedAt = self.release.publishedAt {
-            return "\(self.release.version) - \(publishedAt.formatted(date: .abbreviated, time: .omitted))"
+            return String.fluidLocalizedFormat("%@ - %@", String(describing: self.release.version), String(describing: publishedAt.formatted(date: .abbreviated, time: .omitted)))
         }
         return self.release.version
     }
@@ -303,7 +303,7 @@ private struct ChangelogNoteBlock: View {
     var body: some View {
         switch self.block.kind {
         case .heading:
-            Text(self.block.text)
+            Text(self.block.text.fluidLocalized)
                 .font(self.theme.typography.bodySmallStrong)
                 .foregroundStyle(self.theme.palette.primaryText)
                 .padding(.top, 2)

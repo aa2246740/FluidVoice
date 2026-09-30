@@ -321,7 +321,7 @@ nonisolated enum MeetingMicrophoneBindDecision {
             return .defaultMatchesRequested
         }
         if let readBackDeviceID, readBackDeviceID != requestedDeviceID {
-            return .unavailable(reason: "Bound device \(readBackDeviceID) does not match requested device \(requestedDeviceID).")
+            return .unavailable(reason: String.fluidLocalizedFormat("Bound device %@ does not match requested device %@.", String(describing: readBackDeviceID), String(describing: requestedDeviceID)))
         }
         if bindStatus == -10_851 {
             return .unavailable(reason: "Binding failed for an aggregate/Bluetooth-style device (OSStatus -10851).")
@@ -992,7 +992,7 @@ actor MeetingMicrophoneCapture {
         guard let requestedUID = microphone.coreAudioUID, !requestedUID.isEmpty,
               let requestedDeviceID = AudioDevice.listInputDevices().first(where: { $0.uid == requestedUID })?.id
         else {
-            return self.fail(microphone: microphone, reason: "No CoreAudio device UID for '\(microphone.displayName)'.", generation: currentGeneration)
+            return self.fail(microphone: microphone, reason: String.fluidLocalizedFormat("No CoreAudio device UID for '%@'.", String(describing: microphone.displayName)), generation: currentGeneration)
         }
 
         let engine = AVAudioEngine()
@@ -1019,7 +1019,7 @@ actor MeetingMicrophoneCapture {
             #if DEBUG
             AudioTopologyDiagnostics.record(.vpioEnableEnd, owner: .meetingMicrophone, objectID: requestedDeviceID, queueRole: .actorControl, phase: .vpio, status: -1, generation: currentGeneration)
             #endif
-            return self.fail(microphone: microphone, reason: "Voice processing could not be enabled: \(error.localizedDescription)", generation: currentGeneration)
+            return self.fail(microphone: microphone, reason: String.fluidLocalizedFormat("Voice processing could not be enabled: %@", String(describing: error.localizedDescription)), generation: currentGeneration)
         }
         var ducking = AVAudioVoiceProcessingOtherAudioDuckingConfiguration()
         ducking.enableAdvancedDucking = false
@@ -1051,7 +1051,7 @@ actor MeetingMicrophoneCapture {
         // 10 minutes of zero callbacks with healthy telemetry.
         let preStartFormat = input.outputFormat(forBus: 0)
         guard preStartFormat.sampleRate > 0, preStartFormat.channelCount > 0 else {
-            return self.fail(microphone: microphone, reason: "Input format invalid before start (\(preStartFormat)).", generation: currentGeneration)
+            return self.fail(microphone: microphone, reason: String.fluidLocalizedFormat("Input format invalid before start (%@).", String(describing: preStartFormat)), generation: currentGeneration)
         }
         let tapState = MeetingMicrophoneTapState(
             statsBox: self.statsBox,
@@ -1110,7 +1110,7 @@ actor MeetingMicrophoneCapture {
             )
             #endif
             input.removeTap(onBus: 0)
-            return self.fail(microphone: microphone, reason: "AVAudioEngine failed to start: \(error.localizedDescription)", generation: currentGeneration)
+            return self.fail(microphone: microphone, reason: String.fluidLocalizedFormat("AVAudioEngine failed to start: %@", String(describing: error.localizedDescription)), generation: currentGeneration)
         }
 
         let outcome = MeetingMicrophoneBindDecision.outcome(
@@ -2120,7 +2120,7 @@ enum MeetingMicrophonePhase1Probe {
                     if let description = CMSampleBufferGetFormatDescription(sampleBuffer),
                        let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(description)?.pointee
                     {
-                        capturedFormat.withLock { $0 = "\(asbd.mSampleRate)Hz \(asbd.mChannelsPerFrame)ch" }
+                        capturedFormat.withLock { $0 = String.fluidLocalizedFormat("%@Hz %@ch", String(describing: asbd.mSampleRate), String(describing: asbd.mChannelsPerFrame)) }
                     }
                     let copied = MeetingLiveSampleCopy.copy(sampleBuffer)
                     let bufferPeak: Float = copied.flatMap { sample -> Float? in

@@ -185,7 +185,7 @@ private struct DeliveryFailureOverlayView: View {
                     .frame(width: 24, height: 24)
                     .background(Circle().fill(Color.orange.opacity(0.14)))
 
-                Text(self.kind.title)
+                Text(self.kind.title.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .medium))
                     .foregroundStyle(.white.opacity(0.72))
 
@@ -205,7 +205,7 @@ private struct DeliveryFailureOverlayView: View {
                 .accessibilityLabel("Dismiss")
             }
 
-            Text(self.transcriptPreview)
+            Text(self.transcriptPreview.fluidLocalized)
                 .font(.fluidSystem(size: 16, weight: .semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
@@ -237,7 +237,7 @@ private struct DeliveryFailureOverlayView: View {
                     HStack(spacing: 5) {
                         Image(systemName: self.didCopy ? "checkmark" : "doc.on.doc")
                             .font(.fluidSystem(size: 10, weight: .semibold))
-                        Text(self.didCopy ? "Copied" : "Copy transcript")
+                        Text((self.didCopy ? "Copied" : "Copy transcript").fluidLocalized)
                     }
                 }
                 .buttonStyle(TransientOverlaySettingsButtonStyle(isHovered: self.isCopyHovered))

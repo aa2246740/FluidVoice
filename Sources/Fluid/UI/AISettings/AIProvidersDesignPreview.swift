@@ -213,7 +213,7 @@ private struct AIProvidersPresentation: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Show \(model.rawValue)")
-                    .accessibilityValue(self.preview == model ? "Current page" : "")
+                    .accessibilityValue((self.preview == model ? "Current page" : "").fluidLocalized)
                 }
             }
         }
@@ -250,7 +250,7 @@ private struct AIProvidersPresentation: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(forward ? "Next model" : "Previous model")
+        .accessibilityLabel((forward ? "Next model" : "Previous model").fluidLocalized)
     }
 
     private func modelCard(_ model: Model, compactSide: Bool) -> some View {
@@ -265,17 +265,17 @@ private struct AIProvidersPresentation: View {
                             .foregroundStyle(self.supportingText)
                     }
                 }
-                Text(model.rawValue)
+                Text(model.rawValue.fluidLocalized)
                     .font(compactSide ? self.theme.typography.sectionTitle : self.theme.typography.title)
                 if !compactSide {
-                    Text(model.detail)
+                    Text(model.detail.fluidLocalized)
                         .font(self.theme.typography.bodySmall)
                         .foregroundStyle(self.supportingText)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(minHeight: 36, alignment: .topLeading)
                     HStack(spacing: self.spacing.sm) {
                         ForEach(isPreview ? model.tags : Array(model.tags.prefix(1)), id: \.self) { tag in
-                            Text(tag)
+                            Text(tag.fluidLocalized)
                                 .font(self.theme.typography.badge)
                                 .padding(.horizontal, self.spacing.sm)
                                 .padding(.vertical, self.spacing.xs)
@@ -302,7 +302,7 @@ private struct AIProvidersPresentation: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Preview \(model.rawValue)")
-        .accessibilityValue(isPreview ? "Previewed" : "")
+        .accessibilityValue((isPreview ? "Previewed" : "").fluidLocalized)
         .accessibilityHint("Browse without changing the selected model")
     }
 
@@ -345,8 +345,8 @@ private struct AIProvidersPresentation: View {
                 .background(Color.white, in: RoundedRectangle(cornerRadius: self.theme.metrics.corners.sm))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: self.spacing.xs) {
-                Text(name).font(self.theme.typography.bodySmallStrong)
-                Text(subtitle).font(self.theme.typography.caption).foregroundStyle(self.supportingText)
+                Text(name.fluidLocalized).font(self.theme.typography.bodySmallStrong)
+                Text(subtitle.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(self.supportingText)
             }
             Spacer()
             Button("Manage") { self.panel = .external }
@@ -360,7 +360,7 @@ private struct AIProvidersPresentation: View {
     private func inspector(_ panel: AIProvidersPreviewPanel) -> some View {
         VStack(alignment: .leading, spacing: self.spacing.xl) {
             HStack {
-                Text(panel == .add ? "Add Provider" : panel == .compare ? "Compare models" : "Manage")
+                Text((panel == .add ? "Add Provider" : panel == .compare ? "Compare models" : "Manage").fluidLocalized)
                     .font(self.theme.typography.sectionTitle)
                 Spacer()
                 Button { self.panel = nil } label: { Image(systemName: "xmark") }
@@ -379,14 +379,14 @@ private struct AIProvidersPresentation: View {
             } else if panel == .compare {
                 ForEach(Model.allCases) { model in
                     VStack(alignment: .leading, spacing: self.spacing.sm) {
-                        Text(model.rawValue).font(self.theme.typography.sectionTitle)
-                        Text(model.detail).font(self.theme.typography.bodySmall)
+                        Text(model.rawValue.fluidLocalized).font(self.theme.typography.sectionTitle)
+                        Text(model.detail.fluidLocalized).font(self.theme.typography.bodySmall)
                     }
                 }
             } else {
-                Text(panel == .manage ? "Fluid Intelligence" : "Provider settings")
+                Text((panel == .manage ? "Fluid Intelligence" : "Provider settings").fluidLocalized)
                     .font(self.theme.typography.title)
-                Text(panel == .manage ? "\(self.selected.rawValue) · On-device" : "Connection · Models · Preferences")
+                Text((panel == .manage ? String.fluidLocalizedFormat("%@ · On-device", String(describing: self.selected.rawValue)) : "Connection · Models · Preferences").fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(self.supportingText)
                 Divider()
@@ -394,7 +394,7 @@ private struct AIProvidersPresentation: View {
                     panel == .manage ? ["Model downloads", "Backend & context", "Startup preferences", "Storage & maintenance"] : ["Connection details", "Model selection", "Verification"],
                     id: \.self
                 ) { label in
-                    Text(label).font(self.theme.typography.body)
+                    Text(label.fluidLocalized).font(self.theme.typography.body)
                 }
             }
             Spacer()

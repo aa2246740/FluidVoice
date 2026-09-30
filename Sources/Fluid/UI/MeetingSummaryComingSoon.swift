@@ -52,10 +52,10 @@ struct MeetingSummaryComingSoon: View {
                 .frame(width: 20, height: 20)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
                     .foregroundStyle(self.theme.palette.primaryText)
-                Text(detail)
+                Text(detail.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }

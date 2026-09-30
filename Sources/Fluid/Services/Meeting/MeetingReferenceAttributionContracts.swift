@@ -1332,7 +1332,7 @@ nonisolated struct MeetingReferenceAttributionSidecar: Codable, Equatable, Senda
             throw DecodingError.dataCorruptedError(
                 forKey: .aggregate,
                 in: container,
-                debugDescription: "Invalid attribution sidecar: \(validationError)"
+                debugDescription: String.fluidLocalizedFormat("Invalid attribution sidecar: %@", String(describing: validationError))
             )
         }
     }

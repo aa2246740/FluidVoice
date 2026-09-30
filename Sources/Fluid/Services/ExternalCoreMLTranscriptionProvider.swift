@@ -36,14 +36,14 @@ final class ExternalCoreMLTranscriptionProvider: TranscriptionProvider {
                 "ExternalCoreML: missing spec for model=\(model.rawValue)",
                 source: "ExternalCoreML"
             )
-            throw Self.makeError("No external CoreML spec registered for \(model.displayName).")
+            throw Self.makeError(String.fluidLocalizedFormat("No external CoreML spec registered for %@.", String(describing: model.displayName)))
         }
         guard let directory = Self.artifactsDirectory(for: model, spec: spec) else {
             DebugLogger.shared.error(
                 "ExternalCoreML: unable to resolve cache directory for model=\(model.rawValue)",
                 source: "ExternalCoreML"
             )
-            throw Self.makeError("Unable to resolve a cache directory for \(model.displayName).")
+            throw Self.makeError(String.fluidLocalizedFormat("Unable to resolve a cache directory for %@.", String(describing: model.displayName)))
         }
 
         try await self.ensureArtifactsPresent(
@@ -272,7 +272,7 @@ final class ExternalCoreMLTranscriptionProvider: TranscriptionProvider {
         }
 
         guard let owner = spec.repositoryOwner, let repo = spec.repositoryName else {
-            throw Self.makeError("Missing repository metadata for \(model.displayName).")
+            throw Self.makeError(String.fluidLocalizedFormat("Missing repository metadata for %@.", String(describing: model.displayName)))
         }
 
         DebugLogger.shared.info(

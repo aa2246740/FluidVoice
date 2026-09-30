@@ -168,15 +168,15 @@ struct CommandModeView: View {
                     }
                 }
                 .disabled(!self.canChangeSession)
-                .help(self.sessionBlockingReason ?? "New session")
+                .help(self.sessionBlockingReason ?? "New session".fluidLocalized)
                 .accessibilityLabel("New session")
             }
             Button { self.toggleHistory(isWide: isWide) } label: {
                 Label("Sessions", systemImage: historyVisible ? "rectangle.righthalf.inset.filled" : "sidebar.right")
                     .foregroundStyle(historyVisible ? self.theme.palette.accent : self.theme.palette.primaryText)
             }
-            .help(historyVisible ? "Hide sessions" : "Show sessions")
-            .accessibilityLabel(historyVisible ? "Hide sessions" : "Show sessions")
+            .help((historyVisible ? "Hide sessions" : "Show sessions").fluidLocalized)
+            .accessibilityLabel((historyVisible ? "Hide sessions" : "Show sessions").fluidLocalized)
         }
     }
 
@@ -192,7 +192,7 @@ struct CommandModeView: View {
                 } else {
                     LazyVStack(alignment: .leading, spacing: 24) {
                         if let session = self.chatStore.currentSession {
-                            Text(session.title)
+                            Text(session.title.fluidLocalized)
                                 .font(self.theme.typography.sectionTitle)
                                 .editableTitle(session.title, id: session.id, enabled: self.canChangeSession) {
                                     self.chatStore.renameChat(id: session.id, to: $0)
@@ -294,7 +294,7 @@ struct CommandModeView: View {
                 } else {
                     ProgressView().controlSize(.small)
                 }
-                Text(self.currentStepLabel)
+                Text(self.currentStepLabel.fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .lineLimit(2)
             }
@@ -302,7 +302,7 @@ struct CommandModeView: View {
             if self.settings.showThinkingTokens, !self.service.streamingThinkingText.isEmpty {
                 DisclosureGroup("Thinking", isExpanded: self.$isThinkingExpanded) {
                     ScrollView {
-                        Text(self.service.streamingThinkingText)
+                        Text(self.service.streamingThinkingText.fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.theme.palette.secondaryText)
                             .textSelection(.enabled)
@@ -322,8 +322,8 @@ struct CommandModeView: View {
         guard let step = self.service.currentStep else { return "Working…" }
         switch step {
         case .thinking: return self.service.streamingText.isEmpty ? "Thinking…" : "Writing…"
-        case let .checking(command): return "Checking · \(command.prefix(90))"
-        case let .executing(command): return "Running · \(command.prefix(90))"
+        case let .checking(command): return String.fluidLocalizedFormat("Checking · %@", String(describing: command.prefix(90)))
+        case let .executing(command): return String.fluidLocalizedFormat("Running · %@", String(describing: command.prefix(90)))
         case .verifying: return "Verifying…"
         case let .completed(success): return success ? "Done" : "Stopped"
         }
@@ -343,17 +343,17 @@ struct CommandModeView: View {
             Label("Review command", systemImage: "checkmark.shield")
                 .font(self.theme.typography.bodyStrong)
             if let purpose = pending.purpose {
-                Text(purpose).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.secondaryText)
+                Text(purpose.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.secondaryText)
             }
             ScrollView {
-                Text(pending.command)
+                Text(pending.command.fluidLocalized)
                     .font(.fluidSystem(size: 13, design: .monospaced))
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxHeight: 88)
             if let directory = pending.workingDirectory {
-                Text(directory).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).lineLimit(1)
+                Text(directory.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).lineLimit(1)
             }
             FluidGlassControlGroup {
                 HStack(spacing: 8) {
@@ -386,7 +386,7 @@ struct CommandModeView: View {
             if let issue = self.settings.commandModeReadinessIssue {
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.circle").foregroundStyle(self.theme.palette.warning)
-                    Text(issue).font(self.theme.typography.caption)
+                    Text(issue.fluidLocalized).font(self.theme.typography.caption)
                 }
                 .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -432,7 +432,7 @@ struct CommandModeView: View {
         }
         .fluidDropdownStyle(appearance: .inline, tone: self.settings.commandModeConfirmBeforeExecute ? self.theme.palette.secondaryText : self.theme.palette.warning)
         .accessibilityLabel("Command approval")
-        .accessibilityValue(self.settings.commandModeConfirmBeforeExecute ? "Ask before risky commands" : "Run without asking")
+        .accessibilityValue((self.settings.commandModeConfirmBeforeExecute ? "Ask before risky commands" : "Run without asking").fluidLocalized)
         .help("Choose whether potentially destructive commands require your approval")
     }
 
@@ -449,8 +449,8 @@ struct CommandModeView: View {
                     }
                     .fluidGlassAction(circular: true, quiet: true)
                     .disabled(self.isSubmissionPending || self.service.isProcessing || self.service.pendingCommand != nil || self.isASRStartPending || self.isASRStopPending || (self.asr.isRunning && !self.ownsASRRecording))
-                    .help(self.ownsASRRecording ? "Stop recording and send" : "Speak a command")
-                    .accessibilityLabel(self.ownsASRRecording ? "Stop recording and send" : "Speak a command")
+                    .help((self.ownsASRRecording ? "Stop recording and send" : "Speak a command").fluidLocalized)
+                    .accessibilityLabel((self.ownsASRRecording ? "Stop recording and send" : "Speak a command").fluidLocalized)
                     Button {
                         if self.ownsASRRecording { self.toggleRecording() } else { self.submitCommand() }
                     } label: {
@@ -461,8 +461,8 @@ struct CommandModeView: View {
                     }
                     .fluidGlassAction(prominent: true, circular: true, tone: self.theme.palette.primaryText)
                     .disabled(self.ownsASRRecording ? self.isASRStopPending : !self.canSubmitCommand)
-                    .help(self.ownsASRRecording ? "Stop recording and send" : "Send message")
-                    .accessibilityLabel(self.ownsASRRecording ? "Stop recording and send" : "Send message")
+                    .help((self.ownsASRRecording ? "Stop recording and send" : "Send message").fluidLocalized)
+                    .accessibilityLabel((self.ownsASRRecording ? "Stop recording and send" : "Send message").fluidLocalized)
                 }
             }
         }
@@ -474,7 +474,7 @@ struct CommandModeView: View {
             self.showModelPicker.toggle()
         } label: {
             HStack(spacing: 8) {
-                Text(self.selectedModelID.isEmpty ? "Choose model" : ModelDisplayName.forID(self.selectedModelID))
+                Text((self.selectedModelID.isEmpty ? "Choose model" : ModelDisplayName.forID(self.selectedModelID)).fluidLocalized)
                     .lineLimit(1).truncationMode(.middle)
                 FluidDropdownChevron()
             }
@@ -486,7 +486,7 @@ struct CommandModeView: View {
         }
         .buttonStyle(.plain)
         .disabled(!self.canChangeSession)
-        .help(self.sessionBlockingReason ?? "Search models across verified providers")
+        .help(self.sessionBlockingReason ?? "Search models across verified providers".fluidLocalized)
         .accessibilityLabel("Choose model")
         .popover(isPresented: self.$showModelPicker, arrowEdge: .top) {
             CommandModelPicker(

@@ -854,7 +854,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
             case .interrupted, .failed:
                 statusItem.button?.image = self.menuBarActivityImage(baseImage: image, activity: .interrupted)
                 let status = self.meetingMenuPresentation.attentionStatus ?? "Meeting needs attention"
-                statusItem.button?.setAccessibilityLabel("FluidVoice, \(status.lowercased())")
+                statusItem.button?.setAccessibilityLabel(String.fluidLocalizedFormat("FluidVoice, %@", String(describing: status.lowercased())))
             case .inactive:
                 image.isTemplate = true
                 statusItem.button?.image = image
@@ -935,7 +935,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         menu.addItem(stopMeetingItem)
         self.stopMeetingRecordingMenuItem = stopMeetingItem
 
-        let meetingStatusItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        let meetingStatusItem = NSMenuItem(title: "".fluidLocalized, action: nil, keyEquivalent: "")
         meetingStatusItem.isEnabled = false
         menu.addItem(meetingStatusItem)
         self.meetingStatusMenuItem = meetingStatusItem
@@ -954,14 +954,14 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         self.meetingMenuSeparator = meetingSeparator
 
         // Status indicator with hotkey info
-        self.statusMenuItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        self.statusMenuItem = NSMenuItem(title: "".fluidLocalized, action: nil, keyEquivalent: "")
         self.statusMenuItem?.isEnabled = false
         if let statusItem = statusMenuItem {
             menu.addItem(statusItem)
         }
 
         let copyLastTranscriptItem = NSMenuItem(
-            title: "Copy Last Transcript",
+            title: "Copy Last Transcript".fluidLocalized,
             action: #selector(copyLastTranscript(_:)),
             keyEquivalent: ""
         )
@@ -972,26 +972,26 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         menu.addItem(.separator())
 
         // Open Main Window
-        let openItem = NSMenuItem(title: "Open Fluid Voice", action: #selector(openMainWindow), keyEquivalent: "")
+        let openItem = NSMenuItem(title: "Open Fluid Voice".fluidLocalized, action: #selector(openMainWindow), keyEquivalent: "")
         openItem.target = self
         menu.addItem(openItem)
 
         // Preferences
-        let preferencesItem = NSMenuItem(title: "Settings...", action: #selector(openPreferences), keyEquivalent: ",")
+        let preferencesItem = NSMenuItem(title: "Settings...".fluidLocalized, action: #selector(openPreferences), keyEquivalent: ",")
         preferencesItem.target = self
         preferencesItem.keyEquivalentModifierMask = [.command]
         menu.addItem(preferencesItem)
 
         let customDictionaryItem = NSMenuItem(
-            title: "Custom Dictionary",
+            title: "Custom Dictionary".fluidLocalized,
             action: #selector(openCustomDictionary),
             keyEquivalent: ""
         )
         customDictionaryItem.target = self
         menu.addItem(customDictionaryItem)
 
-        let microphoneSubmenu = NSMenu(title: "Microphone")
-        let microphoneMenuItem = NSMenuItem(title: "Microphone", action: nil, keyEquivalent: "")
+        let microphoneSubmenu = NSMenu(title: "Microphone".fluidLocalized)
+        let microphoneMenuItem = NSMenuItem(title: "Microphone".fluidLocalized, action: nil, keyEquivalent: "")
         microphoneMenuItem.submenu = microphoneSubmenu
         menu.addItem(microphoneMenuItem)
         self.microphoneMenuItem = microphoneMenuItem
@@ -999,7 +999,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
 
         // Check for Updates
         let updateItem = NSMenuItem(
-            title: "Check for Updates...",
+            title: "Check for Updates...".fluidLocalized,
             action: #selector(checkForUpdates(_:)),
             keyEquivalent: ""
         )
@@ -1009,7 +1009,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         menu.addItem(.separator())
 
         let rollbackMenuItem = NSMenuItem(
-            title: "Rollback to Previous Version...",
+            title: "Rollback to Previous Version...".fluidLocalized,
             action: #selector(rollbackToPreviousVersion(_:)),
             keyEquivalent: ""
         )
@@ -1022,7 +1022,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
 
         // Quit
         let quitItem = NSMenuItem(
-            title: "Quit Fluid Voice",
+            title: "Quit Fluid Voice".fluidLocalized,
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
@@ -1048,7 +1048,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
 
         // Update status text with hotkey info
         let hotkeyDisplay = SettingsStore.shared.primaryDictationShortcutDisplayString
-        let hotkeyInfo = hotkeyDisplay.isEmpty ? "" : " (\(hotkeyDisplay))"
+        let hotkeyInfo = hotkeyDisplay.isEmpty ? "" : String.fluidLocalizedFormat(" (%@)", String(describing: hotkeyDisplay))
         let statusTitle: String = switch self.meetingMenuPresentation.activity {
         case .preparing:
             "Starting Meeting Recording…"
@@ -1063,7 +1063,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         case .inactive, .completed:
             self.isRecording ? "Recording...\(hotkeyInfo)" : "Ready to Record\(hotkeyInfo)"
         }
-        self.statusMenuItem?.title = statusTitle
+        self.statusMenuItem?.title = statusTitle.fluidLocalized
         self.copyLastTranscriptMenuItem?.isEnabled = self.canCopyLastTranscript
         self.microphoneMenuItem?.isEnabled = true
 
@@ -1080,48 +1080,48 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         self.startMeetingRecordingMenuItem?.isHidden = !self.canStartMeetingRecording && !self.meetingStartRequested
         self.startMeetingRecordingMenuItem?.isEnabled = self.canStartMeetingRecording &&
             !self.meetingStartRequested && self.meetingCoordinator != nil
-        self.startMeetingRecordingMenuItem?.title = self.meetingStartRequested
-            ? "Starting Meeting Recording…" : "Start Meeting Recording"
+        self.startMeetingRecordingMenuItem?.title = (self.meetingStartRequested
+            ? "Starting Meeting Recording…" : "Start Meeting Recording").fluidLocalized
         self.stopMeetingRecordingMenuItem?.isHidden = !isRecording && !isStopping
         self.stopMeetingRecordingMenuItem?.isEnabled = isRecording &&
             !self.meetingStopRequested &&
             self.stopMeetingRecordingHandler != nil
-        self.stopMeetingRecordingMenuItem?.title = isStopping
+        self.stopMeetingRecordingMenuItem?.title = (isStopping
             ? "Stopping Meeting Recording…"
-            : "Stop Meeting Recording"
+            : "Stop Meeting Recording").fluidLocalized
         self.meetingStatusMenuItem?.isHidden = !hasMeetingStatus || activity == .completed
         self.openMeetingTranscriptionMenuItem?.isHidden = !hasMeetingStatus
         self.meetingMenuSeparator?.isHidden = false
 
         switch activity {
         case .inactive:
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .preparing:
-            self.meetingStatusMenuItem?.title = "Starting meeting recording…"
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.meetingStatusMenuItem?.title = "Starting meeting recording…".fluidLocalized
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .recording:
             let source = self.meetingMenuPresentation.sourceName ?? "Meeting"
             let elapsed = self.meetingMenuPresentation.startedAt.map { Self.elapsedText(now.timeIntervalSince($0)) } ?? "0:00"
-            self.meetingStatusMenuItem?.title = "Recording \(source) · \(elapsed)"
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.meetingStatusMenuItem?.title = String.fluidLocalizedFormat("Recording %@ · %@", String(describing: source), String(describing: elapsed))
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .stopping:
-            self.meetingStatusMenuItem?.title = "Finalizing meeting audio…"
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.meetingStatusMenuItem?.title = "Finalizing meeting audio…".fluidLocalized
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .processing:
-            self.meetingStatusMenuItem?.title = "Transcribing meeting…"
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.meetingStatusMenuItem?.title = "Transcribing meeting…".fluidLocalized
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .interrupted:
-            self.meetingStatusMenuItem?.title = self.meetingMenuPresentation.attentionStatus ?? "Recording interrupted"
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.meetingStatusMenuItem?.title = (self.meetingMenuPresentation.attentionStatus ?? "Recording interrupted").fluidLocalized
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .failed:
-            self.meetingStatusMenuItem?.title = self.meetingMenuPresentation.attentionStatus ?? "Meeting setup failed"
-            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet"
+            self.meetingStatusMenuItem?.title = (self.meetingMenuPresentation.attentionStatus ?? "Meeting setup failed").fluidLocalized
+            self.openMeetingTranscriptionMenuItem?.title = "Open FluidMeet".fluidLocalized
         case .completed:
-            self.openMeetingTranscriptionMenuItem?.title = "Open Latest Meeting Transcript"
+            self.openMeetingTranscriptionMenuItem?.title = "Open Latest Meeting Transcript".fluidLocalized
         }
         if let error = self.meetingStartError {
             self.meetingStatusMenuItem?.isHidden = false
-            self.meetingStatusMenuItem?.title = "Could not start: \(error)"
+            self.meetingStatusMenuItem?.title = String.fluidLocalizedFormat("Could not start: %@", String(describing: error))
             self.meetingStatusMenuItem?.toolTip = error
         } else {
             self.meetingStatusMenuItem?.toolTip = nil
@@ -1151,7 +1151,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         guard let submenu = self.microphoneSubmenu else { return }
 
         submenu.removeAllItems()
-        let loadingItem = NSMenuItem(title: "Loading...", action: nil, keyEquivalent: "")
+        let loadingItem = NSMenuItem(title: "Loading...".fluidLocalized, action: nil, keyEquivalent: "")
         loadingItem.isEnabled = false
         submenu.addItem(loadingItem)
 
@@ -1175,7 +1175,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         submenu.removeAllItems()
 
         guard !inputDevices.isEmpty else {
-            let emptyItem = NSMenuItem(title: "No microphones found", action: nil, keyEquivalent: "")
+            let emptyItem = NSMenuItem(title: "No microphones found".fluidLocalized, action: nil, keyEquivalent: "")
             emptyItem.isEnabled = false
             submenu.addItem(emptyItem)
             return
@@ -1188,7 +1188,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         )?.uid
 
         guard SettingsStore.shared.microphonePriority.isEmpty == false else {
-            let emptyItem = NSMenuItem(title: "No microphones in priority", action: nil, keyEquivalent: "")
+            let emptyItem = NSMenuItem(title: "No microphones in priority".fluidLocalized, action: nil, keyEquivalent: "")
             emptyItem.isEnabled = false
             submenu.addItem(emptyItem)
             return
@@ -1203,7 +1203,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
                   microphonePreferenceCoordinator.isInputDeviceAvailable(device)
             else {
                 let item = NSMenuItem(
-                    title: "\(index + 1). \(entry.name) (Unavailable)",
+                    title: String.fluidLocalizedFormat("%@. %@ (Unavailable)", String(describing: index + 1), String(describing: entry.name)),
                     action: nil,
                     keyEquivalent: ""
                 )
@@ -1211,7 +1211,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
                 submenu.addItem(item)
                 continue
             }
-            let title = "\(index + 1). \(device.name)"
+            let title = String.fluidLocalizedFormat("%@. %@", String(describing: index + 1), String(describing: device.name))
             let item = NSMenuItem(title: title, action: #selector(selectMicrophone(_:)), keyEquivalent: "")
             item.target = self
             item.representedObject = device
@@ -1222,7 +1222,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
 
         if self.isRecording {
             submenu.addItem(.separator())
-            let recordingItem = NSMenuItem(title: "Unavailable while recording", action: nil, keyEquivalent: "")
+            let recordingItem = NSMenuItem(title: "Unavailable while recording".fluidLocalized, action: nil, keyEquivalent: "")
             recordingItem.isEnabled = false
             submenu.addItem(recordingItem)
         }
@@ -1276,13 +1276,13 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
                 let msg = NSAlert()
                 if let pmkError = error as? PMKError, pmkError.isCancelled {
                     let isBeta = SettingsStore.shared.betaReleasesEnabled
-                    msg.messageText = isBeta ? "You’re Up To Date (Beta)" : "You’re Up To Date"
-                    msg.informativeText = isBeta
+                    msg.messageText = (isBeta ? "You’re Up To Date (Beta)" : "You’re Up To Date").fluidLocalized
+                    msg.informativeText = (isBeta
                         ? "You're already running the latest build available in the beta channel."
-                        : "You're already running the latest version of FluidVoice."
+                        : "You're already running the latest version of FluidVoice.").fluidLocalized
                 } else {
-                    msg.messageText = "Update Check Failed"
-                    msg.informativeText = "Unable to check for updates. Please try again later.\n\nError: \(error.localizedDescription)"
+                    msg.messageText = "Update Check Failed".fluidLocalized
+                    msg.informativeText = String.fluidLocalizedFormat("Unable to check for updates. Please try again later.\n\nError: %@", String(describing: error.localizedDescription))
                 }
                 msg.alertStyle = .informational
                 msg.runModal()
@@ -1294,11 +1294,11 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         let availableVersion = SimpleUpdater.shared.latestRollbackVersion() ?? ""
         guard !availableVersion.isEmpty else {
             let msg = NSAlert()
-            msg.messageText = "No rollback backup found"
-            msg.informativeText = "No previous version backup is available on this device."
+            msg.messageText = "No rollback backup found".fluidLocalized
+            msg.informativeText = "No previous version backup is available on this device.".fluidLocalized
             msg.alertStyle = .informational
-            msg.addButton(withTitle: "Get Previous Builds")
-            msg.addButton(withTitle: "Cancel")
+            msg.addButton(withTitle: "Get Previous Builds".fluidLocalized)
+            msg.addButton(withTitle: "Cancel".fluidLocalized)
             if msg.runModal() == .alertFirstButtonReturn {
                 self.openPreviousBuildPicker()
             }
@@ -1306,11 +1306,11 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         }
 
         let confirm = NSAlert()
-        confirm.messageText = "Rollback to \(availableVersion)?"
-        confirm.informativeText = "This will restore the backup and relaunch FluidVoice."
+        confirm.messageText = String.fluidLocalizedFormat("Rollback to %@?", String(describing: availableVersion))
+        confirm.informativeText = "This will restore the backup and relaunch FluidVoice.".fluidLocalized
         confirm.alertStyle = .warning
-        confirm.addButton(withTitle: "Rollback")
-        confirm.addButton(withTitle: "Cancel")
+        confirm.addButton(withTitle: "Rollback".fluidLocalized)
+        confirm.addButton(withTitle: "Cancel".fluidLocalized)
 
         guard confirm.runModal() == .alertFirstButtonReturn else { return }
 
@@ -1318,21 +1318,21 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
             do {
                 try await SimpleUpdater.shared.rollbackToLatestBackup()
                 let success = NSAlert()
-                success.messageText = "Rollback Successful"
-                success.informativeText = "Rolled back to \(availableVersion). FluidVoice will relaunch shortly."
+                success.messageText = "Rollback Successful".fluidLocalized
+                success.informativeText = String.fluidLocalizedFormat("Rolled back to %@. FluidVoice will relaunch shortly.", String(describing: availableVersion))
                 success.alertStyle = .informational
-                success.addButton(withTitle: "Report Bug")
-                success.addButton(withTitle: "OK")
+                success.addButton(withTitle: "Report Bug".fluidLocalized)
+                success.addButton(withTitle: "OK".fluidLocalized)
                 let response = success.runModal()
                 if response == .alertFirstButtonReturn {
                     self.openIssueReportingPage()
                 }
             } catch {
                 let fail = NSAlert()
-                fail.messageText = "Rollback Failed"
-                fail.informativeText = error.localizedDescription
+                fail.messageText = "Rollback Failed".fluidLocalized
+                fail.informativeText = error.localizedDescription.fluidLocalized
                 fail.alertStyle = .critical
-                fail.addButton(withTitle: "OK")
+                fail.addButton(withTitle: "OK".fluidLocalized)
                 fail.runModal()
             }
         }
@@ -1366,15 +1366,15 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         }
 
         let picker = NSAlert()
-        picker.messageText = "Download Previous Build"
-        picker.informativeText = "Choose one of the latest release builds to install manually."
+        picker.messageText = "Download Previous Build".fluidLocalized
+        picker.informativeText = "Choose one of the latest release builds to install manually.".fluidLocalized
         picker.alertStyle = .informational
 
         for option in options {
             picker.addButton(withTitle: option.version)
         }
-        picker.addButton(withTitle: "All Releases")
-        picker.addButton(withTitle: "Cancel")
+        picker.addButton(withTitle: "All Releases".fluidLocalized)
+        picker.addButton(withTitle: "Cancel".fluidLocalized)
 
         let response = picker.runModal()
         let first = NSApplication.ModalResponse.alertFirstButtonReturn.rawValue
@@ -1491,7 +1491,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
         } catch {
             self.meetingStartError = error.localizedDescription
             DebugLogger.shared.error("Menu action: Start meeting recording failed: \(error.localizedDescription)", source: "MenuBarManager")
-            AccessibilityNotification.Announcement("Meeting recording could not start. \(error.localizedDescription)").post()
+            AccessibilityNotification.Announcement(String.fluidLocalizedFormat("Meeting recording could not start. %@", String(describing: error.localizedDescription))).post()
         }
     }
 
@@ -1557,7 +1557,7 @@ final class MenuBarManager: NSObject, ObservableObject, NSMenuDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "FluidVoice"
+        window.title = "FluidVoice".fluidLocalized
         // Match the SwiftUI main scene when recreating a closed window.
         window.toolbarStyle = .unified
         window.animationBehavior = .none

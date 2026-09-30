@@ -67,7 +67,7 @@ struct HotkeyShortcut: Codable, Equatable {
         case 0: return "Left Click"
         case 1: return "Right Click"
         case 2: return "Middle Click"
-        default: return "Mouse \(button + 1)"
+        default: return String.fluidLocalizedFormat("Mouse %@", String(describing: button + 1))
         }
     }
 

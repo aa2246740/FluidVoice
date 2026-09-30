@@ -726,7 +726,7 @@ private struct SidebarSearchInput: NSViewRepresentable {
             coordinator?.parent.isFocused = true
         }
         searchField.delegate = context.coordinator
-        searchField.placeholderString = self.placeholder
+        searchField.placeholderString = self.placeholder.fluidLocalized
         searchField.sendsSearchStringImmediately = true
         searchField.sendsWholeSearchString = false
         searchField.controlSize = .large
@@ -737,7 +737,7 @@ private struct SidebarSearchInput: NSViewRepresentable {
         (searchField.cell as? NSSearchFieldCell)?.cancelButtonCell = nil
         searchField.font = .systemFont(ofSize: 14)
         searchField.identifier = Self.identifier
-        searchField.setAccessibilityLabel(self.placeholder)
+        searchField.setAccessibilityLabel(self.placeholder.fluidLocalized)
         context.coordinator.observeFocusRequests(for: searchField)
         return searchField
     }

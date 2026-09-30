@@ -25,7 +25,7 @@ struct StatsShareContent {
             return String(format: "That's about %.1f novels, spoken instead of typed.", novels)
         }
         if self.pagesEquivalent >= 2 {
-            return "That's about \(self.pagesEquivalent) book pages, spoken instead of typed."
+            return String.fluidLocalizedFormat("That's about %@ book pages, spoken instead of typed.", String(describing: self.pagesEquivalent))
         }
         return "Spoken instead of typed."
     }
@@ -110,14 +110,14 @@ struct StatsShareCard: View {
                 Text("FluidVoice")
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
-                Text(Date.now.formatted(.dateTime.month(.wide).year()))
+                Text(Date.now.formatted(.dateTime.month(.wide).year()).fluidLocalized)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(.white.opacity(0.5))
             }
 
             Spacer(minLength: 0)
 
-            Text(self.content.totalWords.formatted())
+            Text(self.content.totalWords.formatted().fluidLocalized)
                 .font(.system(size: 76, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(
@@ -127,7 +127,7 @@ struct StatsShareCard: View {
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.85))
                 .padding(.top, -6)
-            Text(self.content.headline)
+            Text(self.content.headline.fluidLocalized)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white.opacity(0.55))
                 .padding(.top, 6)
@@ -169,7 +169,7 @@ struct StatsShareCard: View {
     private func metric(_ stat: StatsShareStat) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(stat.value(in: self.content))
+                Text(stat.value(in: self.content).fluidLocalized)
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                     .monospacedDigit()
                 if stat == .streak, let flame = self.streakFlame {
@@ -178,7 +178,7 @@ struct StatsShareCard: View {
                         .foregroundStyle(flame.color)
                 }
             }
-            Text(stat.label)
+            Text(stat.label.fluidLocalized)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.white.opacity(0.55))
         }
@@ -253,7 +253,7 @@ struct StatsShareSheet: View {
                 .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(self.theme.palette.cardBorder, lineWidth: 1))
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Show on card · up to \(StatsShareStat.maxSelected)")
+                Text("Show on card · up to \( StatsShareStat.maxSelected)")
                     .font(self.theme.typography.caption).foregroundStyle(.secondary)
                 FlowChips(spacing: 6) {
                     ForEach(StatsShareStat.allCases.filter { $0.isAvailable(in: self.content) }) { stat in
@@ -296,7 +296,7 @@ struct StatsShareSheet: View {
             HStack(spacing: 5) {
                 Image(systemName: isOn ? "checkmark" : "plus")
                     .font(.fluidSystem(size: 9, weight: .bold))
-                Text(title).font(self.theme.typography.captionStrong)
+                Text(title.fluidLocalized).font(self.theme.typography.captionStrong)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 6)

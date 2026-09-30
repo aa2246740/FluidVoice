@@ -36,7 +36,7 @@ enum DictationAudioHistoryError: LocalizedError {
         case .noAudioEntries:
             return "No saved dictation audio is available to export."
         case let .zipFailed(message):
-            return "Could not create export zip. \(message)"
+            return String.fluidLocalizedFormat("Could not create export zip. %@", String(describing: message))
         }
     }
 }

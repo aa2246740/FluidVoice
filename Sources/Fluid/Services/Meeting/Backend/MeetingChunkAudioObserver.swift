@@ -102,7 +102,7 @@ nonisolated struct MeetingChunkAudioObserver: MeetingChunkAudioObserving {
         guard actualByteCount == authority.byteCount else {
             return .failed(
                 .byteCountChanged,
-                detail: "Expected \(authority.byteCount) bytes, found \(actualByteCount)."
+                detail: String.fluidLocalizedFormat("Expected %@ bytes, found %@.", String(describing: authority.byteCount), String(describing: actualByteCount))
             )
         }
 
@@ -135,10 +135,10 @@ nonisolated struct MeetingChunkAudioObserver: MeetingChunkAudioObserving {
         }
         let format = file.processingFormat
         guard format.sampleRate.isFinite, format.sampleRate > 0 else {
-            return .failed(.sampleRateUnusable, detail: "Decoder reported sample rate \(format.sampleRate).")
+            return .failed(.sampleRateUnusable, detail: String.fluidLocalizedFormat("Decoder reported sample rate %@.", String(describing: format.sampleRate)))
         }
         guard format.channelCount > 0 else {
-            return .failed(.unreadable, detail: "Decoder reported \(format.channelCount) channels.")
+            return .failed(.unreadable, detail: String.fluidLocalizedFormat("Decoder reported %@ channels.", String(describing: format.channelCount)))
         }
         let frameCount = Int64(file.length)
         guard frameCount > 0 else {

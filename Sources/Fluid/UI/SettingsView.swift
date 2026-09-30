@@ -191,15 +191,15 @@ struct SettingsView: View {
                     Section("ON-DEVICE") {
                         Text("Basic — No cleanup").tag("__OFF__")
                         if PrivateFeatures.privateAIProvider {
-                            Text(SettingsStore.DictationModeLabels.smartWithModel)
+                            Text(SettingsStore.DictationModeLabels.smartWithModel.fluidLocalized)
                                 .tag(PrivateAIProviderPromptFormat.promptSelectionID)
                                 .disabled(!privateAIAvailable)
                         }
                     }
                     Section("CUSTOM STYLES") {
-                        Text(SettingsStore.DictationModeLabels.externalDefault).tag("__DEFAULT__")
+                        Text(SettingsStore.DictationModeLabels.externalDefault.fluidLocalized).tag("__DEFAULT__")
                         ForEach(profiles) { profile in
-                            Text(profile.name.isEmpty ? "Untitled" : profile.name)
+                            Text((profile.name.isEmpty ? "Untitled" : profile.name).fluidLocalized)
                                 .tag(profile.id)
                         }
                     }
@@ -207,7 +207,7 @@ struct SettingsView: View {
                 .pickerStyle(.inline)
             }
             .accessibilityLabel("Cleanup style")
-            .accessibilityValue(title)
+            .accessibilityValue(title.fluidLocalized)
         }
         .padding(.bottom, 4)
     }
@@ -299,8 +299,8 @@ struct SettingsView: View {
                                                     .padding(4)
                                             }
                                             .buttonStyle(.plain)
-                                            .accessibilityLabel(option.rawValue)
-                                            .help(option.rawValue)
+                                            .accessibilityLabel(option.rawValue.fluidLocalized)
+                                            .help(option.rawValue.fluidLocalized)
                                         }
                                     }
                                     .padding(.horizontal, 6)
@@ -339,7 +339,7 @@ struct SettingsView: View {
                                     }
                                 )) {
                                     ForEach(SettingsStore.TranscriptionStartSound.allCases) { option in
-                                        Text(option.displayName).tag(option)
+                                        Text(option.displayName.fluidLocalized).tag(option)
                                     }
                                 }
                                 .pickerStyle(.menu)
@@ -463,13 +463,13 @@ struct SettingsView: View {
                                             let msg = NSAlert()
                                             if let pmkError = error as? PMKError, pmkError.isCancelled {
                                                 let isBeta = SettingsStore.shared.betaReleasesEnabled
-                                                msg.messageText = isBeta ? "You're Up To Date (Beta)" : "You're Up To Date"
-                                                msg.informativeText = isBeta
+                                                msg.messageText = (isBeta ? "You're Up To Date (Beta)" : "You're Up To Date").fluidLocalized
+                                                msg.informativeText = (isBeta
                                                     ? "You're already running the latest build available in the beta channel."
-                                                    : "You're already running the latest version of FluidVoice."
+                                                    : "You're already running the latest version of FluidVoice.").fluidLocalized
                                             } else {
-                                                msg.messageText = "Update Check Failed"
-                                                msg.informativeText = "Unable to check for updates. Please try again later.\n\nError: \(error.localizedDescription)"
+                                                msg.messageText = "Update Check Failed".fluidLocalized
+                                                msg.informativeText = String.fluidLocalizedFormat("Unable to check for updates. Please try again later.\n\nError: %@", String(describing: error.localizedDescription))
                                             }
                                             msg.alertStyle = .informational
                                             msg.runModal()
@@ -488,17 +488,17 @@ struct SettingsView: View {
                                 .fluidOutlinedButton()
                                 .controlSize(.regular)
 
-                                Button(self.rollbackVersion.isEmpty ? "Rollback" : "Rollback to \(self.rollbackVersion)") {
+                                Button((self.rollbackVersion.isEmpty ? "Rollback" : String.fluidLocalizedFormat("Rollback to %@", String(describing: self.rollbackVersion))).fluidLocalized) {
                                     guard !self.isRollingBack else { return }
 
                                     let infoText = self.rollbackVersion.isEmpty ? "your previously installed version" : self.rollbackVersion
                                     let targetVersion = self.rollbackVersion
                                     let confirm = NSAlert()
-                                    confirm.messageText = "Rollback to \(infoText)?"
-                                    confirm.informativeText = "This will restore a previous app version and relaunch FluidVoice."
+                                    confirm.messageText = String.fluidLocalizedFormat("Rollback to %@?", String(describing: infoText))
+                                    confirm.informativeText = "This will restore a previous app version and relaunch FluidVoice.".fluidLocalized
                                     confirm.alertStyle = .warning
-                                    confirm.addButton(withTitle: "Rollback")
-                                    confirm.addButton(withTitle: "Cancel")
+                                    confirm.addButton(withTitle: "Rollback".fluidLocalized)
+                                    confirm.addButton(withTitle: "Cancel".fluidLocalized)
 
                                     guard confirm.runModal() == .alertFirstButtonReturn else { return }
 
@@ -514,11 +514,11 @@ struct SettingsView: View {
                                             try await SimpleUpdater.shared.rollbackToLatestBackup()
                                             await MainActor.run {
                                                 let success = NSAlert()
-                                                success.messageText = "Rollback Successful"
-                                                success.informativeText = "Rolled back to \(targetVersion). FluidVoice will relaunch shortly."
+                                                success.messageText = "Rollback Successful".fluidLocalized
+                                                success.informativeText = String.fluidLocalizedFormat("Rolled back to %@. FluidVoice will relaunch shortly.", String(describing: targetVersion))
                                                 success.alertStyle = .informational
-                                                success.addButton(withTitle: "Report Bug")
-                                                success.addButton(withTitle: "OK")
+                                                success.addButton(withTitle: "Report Bug".fluidLocalized)
+                                                success.addButton(withTitle: "OK".fluidLocalized)
                                                 let response = success.runModal()
                                                 if response == .alertFirstButtonReturn {
                                                     self.openIssueReportingPage()
@@ -527,10 +527,10 @@ struct SettingsView: View {
                                         } catch {
                                             await MainActor.run {
                                                 let fail = NSAlert()
-                                                fail.messageText = "Rollback Failed"
-                                                fail.informativeText = error.localizedDescription
+                                                fail.messageText = "Rollback Failed".fluidLocalized
+                                                fail.informativeText = error.localizedDescription.fluidLocalized
                                                 fail.alertStyle = .critical
-                                                fail.addButton(withTitle: "OK")
+                                                fail.addButton(withTitle: "OK".fluidLocalized)
                                                 fail.runModal()
                                                 self.refreshRollbackState()
                                             }
@@ -580,11 +580,9 @@ struct SettingsView: View {
                                         .frame(width: 8, height: 8)
 
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text(
-                                            self.asr.micStatus == .denied
+                                        Text((self.asr.micStatus == .denied
                                                 ? "Microphone access denied"
-                                                : "Microphone access not determined"
-                                        )
+                                                : "Microphone access not determined").fluidLocalized)
                                         .font(self.theme.typography.bodyStrong)
                                         .foregroundStyle(self.theme.palette.warning)
 
@@ -620,8 +618,8 @@ struct SettingsView: View {
                                         ? ["Click **Grant Access** above", "Choose **Allow** in the system dialog"]
                                         : [
                                             "Click **Open Settings** above",
-                                            "Find **\(self.appDisplayName)** in the microphone list",
-                                            "Toggle **\(self.appDisplayName) ON** to allow access",
+                                            String.fluidLocalizedFormat("Find **%@** in the microphone list", String(describing: self.appDisplayName)),
+                                            String.fluidLocalizedFormat("Toggle **%@ ON** to allow access", String(describing: self.appDisplayName)),
                                         ]
                                 )
                             }
@@ -800,7 +798,7 @@ struct SettingsView: View {
                                                 Text("Activation Mode")
                                                     .font(self.theme.typography.bodyStrong)
                                                     .foregroundStyle(self.settingsTitleText)
-                                                Text(self.hotkeyMode.description)
+                                                Text(self.hotkeyMode.description.fluidLocalized)
                                                     .font(self.theme.typography.bodySmall)
                                                     .foregroundStyle(self.settingsSecondaryText)
                                                     .fixedSize(horizontal: false, vertical: true)
@@ -809,7 +807,7 @@ struct SettingsView: View {
 
                                             Picker("", selection: self.$hotkeyMode) {
                                                 ForEach(HotkeyActivationMode.allCases) { mode in
-                                                    Text(mode.displayName).tag(mode)
+                                                    Text(mode.displayName.fluidLocalized).tag(mode)
                                                 }
                                             }
                                             .pickerStyle(.menu)
@@ -839,7 +837,7 @@ struct SettingsView: View {
                                                 Text("Text Insertion Mode")
                                                     .font(self.theme.typography.bodyStrong)
                                                     .foregroundStyle(self.settingsTitleText)
-                                                Text(SettingsStore.shared.textInsertionMode.description)
+                                                Text(SettingsStore.shared.textInsertionMode.description.fluidLocalized)
                                                     .font(self.theme.typography.bodySmall)
                                                     .foregroundStyle(self.settingsSecondaryText)
                                                     .fixedSize(horizontal: false, vertical: true)
@@ -851,7 +849,7 @@ struct SettingsView: View {
                                                 set: { SettingsStore.shared.textInsertionMode = $0 }
                                             )) {
                                                 ForEach(SettingsStore.TextInsertionMode.allCases) { mode in
-                                                    Text(mode.displayName).tag(mode)
+                                                    Text(mode.displayName.fluidLocalized).tag(mode)
                                                 }
                                             }
                                             .pickerStyle(.menu)
@@ -999,8 +997,8 @@ struct SettingsView: View {
                                     steps: [
                                         "Click **Open Accessibility Settings** above",
                                         "In the Accessibility window, click the **+ button**",
-                                        "Select **\(self.appDisplayName)**; use **Reveal in Finder** below if needed",
-                                        "Click **Open**, then toggle **\(self.appDisplayName) ON** in the list",
+                                        String.fluidLocalizedFormat("Select **%@**; use **Reveal in Finder** below if needed", String(describing: self.appDisplayName)),
+                                        String.fluidLocalizedFormat("Click **Open**, then toggle **%@ ON** in the list", String(describing: self.appDisplayName)),
                                     ],
                                     warningStyle: true
                                 )
@@ -1211,7 +1209,7 @@ struct SettingsView: View {
                                         ForEach(self.outputDevices, id: \.uid) { dev in
                                             // Add "(System Default)" tag using cached name to avoid CoreAudio calls during layout
                                             let isSystemDefault = !self.cachedDefaultOutputName.isEmpty && dev.name == self.cachedDefaultOutputName
-                                            Text(isSystemDefault ? "\(dev.name) (System Default)" : dev.name).tag(dev.uid)
+                                            Text((isSystemDefault ? String.fluidLocalizedFormat("%@ (System Default)", String(describing: dev.name)) : dev.name).fluidLocalized).tag(dev.uid)
                                         }
                                     }
                                 }
@@ -1276,14 +1274,12 @@ struct SettingsView: View {
 
                             HStack {
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(self.settings.overlayPosition == .bottom ? "Dictation Overlay Size" : "Notch Style")
+                                    Text((self.settings.overlayPosition == .bottom ? "Dictation Overlay Size" : "Notch Style").fluidLocalized)
                                         .font(self.theme.typography.bodyStrong)
                                         .foregroundStyle(self.settingsTitleText)
-                                    Text(
-                                        self.settings.overlayPosition == .bottom
+                                    Text((self.settings.overlayPosition == .bottom
                                             ? "How large the recording indicator appears"
-                                            : "Choose the regular notch or the compact layout"
-                                    )
+                                            : "Choose the regular notch or the compact layout").fluidLocalized)
                                     .font(self.theme.typography.bodySmall)
                                     .foregroundStyle(self.settingsSecondaryText)
                                 }
@@ -1293,7 +1289,7 @@ struct SettingsView: View {
                                 if self.settings.overlayPosition == .bottom {
                                     Picker("", selection: self.$settings.overlaySize) {
                                         ForEach(SettingsStore.OverlaySize.allCases, id: \.self) { size in
-                                            Text(size.displayName).tag(size)
+                                            Text(size.displayName.fluidLocalized).tag(size)
                                         }
                                     }
                                     .pickerStyle(.menu)
@@ -1302,7 +1298,7 @@ struct SettingsView: View {
                                 } else {
                                     Picker("", selection: self.$settings.notchPresentationMode) {
                                         ForEach(SettingsStore.NotchPresentationMode.allCases, id: \.self) { mode in
-                                            Text(mode.displayName).tag(mode)
+                                            Text(mode.displayName.fluidLocalized).tag(mode)
                                         }
                                     }
                                     .pickerStyle(.menu)
@@ -1328,7 +1324,7 @@ struct SettingsView: View {
 
                                 Picker("", selection: self.$settings.meetingOverlayPreference) {
                                     ForEach(MeetingOverlayPreference.allCases, id: \.self) { preference in
-                                        Text(preference == .pill ? "Pill" : "Captions").tag(preference)
+                                        Text((preference == .pill ? "Pill" : "Captions").fluidLocalized).tag(preference)
                                     }
                                 }
                                 .pickerStyle(.menu)
@@ -1407,7 +1403,7 @@ struct SettingsView: View {
 
                                 Picker("", selection: self.$settings.overlayPosition) {
                                     ForEach(SettingsStore.OverlayPosition.allCases, id: \.self) { position in
-                                        Text(position.displayName).tag(position)
+                                        Text(position.displayName.fluidLocalized).tag(position)
                                     }
                                 }
                                 .pickerStyle(.menu)
@@ -1453,7 +1449,7 @@ struct SettingsView: View {
                                     .foregroundStyle(self.settingsSecondaryText)
                                     .frame(width: 36, alignment: .leading)
 
-                                Text(String(format: "%.2f", self.visualizerNoiseThreshold))
+                                Text(String(format: "%.2f", self.visualizerNoiseThreshold).fluidLocalized)
                                     .font(.fluidSystem(.caption, design: .monospaced))
                                     .foregroundStyle(self.settingsTertiaryText)
                                     .frame(width: 36)
@@ -1678,7 +1674,7 @@ struct SettingsView: View {
 
             self.presentInfoAlert(
                 title: "Backup Exported",
-                message: "Saved your FluidVoice backup to:\n\(url.path)"
+                message: String.fluidLocalizedFormat("Saved your FluidVoice backup to:\n%@", String(describing: url.path))
             )
         } catch {
             self.presentErrorAlert(
@@ -1710,16 +1706,16 @@ struct SettingsView: View {
             formatter.timeStyle = .short
 
             let confirm = NSAlert()
-            confirm.messageText = "Import this backup?"
-            confirm.informativeText = """
+            confirm.messageText = "Import this backup?".fluidLocalized
+            confirm.informativeText = String.fluidLocalizedFormat("""
             This replaces your current settings, prompt profiles, and stats history.
 
-            Exported: \(formatter.string(from: document.exportedAt))
+            Exported: %@
             API keys are not included and will not be changed.
-            """
+            """, formatter.string(from: document.exportedAt))
             confirm.alertStyle = .warning
-            confirm.addButton(withTitle: "Import")
-            confirm.addButton(withTitle: "Cancel")
+            confirm.addButton(withTitle: "Import".fluidLocalized)
+            confirm.addButton(withTitle: "Cancel".fluidLocalized)
 
             guard confirm.runModal() == .alertFirstButtonReturn else { return }
 
@@ -1764,13 +1760,13 @@ struct SettingsView: View {
         let newBudgetBytes = DictationAudioHistoryStore.bytes(forGigabytes: newBudget)
         if self.audioHistoryUsageBytes > newBudgetBytes {
             let confirm = NSAlert()
-            confirm.messageText = "Prune saved audio?"
+            confirm.messageText = "Prune saved audio?".fluidLocalized
             confirm.informativeText = """
             This budget is below current audio usage. FluidVoice will delete the oldest saved audio first and keep transcript history.
-            """
+            """.fluidLocalized
             confirm.alertStyle = .warning
-            confirm.addButton(withTitle: "Apply and Prune")
-            confirm.addButton(withTitle: "Cancel")
+            confirm.addButton(withTitle: "Apply and Prune".fluidLocalized)
+            confirm.addButton(withTitle: "Cancel".fluidLocalized)
             guard confirm.runModal() == .alertFirstButtonReturn else {
                 self.refreshAudioHistoryUsage()
                 return
@@ -1787,11 +1783,11 @@ struct SettingsView: View {
 
     private func deleteSavedAudio() {
         let confirm = NSAlert()
-        confirm.messageText = "Delete saved audio?"
-        confirm.informativeText = "This removes saved dictation audio only. Transcript history stays intact."
+        confirm.messageText = "Delete saved audio?".fluidLocalized
+        confirm.informativeText = "This removes saved dictation audio only. Transcript history stays intact.".fluidLocalized
         confirm.alertStyle = .warning
-        confirm.addButton(withTitle: "Delete Audio")
-        confirm.addButton(withTitle: "Cancel")
+        confirm.addButton(withTitle: "Delete Audio".fluidLocalized)
+        confirm.addButton(withTitle: "Cancel".fluidLocalized)
         guard confirm.runModal() == .alertFirstButtonReturn else { return }
 
         let removed = TranscriptionHistoryStore.shared.deleteAllSavedAudio()
@@ -1817,7 +1813,7 @@ struct SettingsView: View {
                 entries: TranscriptionHistoryStore.shared.entries,
                 to: url
             )
-            self.presentInfoAlert(title: "Audio Export Saved", message: "Saved your dictation audio export to:\n\(url.path)")
+            self.presentInfoAlert(title: "Audio Export Saved", message: String.fluidLocalizedFormat("Saved your dictation audio export to:\n%@", String(describing: url.path)))
         } catch {
             self.presentErrorAlert(title: "Audio Export Failed", message: error.localizedDescription)
         }
@@ -1825,19 +1821,19 @@ struct SettingsView: View {
 
     private func presentInfoAlert(title: String, message: String) {
         let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
+        alert.messageText = title.fluidLocalized
+        alert.informativeText = message.fluidLocalized
         alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "OK".fluidLocalized)
         alert.runModal()
     }
 
     private func presentErrorAlert(title: String, message: String) {
         let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
+        alert.messageText = title.fluidLocalized
+        alert.informativeText = message.fluidLocalized
         alert.alertStyle = .critical
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "OK".fluidLocalized)
         alert.runModal()
     }
 
@@ -1864,15 +1860,15 @@ struct SettingsView: View {
         }
 
         let picker = NSAlert()
-        picker.messageText = "Download Previous Build"
-        picker.informativeText = "No local rollback backup was found. Choose a recent release build:"
+        picker.messageText = "Download Previous Build".fluidLocalized
+        picker.informativeText = "No local rollback backup was found. Choose a recent release build:".fluidLocalized
         picker.alertStyle = .informational
 
         for option in options {
             picker.addButton(withTitle: option.version)
         }
-        picker.addButton(withTitle: "All Releases")
-        picker.addButton(withTitle: "Cancel")
+        picker.addButton(withTitle: "All Releases".fluidLocalized)
+        picker.addButton(withTitle: "Cancel".fluidLocalized)
 
         let response = picker.runModal()
         let first = NSApplication.ModalResponse.alertFirstButtonReturn.rawValue
@@ -1909,11 +1905,11 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
+                    Text(title.fluidLocalized)
                         .font(self.theme.typography.bodyStrong)
                         .foregroundStyle(self.settingsTitleText)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(description)
+                    Text(description.fluidLocalized)
                         .font(self.theme.typography.bodySmall)
                         .foregroundStyle(self.settingsSecondaryText)
                         .fixedSize(horizontal: false, vertical: true)
@@ -1925,18 +1921,18 @@ struct SettingsView: View {
                     .toggleStyle(.switch)
                     .tint(self.theme.palette.accent)
                     .labelsHidden()
-                    .accessibilityLabel(title)
+                    .accessibilityLabel(title.fluidLocalized)
             }
 
             if let footnote = footnote {
-                Text(footnote)
+                Text(footnote.fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(self.settingsSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             if let errorMessage = errorMessage {
-                Text(errorMessage)
+                Text(errorMessage.fluidLocalized)
                     .font(.fluidSystem(.caption))
                     .foregroundStyle(self.theme.palette.warning)
                     .fixedSize(horizontal: false, vertical: true)
@@ -2070,10 +2066,10 @@ struct SettingsView: View {
     ) -> some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(self.theme.typography.bodyStrong)
                     .foregroundStyle(self.settingsTitleText)
-                Text(description)
+                Text(description.fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(self.settingsSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
@@ -2097,7 +2093,7 @@ struct SettingsView: View {
                 Image(systemName: "info.circle.fill")
                     .foregroundStyle(warningStyle ? self.theme.palette.warning : self.theme.palette.accent)
                     .font(.fluidSystem(.caption))
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
                     .foregroundStyle(self.settingsTitleText)
             }
@@ -2161,7 +2157,7 @@ struct SettingsView: View {
                     .disabled(self.isRecordingAnyShortcut)
                 }
                 if isAdding, let message = self.shortcutRecordingMessage {
-                    Text(message).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
+                    Text(message.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
                 }
             }
         }
@@ -2184,7 +2180,7 @@ struct SettingsView: View {
                 }
             )
             if self.isRecording(target), let message = self.shortcutRecordingMessage {
-                Text(message).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
+                Text(message.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
             }
         }
     }
@@ -2195,8 +2191,8 @@ private extension SettingsView {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: icon).foregroundStyle(color).frame(width: 20).padding(.top, 2)
             VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(self.theme.typography.bodyStrong).foregroundStyle(self.settingsTitleText)
-                Text(description).font(self.theme.typography.bodySmall).foregroundStyle(self.settingsSecondaryText)
+                Text(title.fluidLocalized).font(self.theme.typography.bodyStrong).foregroundStyle(self.settingsTitleText)
+                Text(description.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(self.settingsSecondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -2236,8 +2232,8 @@ private extension SettingsView {
                 .frame(width: 28, height: 28)
             }
             .buttonStyle(FluidHoverIconButtonStyle())
-            .help(isRecording ? "Cancel recording" : "Set shortcut")
-            .accessibilityLabel(isRecording ? "Cancel recording \(title)" : "Edit \(title)")
+            .help((isRecording ? "Cancel recording" : "Set shortcut").fluidLocalized)
+            .accessibilityLabel((isRecording ? String.fluidLocalizedFormat("Cancel recording %@", String(describing: title)) : String.fluidLocalizedFormat("Edit %@", String(describing: title))).fluidLocalized)
             .disabled(!isRecording && self.isRecordingAnyShortcut)
 
             Button {
@@ -2268,7 +2264,7 @@ private extension SettingsView {
     }
 
     private func shortcutDisplayPill(_ text: String) -> some View {
-        Text(text)
+        Text(text.fluidLocalized)
             .font(.fluidSystem(.caption, design: .monospaced).weight(.medium))
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
@@ -2314,7 +2310,7 @@ private extension SettingsView {
                     onRemove: remove
                 )
                 if isRecording, let recordingMessage, !recordingMessage.isEmpty {
-                    Text(recordingMessage).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
+                    Text(recordingMessage.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
                 }
             }
         }
@@ -2438,7 +2434,7 @@ private extension SettingsView {
                     HStack(spacing: 8) {
                         Image(systemName: "mic.slash")
                             .foregroundStyle(self.settingsSecondaryText)
-                        Text(self.inputDevices.isEmpty ? "No microphones available" : "No microphones in priority")
+                        Text((self.inputDevices.isEmpty ? "No microphones available" : "No microphones in priority").fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.settingsSecondaryText)
                         Spacer()
@@ -2516,7 +2512,7 @@ private extension SettingsView {
                 .monospacedDigit()
                 .frame(width: 22, alignment: .trailing)
 
-            Text(entry.name)
+            Text(entry.name.fluidLocalized)
                 .font(self.theme.typography.bodyStrong)
                 .foregroundStyle(isAvailable ? self.settingsTitleText : self.settingsSecondaryText)
                 .lineLimit(1)
@@ -2596,7 +2592,7 @@ private extension SettingsView {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Priority \(rank), \(entry.name)")
-        .accessibilityValue(isActive ? "Active" : (isAvailable ? "Available" : "Unavailable"))
+        .accessibilityValue((isActive ? "Active" : (isAvailable ? "Available" : "Unavailable")).fluidLocalized)
         .accessibilityAction(named: "Move up") {
             guard self.isMicrophonePriorityEditingDisabled == false, rank > 1 else { return }
             self.settings.moveMicrophonePriority(uid: entry.uid, by: -1)
@@ -2666,7 +2662,7 @@ private extension SettingsView {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: systemImage)
                 .foregroundStyle(color)
-            Text(message)
+            Text(message.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
                 .foregroundStyle(color)
                 .fixedSize(horizontal: false, vertical: true)
@@ -2817,7 +2813,7 @@ struct FillerWordsEditor: View {
             FlowLayout(spacing: 6) {
                 ForEach(self.fillerWords, id: \.self) { word in
                     HStack(spacing: 4) {
-                        Text(word)
+                        Text(word.fluidLocalized)
                             .font(.fluidSystem(.caption))
                         Button {
                             self.removeWord(word)
@@ -3014,7 +3010,7 @@ private extension SettingsView {
                             set: { self.settings.spokenSendKey = $0 }
                         )) {
                             ForEach(SettingsStore.SpokenSendKey.allCases) { key in
-                                Text(key.displayName).tag(key)
+                                Text(key.displayName.fluidLocalized).tag(key)
                             }
                         }
                         .pickerStyle(.menu)
@@ -3077,7 +3073,7 @@ private struct DictionarySuggestionsSettingsRow: View {
 
                     Picker("Ask after", selection: self.$settings.automaticDictionarySuggestionFrequency) {
                         ForEach(SettingsStore.AutomaticDictionarySuggestionFrequency.allCases) { frequency in
-                            Text(frequency.displayName).tag(frequency)
+                            Text(frequency.displayName.fluidLocalized).tag(frequency)
                         }
                     }
                     .pickerStyle(.menu)

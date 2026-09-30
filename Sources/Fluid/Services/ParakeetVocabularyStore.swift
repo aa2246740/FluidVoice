@@ -67,7 +67,7 @@ final class ParakeetVocabularyStore {
         var errorDescription: String? {
             switch self {
             case let .invalidJSON(details):
-                return "Invalid vocabulary JSON: \(details)"
+                return String.fluidLocalizedFormat("Invalid vocabulary JSON: %@", String(describing: details))
             case .applicationSupportUnavailable:
                 return "Could not access Application Support directory."
             }

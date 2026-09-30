@@ -165,6 +165,6 @@ final class MeetingDiarizationModelStore: ObservableObject {
         if nsError.domain == "HF", [401, 403, 404].contains(nsError.code) {
             return "The speaker model isn't available for download right now. Try again later."
         }
-        return "Couldn't download the speaker model (\(error.localizedDescription)). Try again."
+        return String.fluidLocalizedFormat("Couldn't download the speaker model (%@). Try again.", String(describing: error.localizedDescription))
     }
 }

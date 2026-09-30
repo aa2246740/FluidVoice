@@ -116,7 +116,7 @@ final class NemotronProvider: TranscriptionProvider {
         try Task.checkCancellation()
         guard self.isReady == false else { return }
         guard let dir = self.cacheDirectory else {
-            throw Self.makeError("Unable to resolve a cache directory for \(self.name).")
+            throw Self.makeError(String.fluidLocalizedFormat("Unable to resolve a cache directory for %@.", String(describing: self.name)))
         }
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
 
@@ -158,7 +158,7 @@ final class NemotronProvider: TranscriptionProvider {
             }
             try Task.checkCancellation()
             guard self.modelsExistOnDisk() else {
-                throw Self.makeError("Nemotron artifacts incomplete after download at \(dir.path).")
+                throw Self.makeError(String.fluidLocalizedFormat("Nemotron artifacts incomplete after download at %@.", String(describing: dir.path)))
             }
             progressHandler?(.optimizing)
         }

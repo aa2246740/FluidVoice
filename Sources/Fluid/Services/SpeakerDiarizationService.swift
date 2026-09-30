@@ -89,7 +89,7 @@ actor SpeakerDiarizationService {
             if let existing = labelByClusterId[segment.speakerId] {
                 label = existing
             } else {
-                label = "Speaker \(nextSpeakerNumber)"
+                label = String.fluidLocalizedFormat("Speaker %@", String(describing: nextSpeakerNumber))
                 labelByClusterId[segment.speakerId] = label
                 nextSpeakerNumber += 1
             }

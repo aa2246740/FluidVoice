@@ -20,7 +20,7 @@ enum TranscriptionFeedbackReporter {
             case .invalidResponse:
                 return "Invalid report response."
             case let .httpError(statusCode):
-                return "Report failed with HTTP \(statusCode)."
+                return String.fluidLocalizedFormat("Report failed with HTTP %@.", String(describing: statusCode))
             }
         }
     }

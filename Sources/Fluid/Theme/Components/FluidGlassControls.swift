@@ -112,13 +112,13 @@ struct ProviderDefaultButton: View {
         Button(action: self.action) {
             HStack(spacing: 6) {
                 if self.isCurrent { Image(systemName: "checkmark.circle.fill") }
-                Text(self.isCurrent ? "Current default" : "Set as default")
+                Text((self.isCurrent ? "Current default" : "Set as default").fluidLocalized)
             }
         }
         .fluidGlassAction()
         .disabled(self.isCurrent || !self.isEnabled)
-        .help(self.isCurrent ? "Used by your main dictation shortcut. App-specific cleanup styles can override it."
-            : "Use this provider for your main dictation shortcut. Choose a model and complete setup first; verification is optional.")
+        .help((self.isCurrent ? "Used by your main dictation shortcut. App-specific cleanup styles can override it."
+            : "Use this provider for your main dictation shortcut. Choose a model and complete setup first; verification is optional.").fluidLocalized)
     }
 }
 

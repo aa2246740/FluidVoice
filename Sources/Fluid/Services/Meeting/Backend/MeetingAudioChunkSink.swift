@@ -55,13 +55,13 @@ nonisolated enum MeetingPCMSinkError: Error, Equatable, Sendable {
 nonisolated extension MeetingPCMSinkError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case let .formatMismatch(expected, actual): return "PCM format mismatch (expected \(expected); received \(actual))."
-        case let .unsupportedClientFormat(detail): return "Unsupported PCM format: \(detail)."
-        case let .shortWrite(expected, written): return "PCM short write (expected \(expected) frames; wrote \(written))."
+        case let .formatMismatch(expected, actual): return String.fluidLocalizedFormat("PCM format mismatch (expected %@; received %@).", String(describing: expected), String(describing: actual))
+        case let .unsupportedClientFormat(detail): return String.fluidLocalizedFormat("Unsupported PCM format: %@.", String(describing: detail))
+        case let .shortWrite(expected, written): return String.fluidLocalizedFormat("PCM short write (expected %@ frames; wrote %@).", String(describing: expected), String(describing: written))
         case let .writeFailed(status): return "PCM write failed (OSStatus \(status))."
-        case let .invalidSampleBuffer(detail): return "Invalid PCM sample buffer: \(detail)."
-        case let .finalizationVerificationFailed(detail): return "PCM finalization verification failed: \(detail)."
-        case let .underlyingFileError(detail): return "PCM file error: \(detail)."
+        case let .invalidSampleBuffer(detail): return String.fluidLocalizedFormat("Invalid PCM sample buffer: %@.", String(describing: detail))
+        case let .finalizationVerificationFailed(detail): return String.fluidLocalizedFormat("PCM finalization verification failed: %@.", String(describing: detail))
+        case let .underlyingFileError(detail): return String.fluidLocalizedFormat("PCM file error: %@.", String(describing: detail))
         default: return String(describing: self)
         }
     }

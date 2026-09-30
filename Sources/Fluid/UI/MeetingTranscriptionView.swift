@@ -49,7 +49,7 @@ struct MeetingTranscriptionSetupDraft: Equatable {
     static func defaultTitle(mode: MeetingCaptureMode, applicationDisplayName: String?) -> String {
         guard mode == .onlineCall else { return "In-room meeting" }
         guard let applicationDisplayName, !applicationDisplayName.isEmpty else { return "Meeting" }
-        return "\(applicationDisplayName) call"
+        return String.fluidLocalizedFormat("%@ call", String(describing: applicationDisplayName))
     }
 }
 
@@ -255,7 +255,7 @@ struct MeetingTranscriptionView: View {
                         )
                         .frame(width: min(272, geometry.size.width))
                         .disabled(self.summaryActivity.selectionLock != nil)
-                        .help(self.summaryActivity.selectionLock == nil ? "Meeting history" : "Finish or cancel the summary before switching meetings.")
+                        .help((self.summaryActivity.selectionLock == nil ? "Meeting history" : "Finish or cancel the summary before switching meetings.").fluidLocalized)
                         .overlay(alignment: .leading) {
                             Rectangle()
                                 .fill(self.theme.palette.separator)
@@ -499,7 +499,7 @@ struct MeetingTranscriptionView: View {
         if self.isRefreshingSources {
             blockingMessage = "Checking recording access and sources."
         } else if let conflictingActivity {
-            blockingMessage = "Wait for the active \(conflictingActivity.displayName) to finish."
+            blockingMessage = String.fluidLocalizedFormat("Wait for the active %@ to finish.", String(describing: conflictingActivity.displayName))
         } else if microphoneStatus == .restricted {
             blockingMessage = "Microphone access is restricted by system policy."
         } else if !microphoneReady {
@@ -510,7 +510,7 @@ struct MeetingTranscriptionView: View {
             blockingMessage = "Allow Screen & System Audio access, then refresh sources."
         } else if !self.cachedStorageReady {
             let trackCount = MeetingPCMStoragePolicy.trackCount(for: self.effectiveCaptureMode)
-            blockingMessage = "Free at least \(MeetingPCMStoragePolicy.requiredFreeSpaceDescription(trackCount: trackCount)) of storage before recording."
+            blockingMessage = String.fluidLocalizedFormat("Free at least %@ of storage before recording.", String(describing: MeetingPCMStoragePolicy.requiredFreeSpaceDescription(trackCount: trackCount)))
         } else if !CPUArchitecture.isAppleSilicon {
             blockingMessage = "FluidMeet requires an Apple silicon Mac."
         } else {
@@ -527,7 +527,7 @@ struct MeetingTranscriptionView: View {
             modelReady: modelReady,
             storageStatus: self.cachedStorageStatus,
             storageReady: self.cachedStorageReady,
-            activityStatus: conflictingActivity.map { "Wait for \($0.displayName)" } ?? "Ready",
+            activityStatus: conflictingActivity.map { String.fluidLocalizedFormat("Wait for %@", String(describing: $0.displayName)) } ?? "Ready",
             activityReady: activityReady,
             showMicrophoneSettingsAction: microphoneStatus == .denied,
             showScreenRecordingSettingsAction: self.setupDraft.mode == .onlineCall && !self.cachedScreenCaptureAccess,
@@ -956,7 +956,7 @@ struct MeetingTranscriptionView: View {
                 }
                 NSWorkspace.shared.activateFileViewerSelecting([firstAudioURL])
             } catch {
-                self.actionErrorMessage = "Captured audio could not be revealed: \(error.localizedDescription)"
+                self.actionErrorMessage = String.fluidLocalizedFormat("Captured audio could not be revealed: %@", String(describing: error.localizedDescription))
             }
         }
     }
@@ -966,7 +966,7 @@ struct MeetingTranscriptionView: View {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.canCreateDirectories = true
-        panel.prompt = "Choose"
+        panel.prompt = "Choose".fluidLocalized
         guard panel.runModal() == .OK, let destinationFolder = panel.url else { return }
 
         self.actionErrorMessage = nil
@@ -989,7 +989,7 @@ struct MeetingTranscriptionView: View {
                 }
                 try await Self.exportAudioFiles(of: freshSession, from: sourceDirectory, into: destinationFolder)
             } catch {
-                self.actionErrorMessage = "Export failed: \(error.localizedDescription)"
+                self.actionErrorMessage = String.fluidLocalizedFormat("Export failed: %@", String(describing: error.localizedDescription))
             }
         }
     }
@@ -1168,7 +1168,7 @@ struct MeetingTranscriptionView: View {
     private func exportTranscript(_ session: MeetingSession, format: MeetingTranscriptExportFormat, includeEchoes: Bool) {
         let panel = NSSavePanel()
         panel.nameFieldStringValue = "\(Self.sanitizedExportName(session.title)).\(format.fileExtension)"
-        panel.message = "Exported transcripts are outside FluidVoice's retention controls and may be indexed or synced by other apps."
+        panel.message = "Exported transcripts are outside FluidVoice's retention controls and may be indexed or synced by other apps.".fluidLocalized
         guard panel.runModal() == .OK, let url = panel.url else { return }
         self.actionErrorMessage = nil
         do {
@@ -1179,7 +1179,7 @@ struct MeetingTranscriptionView: View {
             }
             try data.write(to: url, options: .atomic)
         } catch {
-            self.actionErrorMessage = "Export failed: \(error.localizedDescription)"
+            self.actionErrorMessage = String.fluidLocalizedFormat("Export failed: %@", String(describing: error.localizedDescription))
         }
     }
 
@@ -1201,7 +1201,7 @@ struct MeetingTranscriptionView: View {
         guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")
         else { return }
         PermissionDragGuideController.shared.present(
-            instruction: "Drag \(Bundle.main.fluidAppDisplayName) into the Screen & System Audio Recording list as shown",
+            instruction: String.fluidLocalizedFormat("Drag %@ into the Screen & System Audio Recording list as shown", String(describing: Bundle.main.fluidAppDisplayName)),
             settingsPaneURL: url,
             isGranted: { CGPreflightScreenCaptureAccess() },
             onGranted: { [self] in
@@ -1233,7 +1233,7 @@ struct MeetingTranscriptionView: View {
         let requiredBytes = MeetingPCMStoragePolicy.requiredFreeBytes(trackCount: trackCount)
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
-        return ("\(formatter.string(fromByteCount: capacity)) available", capacity >= requiredBytes)
+        return (String.fluidLocalizedFormat("%@ available", String(describing: formatter.string(fromByteCount: capacity))), capacity >= requiredBytes)
     }
 }
 
@@ -1484,8 +1484,8 @@ private struct MeetingHeaderIconButton: View {
                 .foregroundStyle(self.isSelected ? self.theme.palette.accent : self.theme.palette.primaryText)
         }
         .buttonStyle(.automatic)
-        .help(self.label)
-        .accessibilityLabel(self.label)
+        .help(self.label.fluidLocalized)
+        .accessibilityLabel(self.label.fluidLocalized)
         .accessibilityAddTraits(self.isSelected ? .isSelected : [])
     }
 }
@@ -1586,7 +1586,7 @@ private struct MeetingHistoryInspector: View {
             Divider()
 
             if let errorMessage, !self.sessions.isEmpty {
-                Text(errorMessage)
+                Text(errorMessage.fluidLocalized)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(self.theme.metrics.spacing.md)
@@ -1596,18 +1596,18 @@ private struct MeetingHistoryInspector: View {
                 ContentUnavailableView(
                     "History unavailable",
                     systemImage: "exclamationmark.triangle",
-                    description: Text(errorMessage)
+                    description: Text(errorMessage.fluidLocalized)
                 )
             } else if self.isLoading, self.sessions.isEmpty {
                 ProgressView("Loading meetings…")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if self.filteredSessions.isEmpty {
                 ContentUnavailableView(
-                    self.searchText.isEmpty ? "No meetings yet" : "No matching meetings",
+                    (self.searchText.isEmpty ? "No meetings yet" : "No matching meetings").fluidLocalized,
                     systemImage: self.searchText.isEmpty ? "person.2.wave.2" : "magnifyingglass",
-                    description: Text(self.searchText.isEmpty
+                    description: Text((self.searchText.isEmpty
                         ? "Completed meetings will appear here."
-                        : "Try a different title, app, or speaker.")
+                        : "Try a different title, app, or speaker.").fluidLocalized)
                 )
             } else {
                 // Rows draw their own selection/hover fill (never the saturated system blue),
@@ -1645,7 +1645,7 @@ private struct MeetingHistoryInspector: View {
                                     }
                                 } header: {
                                     // Matches the Command sidebar: unpinned, aligned with the row icons.
-                                    Text(group.key)
+                                    Text(group.key.fluidLocalized)
                                         .font(self.theme.typography.caption)
                                         .foregroundStyle(self.theme.palette.secondaryText)
                                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -1779,7 +1779,7 @@ private struct MeetingHistoryRow: View {
                 HStack(alignment: .top, spacing: self.theme.metrics.spacing.md) {
                     self.tile
                     VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                        Text(self.session.title)
+                        Text(self.session.title.fluidLocalized)
                             .font(self.theme.typography.bodyStrong)
                             .foregroundStyle(self.theme.palette.primaryText)
                             .lineLimit(2)
@@ -1805,7 +1805,7 @@ private struct MeetingHistoryRow: View {
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(self.actionColor)
                     .disabled(!self.isQuiescent)
-                    .accessibilityLabel(self.actionAccessibilityLabel ?? actionLabel)
+                    .accessibilityLabel(self.actionAccessibilityLabel ?? actionLabel.fluidLocalized)
                     .padding(.leading, 18 + self.theme.metrics.spacing.md * 2)
                     .padding(.bottom, self.theme.metrics.spacing.sm)
             }
@@ -1838,7 +1838,7 @@ private struct MeetingHistoryRow: View {
                 if index > 0 {
                     Text("·").foregroundStyle(self.theme.palette.tertiaryText)
                 }
-                Text(part)
+                Text(part.fluidLocalized)
             }
         }
         .font(self.theme.typography.caption)
@@ -1863,7 +1863,7 @@ private struct MeetingHistoryRow: View {
         case .completed:
             var parts = [self.timeText, Self.durationText(self.session.duration)]
             if !self.session.activeSpeakers.isEmpty {
-                parts.append(self.session.activeSpeakers.count == 1 ? "1 speaker" : "\(self.session.activeSpeakers.count) speakers")
+                parts.append(self.session.activeSpeakers.count == 1 ? "1 speaker" : String.fluidLocalizedFormat("%@ speakers", String(describing: self.session.activeSpeakers.count)))
             }
             return parts
         case .interrupted:
@@ -1937,9 +1937,9 @@ private struct MeetingHistoryRow: View {
     private static func durationText(_ duration: TimeInterval) -> String {
         let totalMinutes = max(0, Int(duration / 60))
         if totalMinutes >= 60 {
-            return "\(totalMinutes / 60)h \(totalMinutes % 60)m"
+            return String.fluidLocalizedFormat("%@h %@m", String(describing: totalMinutes / 60), String(describing: totalMinutes % 60))
         }
-        return "\(max(1, totalMinutes))m"
+        return String.fluidLocalizedFormat("%@m", String(describing: max(1, totalMinutes)))
     }
 }
 
@@ -1985,12 +1985,12 @@ private struct MeetingSetupCanvas: View {
     }
 
     private var planHeadline: String {
-        if let app = resolvedApplication { return "\(app.identity.displayName) is open." }
+        if let app = resolvedApplication { return String.fluidLocalizedFormat("%@ is open.", String(describing: app.identity.displayName)) }
         return self.draft.mode == .inRoom ? "In-person meeting." : "No call open."
     }
 
     private var planDetail: String {
-        if let app = resolvedApplication { return "\(app.identity.displayName) and your mic will be recorded." }
+        if let app = resolvedApplication { return String.fluidLocalizedFormat("%@ and your mic will be recorded.", String(describing: app.identity.displayName)) }
         if self.draft.mode == .inRoom { return "Your mic will record the room." }
         if self.readiness.showScreenRecordingSettingsAction {
             return "Your mic will record the room. Allow Screen & System Audio access to capture meeting apps too."
@@ -2057,10 +2057,10 @@ private struct MeetingSetupCanvas: View {
             MeetingHomeStatus(kind: .blocked, title: "One thing before recording", detail: self.blockedHelp)
         } else {
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                Text(self.planHeadline)
+                Text(self.planHeadline.fluidLocalized)
                     .font(.system(.title2, design: .serif).weight(.medium))
                     .foregroundStyle(self.theme.palette.primaryText)
-                Text(self.planDetail)
+                Text(self.planDetail.fluidLocalized)
                     .font(self.theme.typography.body)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -2111,7 +2111,7 @@ private struct MeetingSetupCanvas: View {
             Button("More settings…", systemImage: "gearshape", action: self.onEditSetup)
         } label: {
             HStack(spacing: self.theme.metrics.spacing.sm) {
-                Text("Change · \(self.sourceLabel)")
+                Text("Change · \( self.sourceLabel.fluidLocalized)")
                 Image(systemName: "chevron.up.chevron.down").imageScale(.small)
             }
         }
@@ -2120,7 +2120,7 @@ private struct MeetingSetupCanvas: View {
         .meetingGlassAction(spacious: true)
         .disabled(self.isStarting)
         .help("Choose what gets recorded.")
-        .accessibilityLabel("Change recording source. Currently \(self.sourceLabel)")
+        .accessibilityLabel("Change recording source. Currently \( self.sourceLabel)")
     }
 
     private func applicationEntry(_ option: MeetingApplicationOption) -> some View {
@@ -2134,16 +2134,16 @@ private struct MeetingSetupCanvas: View {
 
     private func sourceEntry(_ title: String, systemImage: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            if selected { Label(title, systemImage: "checkmark") } else { Text(title) }
+            if selected { Label(title, systemImage: "checkmark") } else { Text(title.fluidLocalized) }
         }
     }
 
     private var recordingFooter: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.lg) {
             Label(
-                self.resolvedApplication != nil
+                (self.resolvedApplication != nil
                     ? "Stays on this Mac. Use headphones for clearer speaker separation."
-                    : "Stays on this Mac. Place it where everyone can be heard.",
+                    : "Stays on this Mac. Place it where everyone can be heard.").fluidLocalized,
                 systemImage: "lock"
             )
             .font(self.theme.typography.caption)
@@ -2155,7 +2155,7 @@ private struct MeetingSetupCanvas: View {
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(self.theme.palette.warning)
                     .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel("Could not start recording. \(errorMessage)")
+                    .accessibilityLabel("Could not start recording. \( errorMessage)")
             }
 
             if let recentSession {
@@ -2165,10 +2165,10 @@ private struct MeetingSetupCanvas: View {
                         .foregroundStyle(self.theme.palette.secondaryText)
                     VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
                         Text("Last meeting").font(self.theme.typography.caption).foregroundStyle(.secondary)
-                        Text(recentSession.title).font(self.theme.typography.bodyStrong).lineLimit(2)
+                        Text(recentSession.title.fluidLocalized).font(self.theme.typography.bodyStrong).lineLimit(2)
                     }
                     Spacer()
-                    Text(Self.durationText(recentSession.duration))
+                    Text(Self.durationText(recentSession.duration).fluidLocalized)
                         .font(self.theme.typography.codeCaption).foregroundStyle(.secondary)
                 }
             }
@@ -2182,9 +2182,9 @@ private struct MeetingSetupCanvas: View {
                    !self.readiness.microphoneReady || self.draft.selectedMicrophoneID == nil))
         {
             Button(
-                self.readiness.showMicrophoneSettingsAction ? "Allow microphone access" :
+                (self.readiness.showMicrophoneSettingsAction ? "Allow microphone access" :
                     (self.readiness.showScreenRecordingSettingsAction ? "Allow meeting audio access" :
-                        "Set up microphone…"),
+                        "Set up microphone…")).fluidLocalized,
                 systemImage: self.readiness.showMicrophoneSettingsAction || self.readiness.showScreenRecordingSettingsAction ? "arrow.up.right" : "gearshape",
                 action: self.onRepairSetup
             )
@@ -2232,16 +2232,16 @@ private struct MeetingHomeStatus: View {
             .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                Text(self.title)
+                Text(self.title.fluidLocalized)
                     .font(self.theme.typography.bodyStrong)
                     .foregroundStyle(self.theme.palette.primaryText)
-                Text(self.detail)
+                Text(self.detail.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(self.title). \(self.detail)")
+        .accessibilityLabel("\( self.title). \( self.detail)")
     }
 }

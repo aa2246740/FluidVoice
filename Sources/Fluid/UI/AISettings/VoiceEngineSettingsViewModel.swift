@@ -91,6 +91,8 @@ final class VoiceEngineSettingsViewModel: ObservableObject {
             models = models.filter { $0.provider == .cohere }
         case .openai:
             models = models.filter { $0.provider == .openai }
+        case .cloud:
+            models = models.filter { $0.provider == .cloud }
         }
 
         if self.englishOnlyFilter {
@@ -222,6 +224,10 @@ final class VoiceEngineSettingsViewModel: ObservableObject {
             return "Nemotron 3.5 Multilingual is slower but more accurate. Supports around 40 languages with auto or manual language selection. Best on Apple Silicon with 8GB+ RAM."
         case .nemotronStreaming, .nemotronStreaming320:
             return "Nemotron Speech 3.5 Streaming Capable uses NVIDIA's streaming CoreML pipeline. Supports around 40 languages with auto or manual language selection."
+        case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+            return String.fluidLocalizedFormat("%@ sends recorded audio to the vendor's cloud API after you stop speaking. ", String(describing: model.displayName)) +
+                "Requires internet and your own API key (stored in the macOS Keychain); usage is billed by the vendor. " +
+                "Live preview is disabled to avoid per-chunk charges."
         default:
             return "Whisper models support 99 languages and work on any Mac."
         }
@@ -255,6 +261,17 @@ final class VoiceEngineSettingsViewModel: ObservableObject {
 
     func setSelectedSpeechProvider(_ provider: SettingsStore.SpeechModel.Provider) {
         self.selectedSpeechProvider = provider
+    }
+
+    func saveCloudConfiguration(_ configuration: CloudASRConfiguration, for model: SettingsStore.SpeechModel) {
+        CloudASRSettings.shared.save(configuration)
+        self.objectWillChange.send()
+        if self.isActiveSpeechModel(model) {
+            self.asr.resetTranscriptionProvider()
+            Task { await self.asr.checkIfModelsExistAsync() }
+        } else if configuration.hasCredentials {
+            self.activateSpeechModel(model)
+        }
     }
 
     func openExternalModelSource(for model: SettingsStore.SpeechModel) {

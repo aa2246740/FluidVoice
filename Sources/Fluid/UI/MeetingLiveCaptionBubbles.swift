@@ -143,11 +143,11 @@ struct MeetingLiveBubbleRow: View, Equatable {
     var body: some View {
         VStack(alignment: self.isMicrophone && !self.documentStyle ? .trailing : .leading, spacing: 4) {
             if self.row.showsLabel {
-                Text(self.sourceLabel)
+                Text(self.sourceLabel.fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(self.isMicrophone ? self.theme.palette.accent : self.theme.palette.secondaryText)
             }
-            Text(self.row.text)
+            Text(self.row.text.fluidLocalized)
                 // The partial→final color swap solidifies in place; it must never animate.
                 .transaction { $0.animation = nil }
                 .meetingBubbleStyle(self.presentationStyle)

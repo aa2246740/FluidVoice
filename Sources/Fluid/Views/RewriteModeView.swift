@@ -73,7 +73,7 @@ struct RewriteModeView: View {
                                     .foregroundStyle(.secondary)
                                 Spacer()
                                 if !self.service.rewrittenText.isEmpty {
-                                    Button(self.showOriginal ? "Hide" : "Show") {
+                                    Button((self.showOriginal ? "Hide" : "Show").fluidLocalized) {
                                         withAnimation { self.showOriginal.toggle() }
                                     }
                                     .font(.fluidSystem(.caption))
@@ -82,7 +82,7 @@ struct RewriteModeView: View {
                             }
 
                             if self.showOriginal {
-                                Text(self.service.originalText)
+                                Text(self.service.originalText.fluidLocalized)
                                     .padding()
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .background(self.theme.palette.cardBackground)
@@ -120,7 +120,7 @@ struct RewriteModeView: View {
                                 .fontWeight(.bold)
                                 .foregroundStyle(self.theme.palette.accent)
 
-                            Text(self.service.rewrittenText)
+                            Text(self.service.rewrittenText.fluidLocalized)
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(self.theme.palette.accent.opacity(0.1))
@@ -154,7 +154,7 @@ struct RewriteModeView: View {
                     if let lastMsg = service.conversationHistory.last, lastMsg.role == .assistant,
                        service.rewrittenText.isEmpty
                     {
-                        Text(lastMsg.content) // Error message usually
+                        Text(lastMsg.content.fluidLocalized) // Error message usually
                             .foregroundStyle(.red)
                             .padding()
                             .background(Color.red.opacity(0.1))
@@ -340,7 +340,7 @@ struct RewriteModeView: View {
                         HStack(spacing: 4) {
                             Text("Press")
                                 .font(.fluidSystem(.caption))
-                            Text(self.shortcutDisplay)
+                            Text(self.shortcutDisplay.fluidLocalized)
                                 .font(.fluidSystem(.caption))
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 6)
@@ -366,7 +366,7 @@ struct RewriteModeView: View {
                         HStack(spacing: 4) {
                             Text("Select text first, then press")
                                 .font(.fluidSystem(.caption))
-                            Text(self.shortcutDisplay)
+                            Text(self.shortcutDisplay.fluidLocalized)
                                 .font(.fluidSystem(.caption))
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 6)
@@ -395,7 +395,7 @@ struct RewriteModeView: View {
         HStack(spacing: 6) {
             Text("•")
                 .foregroundStyle(.secondary)
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(.fluidSystem(.caption))
                 .foregroundStyle(.primary.opacity(0.8))
         }
@@ -424,7 +424,7 @@ struct RewriteModeView: View {
             // Expanded content
             if self.isThinkingExpanded {
                 ScrollView(.vertical, showsIndicators: true) {
-                    Text(self.service.streamingThinkingText)
+                    Text(self.service.streamingThinkingText.fluidLocalized)
                         .font(.fluidSystem(size: 11))
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
@@ -436,7 +436,7 @@ struct RewriteModeView: View {
             } else {
                 // Preview - first 100 chars
                 if !self.service.streamingThinkingText.isEmpty {
-                    Text(String(self.service.streamingThinkingText.prefix(100)) + (self.service.streamingThinkingText.count > 100 ? "..." : ""))
+                    Text(String(self.service.streamingThinkingText.prefix(100)) + (self.service.streamingThinkingText.count > 100 ? "..." : "").fluidLocalized)
                         .font(.fluidSystem(size: 11))
                         .foregroundStyle(.secondary.opacity(0.7))
                         .lineLimit(2)

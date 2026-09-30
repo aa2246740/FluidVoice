@@ -79,7 +79,7 @@ struct CommandSessionSidebar: View {
                 self.sessionList
             }
             if !self.canChangeSession, let blockingReason {
-                Text(blockingReason)
+                Text(blockingReason.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -108,16 +108,16 @@ struct CommandSessionSidebar: View {
             Menu {
                 Picker("Session history view", selection: self.$scope) {
                     ForEach(SessionScope.allCases, id: \.self) { scope in
-                        Text(self.scopeTitle(scope)).tag(scope)
+                        Text(self.scopeTitle(scope).fluidLocalized).tag(scope)
                     }
                 }
                 .pickerStyle(.inline)
             } label: {
-                Text(self.scopeTitle(self.scope))
+                Text(self.scopeTitle(self.scope).fluidLocalized)
             }
             .fluidDropdownStyle(fillsWidth: true)
             .accessibilityLabel("Session history view")
-            .accessibilityValue(self.scopeTitle(self.scope))
+            .accessibilityValue(self.scopeTitle(self.scope).fluidLocalized)
             self.searchField
         }
         .padding([.horizontal, .top], self.theme.metrics.spacing.md)
@@ -156,7 +156,7 @@ struct CommandSessionSidebar: View {
         .buttonStyle(.plain)
         .onHover { self.newSessionHovered = $0 }
         .disabled(!self.canChangeSession)
-        .help(self.blockingReason ?? "Start a new chat")
+        .help(self.blockingReason ?? "Start a new chat".fluidLocalized)
     }
 
     private var searchField: some View {
@@ -214,7 +214,7 @@ struct CommandSessionSidebar: View {
                     ForEach(items) { item in
                         switch item {
                         case let .heading(group):
-                            Text(group.rawValue)
+                            Text(group.rawValue.fluidLocalized)
                                 .font(self.theme.typography.caption)
                                 .foregroundStyle(self.theme.palette.secondaryText)
                                 .padding(.horizontal, self.theme.metrics.spacing.md)
@@ -312,18 +312,18 @@ struct CommandSessionSidebar: View {
             } label: {
                 VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
                     HStack(spacing: 6) {
-                        Text(self.row.title)
+                        Text(self.row.title.fluidLocalized)
                             .font(self.selected ? self.theme.typography.bodySmallStrong : self.theme.typography.bodySmall)
                             .foregroundStyle(self.theme.palette.primaryText)
                             .lineLimit(1)
                         Spacer(minLength: 0)
-                        Text(self.row.relativeTime)
+                        Text(self.row.relativeTime.fluidLocalized)
                             .font(self.theme.typography.captionSmall)
                             .foregroundStyle(self.theme.palette.tertiaryText)
                             .fixedSize()
                             .opacity(self.showsActions ? 0 : 1)
                     }
-                    Text(self.row.preview)
+                    Text(self.row.preview.fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(self.theme.palette.secondaryText)
                         .lineLimit(1)
@@ -337,9 +337,9 @@ struct CommandSessionSidebar: View {
             .buttonStyle(.plain)
             .focused(self.$focusedControl, equals: .open)
             .accessibilityAddTraits(self.selected ? .isSelected : [])
-            .accessibilityHint(self.openHint)
-            .help(self.blockingReason ?? self.openHint)
-            .accessibilityAction(named: Text(self.actionTitle)) { self.performArchiveAction() }
+            .accessibilityHint(self.openHint.fluidLocalized)
+            .help(self.blockingReason ?? self.openHint.fluidLocalized)
+            .accessibilityAction(named: Text(self.actionTitle.fluidLocalized)) { self.performArchiveAction() }
             .editableTitle(self.row.title, id: self.row.id, enabled: self.canChangeSession) {
                 ChatHistoryStore.shared.renameChat(id: self.row.id, to: $0)
             }
@@ -357,8 +357,8 @@ struct CommandSessionSidebar: View {
                 .allowsHitTesting(self.showsActions)
                 .disabled(!self.showsActions)
                 .accessibilityHidden(!self.showsActions)
-                .accessibilityLabel("\(self.actionTitle): \(self.row.title)")
-                .help(self.blockingReason ?? self.actionTitle)
+                .accessibilityLabel("\( self.actionTitle): \( self.row.title)")
+                .help(self.blockingReason ?? self.actionTitle.fluidLocalized)
                 .padding(.trailing, self.theme.metrics.spacing.xs)
             }
             .background(
@@ -378,15 +378,15 @@ struct CommandSessionSidebar: View {
 
     private var emptyState: some View {
         let isSearching = !self.searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        let title = isSearching ? "No matching \(self.scope.rawValue.lowercased()) sessions" : "No \(self.scope.rawValue.lowercased()) sessions"
+        let title = String.fluidLocalizedFormat(isSearching ? "No matching %@ sessions" : "No %@ sessions", self.scope.rawValue.lowercased())
         return VStack(spacing: self.theme.metrics.spacing.sm) {
             Image(systemName: isSearching ? "magnifyingglass" : (self.scope.isArchived ? "archivebox" : "bubble.left.and.bubble.right"))
                 .font(self.theme.typography.titleIcon)
                 .foregroundStyle(self.theme.palette.tertiaryText)
                 .accessibilityHidden(true)
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(self.theme.typography.bodySmallStrong)
-            Text(isSearching ? "Try another title or phrase from the preview." : (self.scope.isArchived ? "Archived sessions stay here until you restore them." : "Start a new session to work with your Mac."))
+            Text((isSearching ? "Try another title or phrase from the preview." : (self.scope.isArchived ? "Archived sessions stay here until you restore them." : "Start a new session to work with your Mac.")).fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
         }

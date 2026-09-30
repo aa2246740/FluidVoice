@@ -1019,31 +1019,31 @@ nonisolated enum MeetingAnalysisManifestError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case let .unsupportedSchemaVersion(version):
-            return "Unsupported meeting analysis manifest schema version \(version)."
+            return String.fluidLocalizedFormat("Unsupported meeting analysis manifest schema version %@.", String(describing: version))
         case let .backendMismatch(expected, actual):
             return "Analysis manifest names backend \"\(actual)\" but the plan selected \"\(expected)\"."
         case let .backendVersionMismatch(expected, actual):
             return "Analysis manifest names backend version \"\(actual)\"; the plan froze \"\(expected)\"."
         case let .attemptMismatch(expected, actual):
-            return "Analysis manifest carries attempt \(actual) but the plan is attempt \(expected)."
+            return String.fluidLocalizedFormat("Analysis manifest carries attempt %@ but the plan is attempt %@.", String(describing: actual), String(describing: expected))
         case let .sessionMismatch(expected, actual):
-            return "Analysis manifest carries session \(actual) but the plan is session \(expected)."
+            return String.fluidLocalizedFormat("Analysis manifest carries session %@ but the plan is session %@.", String(describing: actual), String(describing: expected))
         case let .captureModeMismatch(expected, actual):
-            return "Analysis manifest declares \(actual.rawValue) capture; the session is \(expected.rawValue)."
+            return String.fluidLocalizedFormat("Analysis manifest declares %@ capture; the session is %@.", String(describing: actual.rawValue), String(describing: expected.rawValue))
         case let .presentationOriginMismatch(expected, actual):
-            return "Analysis manifest uses presentation origin \(actual); the frozen session's is \(expected)."
+            return String.fluidLocalizedFormat("Analysis manifest uses presentation origin %@; the frozen session's is %@.", String(describing: actual), String(describing: expected))
         case .invalidAnalysisSampleRate:
             return "Analysis manifest declares a non-finite or non-positive analysis sample rate."
         case .invalidResidualBound:
             return "Analysis manifest declares a non-finite or non-positive residual bound."
         case let .duplicateTrack(trackID):
-            return "Analysis manifest lists track \(trackID) more than once."
+            return String.fluidLocalizedFormat("Analysis manifest lists track %@ more than once.", String(describing: trackID))
         case let .trackOutOfScope(trackID):
-            return "Analysis manifest covers track \(trackID), which was never planned."
+            return String.fluidLocalizedFormat("Analysis manifest covers track %@, which was never planned.", String(describing: trackID))
         case let .trackKindMismatch(trackID):
-            return "Analysis manifest declares the wrong kind for track \(trackID)."
+            return String.fluidLocalizedFormat("Analysis manifest declares the wrong kind for track %@.", String(describing: trackID))
         case let .missingPlannedTrack(trackID):
-            return "Analysis manifest omits planned track \(trackID)."
+            return String.fluidLocalizedFormat("Analysis manifest omits planned track %@.", String(describing: trackID))
         case let .unstableSpanID(expected, actual):
             return "Analysis span identifier \"\(actual)\" is not its stable identity \"\(expected)\"."
         case let .duplicateSpanID(id):
@@ -1053,18 +1053,18 @@ nonisolated enum MeetingAnalysisManifestError: LocalizedError, Equatable {
         case let .duplicateGapID(id):
             return "Analysis gap identifier \"\(id)\" appears more than once."
         case let .pieceOrderInvalid(trackID):
-            return "Track \(trackID) lists spans or gaps out of chunk-sequence order."
+            return String.fluidLocalizedFormat("Track %@ lists spans or gaps out of chunk-sequence order.", String(describing: trackID))
         case let .chunkOutOfScope(key):
-            return "Analysis manifest references chunk \(key), which was not planned."
+            return String.fluidLocalizedFormat("Analysis manifest references chunk %@, which was not planned.", String(describing: key))
         case let .chunkIdentityDisagreesWithPlan(key):
             return "Analysis manifest states a sequence, path, byte count or digest for chunk "
-                + "\(key) that the frozen request does not."
+                + String.fluidLocalizedFormat("%@ that the frozen request does not.", String(describing: key))
         case let .plannedChunkUncovered(key):
-            return "Planned chunk \(key) has neither an analysis span nor a gap."
+            return String.fluidLocalizedFormat("Planned chunk %@ has neither an analysis span nor a gap.", String(describing: key))
         case let .chunkPieceIndicesInvalid(key):
-            return "Planned chunk \(key) has duplicate or non-contiguous piece indices."
+            return String.fluidLocalizedFormat("Planned chunk %@ has duplicate or non-contiguous piece indices.", String(describing: key))
         case let .chunkPieceCoverageInvalid(key):
-            return "Planned chunk \(key)'s pieces do not exactly cover its recorded interval."
+            return String.fluidLocalizedFormat("Planned chunk %@'s pieces do not exactly cover its recorded interval.", String(describing: key))
         case let .spanTrackCrossing(spanID):
             return "Analysis span \"\(spanID)\" is filed under a different track than it names."
         case let .gapTrackCrossing(gapID):
@@ -1092,7 +1092,7 @@ nonisolated enum MeetingAnalysisManifestError: LocalizedError, Equatable {
         case let .analysisDurationDisagreesWithSource(spanID):
             return "Analysis span \"\(spanID)\" has an analysis duration unequal to its valid source duration."
         case let .analysisTimeNotGapRemoved(trackID):
-            return "Track \(trackID)'s analysis stream is not the gap-removed concatenation of its spans."
+            return String.fluidLocalizedFormat("Track %@'s analysis stream is not the gap-removed concatenation of its spans.", String(describing: trackID))
         case let .invalidTransform(spanID):
             return "Analysis span \"\(spanID)\" has a non-finite or non-positive time transform."
         case let .transformDisagreesWithIntervals(spanID):
@@ -1134,31 +1134,31 @@ nonisolated enum MeetingAnalysisManifestError: LocalizedError, Equatable {
         case let .invalidEpochOrdinal(spanID):
             return "Analysis span \"\(spanID)\" uses a negative analysis epoch ordinal."
         case let .invalidEpochGeneration(epochID):
-            return "Analysis epoch \(epochID) uses a negative evidence generation."
+            return String.fluidLocalizedFormat("Analysis epoch %@ uses a negative evidence generation.", String(describing: epochID))
         case let .unknownSpanEpoch(spanID):
             return "Analysis span \"\(spanID)\" references an epoch the manifest does not record."
         case let .duplicateEpoch(epochID):
-            return "Analysis epoch \(epochID) is recorded more than once."
+            return String.fluidLocalizedFormat("Analysis epoch %@ is recorded more than once.", String(describing: epochID))
         case let .epochTrackCrossing(epochID):
-            return "Analysis epoch \(epochID) is filed under another track."
+            return String.fluidLocalizedFormat("Analysis epoch %@ is filed under another track.", String(describing: epochID))
         case let .nonContiguousEpochOrdinals(trackID):
-            return "Track \(trackID) has non-contiguous analysis epoch ordinals."
+            return String.fluidLocalizedFormat("Track %@ has non-contiguous analysis epoch ordinals.", String(describing: trackID))
         case let .emptyEpoch(epochID):
-            return "Analysis epoch \(epochID) contains no spans."
+            return String.fluidLocalizedFormat("Analysis epoch %@ contains no spans.", String(describing: epochID))
         case let .epochSpanMembershipMismatch(epochID):
-            return "Analysis epoch \(epochID) lists spans other than the ones assigned to it."
+            return String.fluidLocalizedFormat("Analysis epoch %@ lists spans other than the ones assigned to it.", String(describing: epochID))
         case let .epochIntervalMismatch(epochID):
-            return "Analysis epoch \(epochID) declares an interval its spans do not cover."
+            return String.fluidLocalizedFormat("Analysis epoch %@ declares an interval its spans do not cover.", String(describing: epochID))
         case let .invalidEpochResetReason(epochID):
-            return "Analysis epoch \(epochID) declares a reset reason its position cannot have."
+            return String.fluidLocalizedFormat("Analysis epoch %@ declares a reset reason its position cannot have.", String(describing: epochID))
         case let .unjustifiedEpochBoundary(spanID):
             return "Analysis span \"\(spanID)\" starts a new epoch with no gap, discontinuity or device change before it."
         case let .missingEpochBoundary(spanID):
             return "Analysis span \"\(spanID)\" continues an epoch across a gap, discontinuity or device change."
         case let .nonMonotonicAnalysisTime(trackID):
-            return "Track \(trackID) has overlapping or out-of-order analysis intervals."
+            return String.fluidLocalizedFormat("Track %@ has overlapping or out-of-order analysis intervals.", String(describing: trackID))
         case let .nonMonotonicPresentationTime(trackID):
-            return "Track \(trackID) has overlapping or out-of-order presentation intervals."
+            return String.fluidLocalizedFormat("Track %@ has overlapping or out-of-order presentation intervals.", String(describing: trackID))
         }
     }
 }

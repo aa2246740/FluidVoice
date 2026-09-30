@@ -1658,11 +1658,11 @@ private struct BottomOverlayModeMenuView: View {
             self.onDismissRequested()
         }) {
             HStack(alignment: .center, spacing: 8) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 15, weight: .semibold))
                 Spacer()
                 if !shortcut.isEmpty {
-                    Text(shortcut)
+                    Text(shortcut.fluidLocalized)
                         .font(.fluidSystem(size: 11, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.7))
                         .padding(.horizontal, 6)
@@ -1779,7 +1779,7 @@ private struct BottomOverlayPromptMenuView: View {
     @ViewBuilder
     private func shortcutBadge(for selection: SettingsStore.DictationPromptSelection) -> some View {
         if !self.isCompact, let shortcut = self.shortcutDisplay(for: selection) {
-            Text(shortcut)
+            Text(shortcut.fluidLocalized)
                 .font(.fluidSystem(size: 9, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.58))
                 .lineLimit(1)
@@ -1863,7 +1863,7 @@ private struct BottomOverlayPromptMenuView: View {
             self.onDismissRequested()
         }) {
             HStack {
-                Text(SettingsStore.DictationModeLabels.externalDefault)
+                Text(SettingsStore.DictationModeLabels.externalDefault.fluidLocalized)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark")
@@ -1878,7 +1878,7 @@ private struct BottomOverlayPromptMenuView: View {
         .buttonStyle(.plain)
         .disabled(!isAvailable)
         .opacity(isAvailable ? 1 : 0.45)
-        .help(isAvailable ? "Use your default provider" : "Add an API key to a provider to enable this prompt")
+        .help((isAvailable ? "Use your default provider" : "Add an API key to a provider to enable this prompt").fluidLocalized)
         .onHover { hovering in
             self.hoveredRowID = hovering && isAvailable ? "default" : nil
         }
@@ -1896,10 +1896,10 @@ private struct BottomOverlayPromptMenuView: View {
             self.onDismissRequested()
         }) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(SettingsStore.DictationModeLabels.smart)
+                Text(SettingsStore.DictationModeLabels.smart.fluidLocalized)
                 Spacer(minLength: 12)
                 if !self.isCompact {
-                    Text(PrivateAIModelRegistry.model(id: PrivateAIIntegrationService.configuredModelID)?.displayName ?? "Fluid-1")
+                    Text(PrivateAIModelRegistry.model(id: PrivateAIIntegrationService.configuredModelID)?.displayName ?? "Fluid-1".fluidLocalized)
                         .font(.fluidSystem(size: 10, weight: .medium))
                         .foregroundStyle(.white.opacity(0.45))
                 }
@@ -1916,7 +1916,7 @@ private struct BottomOverlayPromptMenuView: View {
         .buttonStyle(.plain)
         .disabled(!isAvailable)
         .opacity(isAvailable ? 1 : 0.45)
-        .help(isAvailable ? "Use \(PrivateAIProviderFeature.displayName)" : "Select \(PrivateAIProviderFeature.displayName) to enable this prompt")
+        .help((isAvailable ? String.fluidLocalizedFormat("Use %@", String(describing: PrivateAIProviderFeature.displayName)) : "Select \(PrivateAIProviderFeature.displayName) to enable this prompt").fluidLocalized)
         .onHover { hovering in
             self.hoveredRowID = hovering && isAvailable ? PrivateAIProviderFeature.shared.providerID : nil
         }
@@ -1940,7 +1940,7 @@ private struct BottomOverlayPromptMenuView: View {
             self.onDismissRequested()
         }) {
             HStack {
-                Text(profile.name.isEmpty ? "Untitled" : profile.name)
+                Text((profile.name.isEmpty ? "Untitled" : profile.name).fluidLocalized)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark")
@@ -2110,7 +2110,7 @@ private struct BottomOverlayActionsMenuView: View {
             self.onDismissRequested()
         }) {
             HStack(spacing: 8) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 14, weight: .semibold))
                 Spacer()
                 Image(systemName: icon)
@@ -2141,11 +2141,11 @@ private struct BottomOverlayActionsMenuView: View {
             self.onDismissRequested()
         }) {
             HStack(spacing: 8) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 14, weight: .semibold))
                 Spacer()
                 if !shortcut.isEmpty {
-                    Text(shortcut)
+                    Text(shortcut.fluidLocalized)
                         .font(.fluidSystem(size: 11, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.7))
                 }
@@ -2894,7 +2894,7 @@ struct BottomOverlayView: View {
     }
 
     private func richPreviewText(_ previewText: String) -> Text {
-        Text(previewText)
+        Text(previewText.fluidLocalized)
             .foregroundColor(.white.opacity(0.96))
     }
 
@@ -3083,7 +3083,7 @@ struct BottomOverlayView: View {
                     .lineLimit(1)
                     .fixedSize(horizontal: true, vertical: false)
             }
-            Text(self.modeLabel)
+            Text(self.modeLabel.fluidLocalized)
                 .font(.fluidSystem(size: self.promptSelectorFontSize, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.75))
                 .lineLimit(1)
@@ -3130,9 +3130,9 @@ struct BottomOverlayView: View {
                     .font(.fluidSystem(size: max(self.promptSelectorFontSize - 1, 9), weight: .semibold))
                     .foregroundStyle(.white.opacity(0.72))
             }
-            Text(self.promptSelectorDisplayLabel)
-                .help(self.selectedPromptLabel)
-                .accessibilityLabel(self.selectedPromptLabel)
+            Text(self.promptSelectorDisplayLabel.fluidLocalized)
+                .help(self.selectedPromptLabel.fluidLocalized)
+                .accessibilityLabel(self.selectedPromptLabel.fluidLocalized)
                 .font(.fluidSystem(size: self.promptSelectorFontSize, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.82))
                 .lineLimit(1)
@@ -3158,7 +3158,7 @@ struct BottomOverlayView: View {
             width: self.layout.showsTopControls ? self.promptSelectorTriggerMaxWidth : nil,
             alignment: .trailing
         )
-        .help(self.selectedPromptLabel)
+        .help(self.selectedPromptLabel.fluidLocalized)
         .background(
             RoundedRectangle(cornerRadius: self.promptSelectorCornerRadius, style: .continuous)
                 .fill(
@@ -3328,12 +3328,12 @@ struct BottomOverlayView: View {
                 )
         }
         .buttonStyle(.plain)
-        .help(help)
+        .help(help.fluidLocalized)
     }
 
     private var aiProcessingFailureView: some View {
         HStack(spacing: 8) {
-            Text(self.contentState.aiProcessingFailureMessage)
+            Text(self.contentState.aiProcessingFailureMessage.fluidLocalized)
                 .font(.fluidSystem(size: self.layout.transFontSize, weight: .semibold))
                 .foregroundStyle(
                     self.contentState.canRetryAIProcessingFailure
@@ -3503,7 +3503,7 @@ struct BottomOverlayView: View {
                                 if !previewText.isEmpty {
                                     ScrollViewReader { proxy in
                                         ScrollView(.vertical, showsIndicators: false) {
-                                            Text(previewText)
+                                            Text(previewText.fluidLocalized)
                                                 .font(.fluidSystem(size: self.layout.transFontSize, weight: .medium))
                                                 .foregroundStyle(.white.opacity(0.96))
                                                 .multilineTextAlignment(.leading)
@@ -3552,7 +3552,7 @@ struct BottomOverlayView: View {
                                 let previewText = self.transcriptionPreviewText
                                 if !previewText.isEmpty {
                                     if self.settings.overlaySize == .small {
-                                        Text(previewText)
+                                        Text(previewText.fluidLocalized)
                                             .font(.fluidSystem(size: self.layout.transFontSize, weight: .medium))
                                             .foregroundStyle(.white.opacity(0.96))
                                             .multilineTextAlignment(.leading)
@@ -3561,7 +3561,7 @@ struct BottomOverlayView: View {
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .padding(.vertical, max(2, self.transcriptionVerticalPadding - 1))
                                     } else {
-                                        Text(previewText)
+                                        Text(previewText.fluidLocalized)
                                             .font(.fluidSystem(size: self.layout.transFontSize, weight: .medium))
                                             .foregroundStyle(.white.opacity(0.96))
                                             .multilineTextAlignment(.leading)
@@ -3633,7 +3633,7 @@ struct BottomOverlayView: View {
                     // Compact overlays still need a visible mode because they have no selector.
                     if self.layout.showsModeLabel, !self.layout.showsTopControls {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(self.modeLabel)
+                            Text(self.modeLabel.fluidLocalized)
                                 .font(.fluidSystem(size: self.layout.modeFontSize, weight: .semibold))
                                 .foregroundStyle(self.modeColor)
                                 .lineLimit(1)

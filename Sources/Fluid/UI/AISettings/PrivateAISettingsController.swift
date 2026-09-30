@@ -264,7 +264,7 @@ final class PrivateAISettingsController: ObservableObject {
                     }
                     self.privateAILoadState = .failed(
                         modelID: model.id,
-                        message: "The new model failed verification. The previous model is still active. \(detail)"
+                        message: String.fluidLocalizedFormat("The new model failed verification. The previous model is still active. %@", String(describing: detail))
                     )
                 }
             } catch {
@@ -468,7 +468,7 @@ final class PrivateAISettingsController: ObservableObject {
         Task { @MainActor in
             defer { self.session.finish(operation) }
             await PrivateAIIntegrationService.shared.unloadCachedRuntime(
-                reason: "Fluid Intelligence backend changed to \(preference.displayName)"
+                reason: String.fluidLocalizedFormat("Fluid Intelligence backend changed to %@", String(describing: preference.displayName))
             )
             guard self.privateAISelectedModelID == modelID else { return }
             let model = self.selectedPrivateAIModel

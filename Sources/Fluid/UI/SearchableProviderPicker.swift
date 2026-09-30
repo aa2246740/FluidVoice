@@ -69,7 +69,7 @@ struct SearchableProviderPicker: View {
     var body: some View {
         Button(action: { self.isShowingPopover.toggle() }) {
             HStack(spacing: 8) {
-                Text(self.selectedProviderName)
+                Text(self.selectedProviderName.fluidLocalized)
                     .lineLimit(1)
                     .truncationMode(.tail)
                 Spacer(minLength: 6)
@@ -152,7 +152,7 @@ struct SearchableProviderPicker: View {
             self.isShowingPopover = false
         }) {
             HStack {
-                Text(provider.name)
+                Text(provider.name.fluidLocalized)
                     .lineLimit(1)
                 Spacer()
                 if provider.id == self.selectedProviderID {

@@ -49,8 +49,8 @@ struct HistoryAppIcon: View {
             }
         }
         .frame(width: 22, height: 22)
-        .accessibilityLabel(self.appName.isEmpty ? "Unknown app" : self.appName)
-        .help(self.appName.isEmpty ? "Unknown app" : self.appName)
+        .accessibilityLabel((self.appName.isEmpty ? "Unknown app" : self.appName).fluidLocalized)
+        .help((self.appName.isEmpty ? "Unknown app" : self.appName).fluidLocalized)
         .task(id: self.appName) {
             self.image = nil
             let image = await HistoryAppIconCache.shared.icon(for: self.appName)

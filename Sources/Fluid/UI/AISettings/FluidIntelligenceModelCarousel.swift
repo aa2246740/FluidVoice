@@ -75,7 +75,7 @@ struct FluidIntelligenceModelCarousel<Controls: View>: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Show \(self.title(for: id))")
-                    .accessibilityValue(self.displayedPreviewID == id ? "Current page" : "")
+                    .accessibilityValue((self.displayedPreviewID == id ? "Current page" : "").fluidLocalized)
                 }
             }
         }
@@ -111,7 +111,7 @@ struct FluidIntelligenceModelCarousel<Controls: View>: View {
                 .contentShape(Circle())
         }
         .fluidGlassAction(circular: true)
-        .accessibilityLabel(forward ? "Next model" : "Previous model")
+        .accessibilityLabel((forward ? "Next model" : "Previous model").fluidLocalized)
         .disabled(self.itemIDs.count < 2)
     }
 
@@ -127,7 +127,7 @@ struct FluidIntelligenceModelCarousel<Controls: View>: View {
                 Text("Coming soon")
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(self.theme.palette.secondaryText)
-                Text(model.title)
+                Text(model.title.fluidLocalized)
                     .font(compact ? self.theme.typography.sectionTitle : self.theme.typography.title)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)

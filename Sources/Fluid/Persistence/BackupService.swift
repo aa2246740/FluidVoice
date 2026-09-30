@@ -159,7 +159,7 @@ enum BackupServiceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .unsupportedSchemaVersion(version):
-            return "This backup uses an unsupported schema version (\(version.major).\(version.minor))."
+            return String.fluidLocalizedFormat("This backup uses an unsupported schema version (%@.%@).", String(describing: version.major), String(describing: version.minor))
         case .invalidJSON:
             return "The selected backup file is not a valid FluidVoice backup."
         }

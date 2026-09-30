@@ -12,7 +12,7 @@ struct CommandShimmerText: View {
             let leadingEdge = max(0, center - 0.18)
             let trailingEdge = min(1, center + 0.18)
 
-            Text(self.text)
+            Text(self.text.fluidLocalized)
                 .font(.fluidSystem(size: 13, weight: .semibold))
                 .foregroundStyle(
                     LinearGradient(
@@ -28,6 +28,6 @@ struct CommandShimmerText: View {
                     )
                 )
         }
-        .accessibilityLabel(Text(self.text))
+        .accessibilityLabel(Text(self.text.fluidLocalized))
     }
 }

@@ -392,7 +392,7 @@ enum ASRActivityError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .activityInProgress(activity):
-            return "Wait for the active \(activity.displayName) to finish."
+            return String.fluidLocalizedFormat("Wait for the active %@ to finish.", String(describing: activity.displayName))
         }
     }
 }
@@ -961,7 +961,7 @@ final class ASRService: ObservableObject {
             return "Preparing download..."
         case .downloading:
             if let progress = self.downloadProgress {
-                return "Downloading \(Int(progress * 100))%"
+                return String.fluidLocalizedFormat("Downloading %@%", String(describing: Int(progress * 100)))
             }
             return "Downloading model..."
         case .optimizing:
@@ -984,6 +984,7 @@ final class ASRService: ObservableObject {
     private var nemotronProviders: [NemotronProvider.Mode: NemotronProvider] = [:]
     private var whisperProvider: WhisperProvider?
     private var appleSpeechProvider: AppleSpeechProvider?
+    private var cloudASRProviders: [CloudASRVendor: CloudASRProvider] = [:]
     /// Stored as Any? because @available cannot be applied to stored properties
     private var _appleSpeechAnalyzerProvider: Any?
 
@@ -1082,6 +1083,7 @@ final class ASRService: ObservableObject {
         self.nemotronProviders.removeAll()
         self.whisperProvider = nil
         self.appleSpeechProvider = nil
+        self.cloudASRProviders.removeAll()
         self._appleSpeechAnalyzerProvider = nil
         self.isAsrReady = false
         self.isLoadingModel = false
@@ -1114,9 +1116,20 @@ final class ASRService: ObservableObject {
             return self.getNemotronProvider(mode: model.nemotronProviderMode)
         case .qwen3Asr:
             return self.getFluidAudioProvider()
+        case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+            guard let vendor = model.cloudVendor else { return self.getWhisperProvider() }
+            return self.getCloudASRProvider(vendor: vendor)
         default:
             return self.getWhisperProvider()
         }
+    }
+
+    private func getCloudASRProvider(vendor: CloudASRVendor) -> CloudASRProvider {
+        if let existing = self.cloudASRProviders[vendor] { return existing }
+        let provider = CloudASRProvider(vendor: vendor)
+        self.cloudASRProviders[vendor] = provider
+        DebugLogger.shared.info("ASRService: Created cloud ASR provider [\(vendor.rawValue)]", source: "ASRService")
+        return provider
     }
 
     private func getFluidAudioProvider() -> FluidAudioProvider {
@@ -1245,6 +1258,9 @@ final class ASRService: ObservableObject {
         case .qwen3Asr:
             // Qwen support removed; route legacy requests to Parakeet v3.
             return FluidAudioProvider(modelOverride: .parakeetTDT, configureWordBoosting: false)
+        case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
+            guard let vendor = model.cloudVendor else { return WhisperProvider(modelOverride: model) }
+            return CloudASRProvider(vendor: vendor)
         default:
             // Whisper models - create provider with specific model override
             return WhisperProvider(modelOverride: model)
@@ -1406,6 +1422,7 @@ final class ASRService: ObservableObject {
         self.externalCoreMLProvider = nil
         self.whisperProvider = nil
         self.appleSpeechProvider = nil
+        self.cloudASRProviders.removeAll()
         self._appleSpeechAnalyzerProvider = nil
 
         // CRITICAL FIX: Check if the NEW model's files exist on disk
@@ -2231,7 +2248,7 @@ final class ASRService: ObservableObject {
         guard activeSelectionChanged || preparedSelectionChanged else { return }
 
         self.scheduleAudioRouteRecovery(
-            reason: "input availability changed:\(deviceID ?? 0)",
+            reason: String.fluidLocalizedFormat("input availability changed:%@", String(describing: deviceID ?? 0)),
             requiresIdlePrewarm: true,
             reconcilesInputSelection: true
         )
@@ -2281,9 +2298,9 @@ final class ASRService: ObservableObject {
         if provider.isWordBoostingActive {
             let count = provider.boostedVocabularyTermsCount
             if let lastHit = self.lastBoostHitTerm, !lastHit.isEmpty {
-                self.wordBoostStatusText = "Word boost: ON (\(count) terms) • last hit: \(lastHit)"
+                self.wordBoostStatusText = String.fluidLocalizedFormat("Word boost: ON (%@ terms) • last hit: %@", String(describing: count), String(describing: lastHit))
             } else {
-                self.wordBoostStatusText = "Word boost: ON (\(count) terms) • no hit yet"
+                self.wordBoostStatusText = String.fluidLocalizedFormat("Word boost: ON (%@ terms) • no hit yet", String(describing: count))
             }
         } else {
             self.wordBoostStatusText = "Word boost: ON (0 terms loaded)"
@@ -3050,13 +3067,13 @@ final class ASRService: ObservableObject {
                     if underlyingError.domain == AVFoundationErrorDomain || underlyingError.domain == NSOSStatusErrorDomain {
                         errorMessage = "Failed to start audio recording. The audio device may be in use by another application or unavailable. Please check your audio settings and try again."
                     } else {
-                        errorMessage = "Failed to start audio recording: \(underlyingError.localizedDescription)"
+                        errorMessage = String.fluidLocalizedFormat("Failed to start audio recording: %@", String(describing: underlyingError.localizedDescription))
                     }
                 } else {
                     errorMessage = "Failed to start audio recording after multiple attempts. Please check your audio device and try again."
                 }
             } else {
-                errorMessage = "Failed to start audio recording: \(error.localizedDescription)"
+                errorMessage = String.fluidLocalizedFormat("Failed to start audio recording: %@", String(describing: error.localizedDescription))
             }
 
             self.presentAudioCaptureFailure(
@@ -3268,7 +3285,7 @@ final class ASRService: ObservableObject {
         }
 
         self.scheduleAudioRouteRecovery(
-            reason: "deferred after Bluetooth startup: \(request.reason)",
+            reason: String.fluidLocalizedFormat("deferred after Bluetooth startup: %@", String(describing: request.reason)),
             requiresIdlePrewarm: request.requiresIdlePrewarm,
             reconcilesInputSelection: false
         )
@@ -4056,6 +4073,7 @@ final class ASRService: ObservableObject {
         self.nemotronProviders.removeAll()
         self.whisperProvider = nil
         self.appleSpeechProvider = nil
+        self.cloudASRProviders.removeAll()
         self._appleSpeechAnalyzerProvider = nil
         self.residentDictationModelID = nil
         self.isAsrReady = false
@@ -4671,7 +4689,7 @@ final class ASRService: ObservableObject {
         }
 
         // All retries failed - throw the actual error with context
-        let errorMessage = "Failed to start AVAudioEngine after 3 attempts. Last error: \(lastError?.localizedDescription ?? "unknown")"
+        let errorMessage = String.fluidLocalizedFormat("Failed to start AVAudioEngine after 3 attempts. Last error: %@", String(describing: lastError?.localizedDescription ?? "unknown"))
         DebugLogger.shared.error(errorMessage, source: "ASRService")
 
         // If we have a last error, wrap it with more context; otherwise create a new error
@@ -5219,7 +5237,7 @@ final class ASRService: ObservableObject {
                         code: -3,
                         userInfo: [
                             NSLocalizedDescriptionKey:
-                                "No replacement microphone delivered audio (\(readiness)).",
+                                String.fluidLocalizedFormat("No replacement microphone delivered audio (%@).", String(describing: readiness)),
                         ]
                     )
                 }
@@ -5266,7 +5284,7 @@ final class ASRService: ObservableObject {
               Task.isCancelled == false, self.isTerminating == false else { return }
         self.presentAudioCaptureFailure(
             title: "Recording Stopped",
-            message: "The microphone could not recover after the audio device changed. \(error.localizedDescription)"
+            message: String.fluidLocalizedFormat("The microphone could not recover after the audio device changed. %@", String(describing: error.localizedDescription))
         )
     }
 
@@ -5305,7 +5323,7 @@ final class ASRService: ObservableObject {
             source: "ASRService"
         )
         self.scheduleAudioRouteRecovery(
-            reason: "direct format changed: \(invalidation.reason)",
+            reason: String.fluidLocalizedFormat("direct format changed: %@", String(describing: invalidation.reason)),
             requiresIdlePrewarm: true,
             invalidatesCurrentStart: true
         )
@@ -6664,7 +6682,7 @@ final class ASRService: ObservableObject {
             throw NSError(
                 domain: "ASRService",
                 code: -2000,
-                userInfo: [NSLocalizedDescriptionKey: "Provider preparation failed: \(self.errorSummary(from: firstError))"]
+                userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("Provider preparation failed: %@", String(describing: self.errorSummary(from: firstError)))]
             )
         }
 

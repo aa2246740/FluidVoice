@@ -44,7 +44,7 @@ extension SettingsStore {
             let localized = Locale.current.localizedString(forIdentifier: normalized)
                 ?? Locale(identifier: "en_US").localizedString(forIdentifier: normalized)
             if let localized, localized.isEmpty == false {
-                return "\(localized) (\(self.rawValue))"
+                return String.fluidLocalizedFormat("%@ (%@)", String(describing: localized), String(describing: self.rawValue))
             }
             return self.rawValue
         }

@@ -283,7 +283,8 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
         case "openai": return "OpenAI"
         case "groq": return "Groq"
         default:
-            return self.savedProviders.first(where: { $0.id == providerID })?.name ?? providerID.capitalized
+            return self.savedProviders.first(where: { $0.id == providerID })?.name
+                ?? ModelRepository.shared.displayName(for: providerID)
         }
     }
 
@@ -389,7 +390,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
 
         guard PrivateAIIntegrationService.isModelInstalled(currentModel) else {
             self.updateConnectionStatus(.failed, for: providerID)
-            self.setConnectionError("\(currentModel.displayName) is not installed.", for: providerID)
+            self.setConnectionError(String.fluidLocalizedFormat("%@ is not installed.", String(describing: currentModel.displayName)), for: providerID)
             return false
         }
 
@@ -417,7 +418,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
                 return true
             default:
                 self.updateConnectionStatus(.failed, for: providerID)
-                self.setConnectionError(status.message ?? "\(currentModel.displayName) did not report ready.", for: providerID)
+                self.setConnectionError(status.message ?? String.fluidLocalizedFormat("%@ did not report ready.", String(describing: currentModel.displayName)), for: providerID)
                 return false
             }
         } catch {
@@ -727,25 +728,25 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
     }
 
     private func keychainPermissionExplanation(for status: OSStatus) -> String {
-        var message = "FluidVoice stores provider API keys securely in your macOS Keychain but does not currently have permission to access it."
+        var message = "FluidVoice stores provider API keys securely in your macOS Keychain but does not currently have permission to access it.".fluidLocalized
         if let detail = SecCopyErrorMessageString(status, nil) as String? {
-            message += "\n\nmacOS reported: \(detail) (\(status))"
+            message += String.fluidLocalizedFormat("\n\nmacOS reported: %@ (%@)", String(describing: detail), String(describing: status))
         }
         message += "\n\nClick \"Always Allow\" when the Keychain prompt appears, or open Keychain Access > login > Passwords, locate the FluidVoice entry, and grant access."
         return message
     }
 
     private func keychainPersistenceExplanation(for error: Error) -> String {
-        var message = "FluidVoice could not save the API key to your macOS Keychain, so this provider was not verified."
+        var message = "FluidVoice could not save the API key to your macOS Keychain, so this provider was not verified.".fluidLocalized
         if let keychainError = error as? KeychainServiceError {
             switch keychainError {
             case .invalidData:
                 message += "\n\nmacOS returned unreadable Keychain data."
             case let .unhandled(status):
                 if let detail = SecCopyErrorMessageString(status, nil) as String? {
-                    message += "\n\nmacOS reported: \(detail) (\(status))"
+                    message += String.fluidLocalizedFormat("\n\nmacOS reported: %@ (%@)", String(describing: detail), String(describing: status))
                 } else {
-                    message += "\n\nmacOS reported Keychain status \(status)."
+                    message += String.fluidLocalizedFormat("\n\nmacOS reported Keychain status %@.", String(describing: status))
                 }
             }
         } else {
@@ -779,11 +780,11 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
             : message
 
         let alert = NSAlert()
-        alert.messageText = "Keychain Access Required"
-        alert.informativeText = msg
+        alert.messageText = "Keychain Access Required".fluidLocalized
+        alert.informativeText = msg.fluidLocalized
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "Open Keychain Access")
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Open Keychain Access".fluidLocalized)
+        alert.addButton(withTitle: "OK".fluidLocalized)
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
@@ -818,7 +819,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
         if baseURL.isEmpty {
             await MainActor.run {
                 self.updateConnectionStatus(.failed, for: providerID)
-                self.setConnectionError("Base URL is required for \(providerName)", for: providerID)
+                self.setConnectionError(String.fluidLocalizedFormat("Base URL is required for %@", String(describing: providerName)), for: providerID)
             }
             return
         }
@@ -826,7 +827,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
         if !isLocal && apiKey.isEmpty {
             await MainActor.run {
                 self.updateConnectionStatus(.failed, for: providerID)
-                self.setConnectionError("API key is required for \(providerName). Enter your API key above.", for: providerID)
+                self.setConnectionError(String.fluidLocalizedFormat("API key is required for %@. Enter your API key above.", String(describing: providerName)), for: providerID)
             }
             return
         }
@@ -869,14 +870,14 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
 
         // Debug logging
         DebugLogger.shared.debug(
-            "testAPIConnection: provider=\(providerID), model=\(trimmedModel), baseURL=\(endpoint), fullURL=\(fullURL), isAnthropic=\(isAnthropic), usesResponsesAPI=\(usesResponsesAPI)",
+            "testAPIConnection: provider=\( providerID), model=\( trimmedModel), baseURL=\( endpoint), fullURL=\( fullURL), isAnthropic=\( isAnthropic), usesResponsesAPI=\( usesResponsesAPI)",
             source: "AISettingsView"
         )
 
         guard let url = URL(string: fullURL) else {
             await MainActor.run {
                 self.updateConnectionStatus(.failed, for: providerID)
-                self.setConnectionError("Invalid Base URL format: '\(endpoint)' could not be parsed as a URL", for: providerID)
+                self.setConnectionError(String.fluidLocalizedFormat("Invalid Base URL format: '%@' could not be parsed as a URL", String(describing: endpoint)), for: providerID)
             }
             return
         }
@@ -1046,9 +1047,9 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let responseBody, !responseBody.isEmpty {
-            return "HTTP \(statusCode): \(responseBody)"
+            return String.fluidLocalizedFormat("HTTP %@: %@", String(describing: statusCode), String(describing: responseBody))
         }
-        return "HTTP \(statusCode)"
+        return String.fluidLocalizedFormat("HTTP %@", String(describing: statusCode))
     }
 
     /// Interprets network errors with actionable guidance
@@ -1058,22 +1059,22 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
 
         switch nsError.code {
         case NSURLErrorTimedOut:
-            return "Connection to \(providerName) timed out. Check if the base URL is correct and the service is available."
+            return String.fluidLocalizedFormat("Connection to %@ timed out. Check if the base URL is correct and the service is available.", String(describing: providerName))
         case NSURLErrorCannotConnectToHost:
             if providerID == "ollama" || providerID == "lmstudio" {
-                return "Cannot connect. Is the \(providerName) server running? Check that the local server is started."
+                return String.fluidLocalizedFormat("Cannot connect. Is the %@ server running? Check that the local server is started.", String(describing: providerName))
             }
-            return "Cannot connect to \(providerName). Check your internet connection and base URL."
+            return String.fluidLocalizedFormat("Cannot connect to %@. Check your internet connection and base URL.", String(describing: providerName))
         case NSURLErrorNetworkConnectionLost:
-            return "Network connection lost while connecting to \(providerName). Check your internet connection."
+            return String.fluidLocalizedFormat("Network connection lost while connecting to %@. Check your internet connection.", String(describing: providerName))
         case NSURLErrorNotConnectedToInternet:
-            return "No internet connection. Connect to the internet to verify \(providerName)."
+            return String.fluidLocalizedFormat("No internet connection. Connect to the internet to verify %@.", String(describing: providerName))
         case NSURLErrorSecureConnectionFailed:
-            return "SSL/TLS error connecting to \(providerName). The server's certificate may be invalid."
+            return String.fluidLocalizedFormat("SSL/TLS error connecting to %@. The server's certificate may be invalid.", String(describing: providerName))
         case NSURLErrorCannotFindHost:
-            return "Cannot find host. Check if the base URL for \(providerName) is spelled correctly."
+            return String.fluidLocalizedFormat("Cannot find host. Check if the base URL for %@ is spelled correctly.", String(describing: providerName))
         default:
-            return "Network error: \(error.localizedDescription)"
+            return String.fluidLocalizedFormat("Network error: %@", String(describing: error.localizedDescription))
         }
     }
 
@@ -1690,7 +1691,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
         let normalizedMode = mode.normalized
         self.draftPromptMode = normalizedMode
         self.draftIncludeContext = (normalizedMode == .edit)
-        self.draftPromptName = "Default \(normalizedMode.displayName)"
+        self.draftPromptName = String.fluidLocalizedFormat("Default %@", String(describing: normalizedMode.displayName))
         if let override = self.settings.defaultPromptOverride(for: normalizedMode) {
             self.draftPromptText = SettingsStore.stripBasePrompt(for: normalizedMode, from: override)
         } else {
@@ -1773,7 +1774,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
             let previous = profiles[idx]
             var updated = profiles[idx]
             updated.name = name
-            updated.prompt = promptBody
+            updated.prompt = promptBody.fluidLocalized
             updated.usesLegacyEmptyPromptFallback = false
             updated.mode = self.draftPromptMode.normalized
             updated.includeContext = includeContext
@@ -1899,9 +1900,9 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
 
     func addAppPromptBindingFromFilePicker(for mode: SettingsStore.PromptMode) {
         let panel = NSOpenPanel()
-        panel.title = "Choose Application"
-        panel.message = "Pick an app to add an app-specific prompt override."
-        panel.prompt = "Add App"
+        panel.title = "Choose Application".fluidLocalized
+        panel.message = "Pick an app to add an app-specific prompt override.".fluidLocalized
+        panel.prompt = "Add App".fluidLocalized
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
@@ -2036,7 +2037,7 @@ final class AIEnhancementSettingsViewModel: ObservableObject {
         let modelName = (self.selectedModelByProvider[providerKey] ?? self.selectedModel)
             .trimmingCharacters(in: .whitespacesAndNewlines)
         guard !modelName.isEmpty else { return providerName }
-        return "\(providerName) - \(ModelDisplayName.forID(modelName))"
+        return String.fluidLocalizedFormat("%@ - %@", String(describing: providerName), String(describing: ModelDisplayName.forID(modelName)))
     }
 
     func selectPrivateAIPromptIfAvailable() {

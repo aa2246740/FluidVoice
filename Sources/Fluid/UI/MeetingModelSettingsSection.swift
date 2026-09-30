@@ -28,9 +28,9 @@ struct MeetingModelSettingsSection: View {
                         if case let .ready(installed) = self.store.state {
                             Text("Nemotron 3 Diarization · \(ByteCountFormatter.string(fromByteCount: installed.totalByteCount, countStyle: .file))")
                         }
-                        Text(CPUArchitecture.isAppleSilicon
+                        Text((CPUArchitecture.isAppleSilicon
                             ? "Downloads once (about 200 MB) and stays on this Mac. Recording works while it downloads; transcription waits for it."
-                            : "FluidMeet recording currently requires an Apple silicon Mac.")
+                            : "FluidMeet recording currently requires an Apple silicon Mac.").fluidLocalized)
                     }
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
@@ -63,7 +63,7 @@ struct MeetingModelSettingsSection: View {
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
                 ProgressView(value: fraction)
                     .frame(maxWidth: 220)
-                Text(fraction < 1 ? "Downloading · \(Int(fraction * 100))%" : "Installing…")
+                Text((fraction < 1 ? String.fluidLocalizedFormat("Downloading · %@%", String(describing: Int(fraction * 100))) : "Installing…").fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .monospacedDigit()
@@ -73,7 +73,7 @@ struct MeetingModelSettingsSection: View {
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.success)
         case let .failed(message):
-            Text(message)
+            Text(message.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.warning)
                 .fixedSize(horizontal: false, vertical: true)

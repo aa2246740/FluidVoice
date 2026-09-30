@@ -27,7 +27,7 @@ struct FluidModelShowcaseCard: View {
                 Color.clear.frame(height: 20)
                     .overlay(alignment: .leading) {
                         if self.isRecommended {
-                            Text(self.compact ? "Recommended" : "Recommended for your Mac")
+                            Text((self.compact ? "Recommended" : "Recommended for your Mac").fluidLocalized)
                                 .font(self.theme.typography.captionStrong)
                                 .foregroundStyle(FluidBrandColors.blue)
                                 .lineLimit(1).minimumScaleFactor(0.8)
@@ -36,7 +36,7 @@ struct FluidModelShowcaseCard: View {
                         }
                     }
                 HStack(spacing: 8) {
-                    Text(self.model.displayName.replacingOccurrences(of: "Fluid-1", with: "Fluid 1"))
+                    Text(self.model.displayName.replacingOccurrences(of: "Fluid-1", with: "Fluid 1").fluidLocalized)
                         .font(self.compact ? self.theme.typography.sectionTitle : self.theme.typography.title)
                         .foregroundStyle(self.theme.palette.primaryText)
                         .lineLimit(2).minimumScaleFactor(0.85)
@@ -49,11 +49,11 @@ struct FluidModelShowcaseCard: View {
                 }
                 ZStack(alignment: .topLeading) {
                     VStack(alignment: .leading, spacing: self.theme.metrics.spacing.md) {
-                        Text(presentation.summary)
+                        Text(presentation.summary.fluidLocalized)
                             .font(self.theme.typography.bodyStrong)
                             .foregroundStyle(self.theme.palette.primaryText)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text(presentation.useCase)
+                        Text(presentation.useCase.fluidLocalized)
                             .font(self.theme.typography.body)
                             .foregroundStyle(self.theme.palette.secondaryText)
                             .fixedSize(horizontal: false, vertical: true)
@@ -103,7 +103,7 @@ struct FluidModelShowcaseCard: View {
         .animation(self.reduceMotion ? nil : .easeOut(duration: 0.12), value: self.hovered)
         .accessibilityLabel("Preview \(self.model.displayName.replacingOccurrences(of: "Fluid-1", with: "Fluid 1"))")
         .accessibilityValue([self.isPreview ? "Previewed" : "", self.isRecommended ? "Recommended for your Mac" : ""].filter { !$0.isEmpty }.joined(separator: ", "))
-        .accessibilityHint(self.showsInfo ? self.infoAccessibilityDescription : "\(presentation.summary). \(presentation.useCase) Browse without changing the selected model.")
+        .accessibilityHint((self.showsInfo ? self.infoAccessibilityDescription : String.fluidLocalizedFormat("%@. %@ Browse without changing the selected model.", String(describing: presentation.summary), String(describing: presentation.useCase))).fluidLocalized)
         .overlay(alignment: .topTrailing) {
             // Sibling to the browse button: opening details never selects or activates a model.
             Button { self.showsInfo.toggle() } label: {
@@ -114,18 +114,18 @@ struct FluidModelShowcaseCard: View {
                     .contentShape(Circle())
             }
             .buttonStyle(.plain)
-            .help(self.showsInfo ? "Close model information" : "About \(self.model.displayName)")
-            .accessibilityLabel(self.showsInfo ? "Close information for \(self.model.displayName)" : "About \(self.model.displayName)")
-            .accessibilityValue(self.showsInfo ? "Expanded" : "Collapsed")
+            .help((self.showsInfo ? "Close model information" : String.fluidLocalizedFormat("About %@", String(describing: self.model.displayName))).fluidLocalized)
+            .accessibilityLabel((self.showsInfo ? String.fluidLocalizedFormat("Close information for %@", String(describing: self.model.displayName)) : String.fluidLocalizedFormat("About %@", String(describing: self.model.displayName))).fluidLocalized)
+            .accessibilityValue((self.showsInfo ? "Expanded" : "Collapsed").fluidLocalized)
             .padding(14)
         }
     }
 
     private func infoRow(_ title: String, value: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: self.theme.metrics.spacing.sm) {
-            Text(title).foregroundStyle(self.theme.palette.secondaryText)
+            Text(title.fluidLocalized).foregroundStyle(self.theme.palette.secondaryText)
             Spacer(minLength: 0)
-            Text(value).foregroundStyle(self.theme.palette.primaryText)
+            Text(value.fluidLocalized).foregroundStyle(self.theme.palette.primaryText)
                 .multilineTextAlignment(.trailing)
         }
         .font(self.theme.typography.caption)
@@ -166,7 +166,7 @@ private struct FluidModelMetric: View {
 
     var body: some View {
         HStack(spacing: self.theme.metrics.spacing.xs) {
-            Text(self.label)
+            Text(self.label.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
                 .lineLimit(1)
@@ -183,6 +183,6 @@ private struct FluidModelMetric: View {
         }
         .allowsHitTesting(false)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(self.label): illustrative level \(self.value) of 5, not a benchmark score")
+        .accessibilityLabel("\( self.label): illustrative level \( self.value) of 5, not a benchmark score")
     }
 }

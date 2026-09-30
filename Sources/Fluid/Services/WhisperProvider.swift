@@ -212,13 +212,13 @@ final class WhisperProvider: TranscriptionProvider {
         )
 
         if availableMemoryGB < requiredMemoryGB {
-            let errorMessage = """
-            Insufficient memory for \(targetModel.displayName).
-            Required: \(String(format: "%.1f", requiredMemoryGB)) GB
-            Available: \(String(format: "%.1f", availableMemoryGB)) GB
+            let errorMessage = String.fluidLocalizedFormat("""
+            Insufficient memory for %@.
+            Required: %@ GB
+            Available: %@ GB
 
             Please try a smaller model or close other applications to free up memory.
-            """
+            """, targetModel.displayName, String(format: "%.1f", requiredMemoryGB), String(format: "%.1f", availableMemoryGB))
             DebugLogger.shared.error("WhisperProvider: \(errorMessage)", source: "WhisperProvider")
             throw NSError(
                 domain: "WhisperProvider",
@@ -242,7 +242,7 @@ final class WhisperProvider: TranscriptionProvider {
             throw NSError(
                 domain: "WhisperProvider",
                 code: -7,
-                userInfo: [NSLocalizedDescriptionKey: "\(targetModel.displayName) loaded on \(loadedModel.backend), but Metal is required on Apple Silicon."]
+                userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("%@ loaded on %@, but Metal is required on Apple Silicon.", String(describing: targetModel.displayName), String(describing: loadedModel.backend))]
             )
         }
         let loadedSession = try loadedModel.session()
@@ -260,7 +260,7 @@ final class WhisperProvider: TranscriptionProvider {
             throw NSError(
                 domain: "WhisperProvider",
                 code: -5,
-                userInfo: [NSLocalizedDescriptionKey: "\(model.displayName) requires the Metal Whisper backend on Apple Silicon."]
+                userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("%@ requires the Metal Whisper backend on Apple Silicon.", String(describing: model.displayName))]
             )
         }
 
@@ -396,7 +396,7 @@ final class WhisperProvider: TranscriptionProvider {
                     case NSURLErrorCannotFindHost, NSURLErrorCannotConnectToHost:
                         message = "Cannot reach download server. Please check your internet connection."
                     default:
-                        message = "Network error: \(error.localizedDescription)"
+                        message = String.fluidLocalizedFormat("Network error: %@", String(describing: error.localizedDescription))
                     }
 
                     if isLastAttempt {
@@ -449,7 +449,7 @@ final class WhisperProvider: TranscriptionProvider {
                 throw NSError(
                     domain: "WhisperProvider",
                     code: httpResponse.statusCode,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to download model (HTTP \(httpResponse.statusCode))"]
+                    userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("Failed to download model (HTTP %@)", String(describing: httpResponse.statusCode))]
                 )
             }
 

@@ -7,6 +7,7 @@ struct VoiceEngineSettingsView: View {
     @State var isShowingNemotronLanguagePicker = false
     @State var isShowingWhisperLanguagePicker = false
     @State var whisperLanguageSearchText = ""
+    @State var cloudConfigModel: SettingsStore.SpeechModel?
     let theme: AppTheme
 
     var voiceEngineTitleText: Color {
@@ -26,6 +27,13 @@ struct VoiceEngineSettingsView: View {
             .onAppear { self.viewModel.onAppear() }
             .onChange(of: self.settings.selectedSpeechModel) { _, newValue in
                 self.viewModel.handleSelectedSpeechModelChange(newValue)
+            }
+            .sheet(item: self.$cloudConfigModel) { model in
+                if let vendor = model.cloudVendor {
+                    CloudASRConfigView(vendor: vendor) { configuration in
+                        self.viewModel.saveCloudConfiguration(configuration, for: model)
+                    }
+                }
             }
     }
 }

@@ -42,10 +42,10 @@ nonisolated struct StatsSnapshot: Sendable {
     func formattedTimeSaved(typingWPM: Int) -> String {
         let minutes = typingWPM > 0 ? max(0, Double(self.totalWords) / Double(typingWPM) - Double(self.totalWords) / 150) : 0
         if minutes < 1 { return "< 1m" }
-        if minutes < 60 { return "\(Int(minutes))m" }
+        if minutes < 60 { return String.fluidLocalizedFormat("%@m", String(describing: Int(minutes))) }
         let hours = Int(minutes) / 60
         let remainder = Int(minutes) % 60
-        return remainder == 0 ? "\(hours)h" : "\(hours)h \(remainder)m"
+        return remainder == 0 ? String.fluidLocalizedFormat("%@h", String(describing: hours)) : String.fluidLocalizedFormat("%@h %@m", String(describing: hours), String(describing: remainder))
     }
 
     func dailyWordCounts(days: Int) -> [(date: Date, words: Int)] {

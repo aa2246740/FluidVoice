@@ -64,14 +64,14 @@ struct StatsActivityView: View {
                         }
                         .pickerStyle(.inline)
                     } label: {
-                        Text(self.days == 180 ? "6 months" : (self.days == 90 ? "3 months" : "\(self.days) days"))
+                        Text((self.days == 180 ? "6 months" : (self.days == 90 ? "3 months" : String.fluidLocalizedFormat("%@ days", String(describing: self.days)))).fluidLocalized)
                     }
                     .fluidDropdownStyle(fillsWidth: true)
                     .frame(width: 112)
                     .accessibilityLabel("Activity period")
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(period.totalWords.formatted())
+                    Text(period.totalWords.formatted().fluidLocalized)
                         .font(self.theme.typography.displayTitle)
                         .monospacedDigit()
                     Text("words in \(self.days) days")
@@ -130,7 +130,7 @@ struct StatsActivityView: View {
 
     private func dailyChart(_ period: StatsActivityPeriod) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(self.selectedDay(period).map { "\($0.date.formatted(.dateTime.month(.abbreviated).day())) · \($0.words.formatted()) words" } ?? "Day by day · hover to explore")
+            Text(self.selectedDay(period).map { String.fluidLocalizedFormat("%@ · %@ words", $0.date.formatted(.dateTime.month(.abbreviated).day()), $0.words.formatted()) } ?? "Day by day · hover to explore".fluidLocalized)
                 .font(self.theme.typography.captionStrong)
                 .foregroundStyle(.secondary)
             Chart(period.days) { day in
@@ -148,10 +148,10 @@ struct StatsActivityView: View {
 
     private func periodMetric(_ title: String, words: Int) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(.secondary)
-            Text(words.formatted())
+            Text(words.formatted().fluidLocalized)
                 .font(self.theme.typography.title)
                 .monospacedDigit()
             Text("words")
@@ -179,7 +179,7 @@ struct StatsActivityView: View {
         return ThemedCard(style: .standard, padding: 20, hoverEffect: false) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Words add up").font(self.theme.typography.sectionTitle)
-                Text(self.growthCaption(period))
+                Text(self.growthCaption(period).fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -215,14 +215,14 @@ struct StatsActivityView: View {
 
     private func growthCaption(_ period: StatsActivityPeriod) -> String {
         if let day = self.selectedDay(period) {
-            return "\(day.date.formatted(.dateTime.month(.abbreviated).day())) · \(day.cumulativeWords.formatted()) words so far"
+            return String.fluidLocalizedFormat("%@ · %@ words so far", String(describing: day.date.formatted(.dateTime.month(.abbreviated).day())), String(describing: day.cumulativeWords.formatted()))
         }
         return "Hover along the curve · click to pin a day"
     }
 
     private func weekdayCaption(_ period: StatsActivityPeriod) -> String {
         if let day = period.weekdays.first(where: { $0.label == (self.hoveredWeekday ?? self.pinnedWeekday) }) {
-            return "\(day.fullLabel) · \(Int(day.averageWords.rounded()).formatted()) words per day on average"
+            return String.fluidLocalizedFormat("%@ · %@ words per day on average", String(describing: day.fullLabel), String(describing: Int(day.averageWords.rounded()).formatted()))
         }
         return "Hover a bar to discover your weekly rhythm"
     }
@@ -231,7 +231,7 @@ struct StatsActivityView: View {
         ThemedCard(style: .standard, padding: 20, hoverEffect: false) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Your weekly rhythm").font(self.theme.typography.sectionTitle)
-                Text(self.weekdayCaption(period))
+                Text(self.weekdayCaption(period).fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -240,8 +240,8 @@ struct StatsActivityView: View {
                         .foregroundStyle(self.theme.palette.accent.opacity(day.averageWords == period.peakWeekdayAverage ? 1 : 0.35))
                         .cornerRadius(4)
                         .opacity(self.hoveredWeekday == nil && self.pinnedWeekday == nil || day.label == (self.hoveredWeekday ?? self.pinnedWeekday) ? 1 : 0.4)
-                        .accessibilityLabel(day.fullLabel)
-                        .accessibilityValue("\(Int(day.averageWords.rounded())) words per day on average")
+                        .accessibilityLabel(day.fullLabel.fluidLocalized)
+                        .accessibilityValue("\( Int(day.averageWords.rounded())) words per day on average")
                 }
                 .statsChartInteraction(onInspect: { x, proxy, pin in
                     guard let label: String = proxy.value(atX: x) else { return }
