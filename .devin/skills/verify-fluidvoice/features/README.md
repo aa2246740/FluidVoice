@@ -12,7 +12,7 @@ This directory is the maintained source for verifying the user-facing behavior o
 ## Driving conventions
 
 - Drive exclusively through the `computer` tool (screenshots, clicks, type). The app exposes no accessibility tree — locate elements by screenshot, read small text with `zoom`.
-- Current builds render zh-Hans UI only: match Chinese labels (`云端`, `筛选`, `设置 API Key`, `已连接`, `激活`, `使用中`); English label names in feature files are reference only.
+- The app is bilingual (en dev-region + zh-Hans); Settings → General has a Language picker. Check `defaults read com.FluidApp.app.debug AppLanguage` if the rendered language is unexpected; feature files list both languages (`云端`="Cloud", `设置 API Key`="Set API Key", `已连接`="Connected", `激活`="Activate", `使用中`="Active`).
 - Start every recipe from the baseline state unless its preconditions say otherwise.
 - Click the LEFT half of API-key fields; the adjacent "Get API Key" button opens a browser on stray clicks. Confirm the caret via screenshot before typing — missed clicks drop keystrokes into the sidebar type-ahead and change pages silently.
 - Secrets are typed as `${SECRET_NAME}` references, never literals. Key fields are SecureFields and stay masked.
@@ -33,6 +33,7 @@ Each feature file starts with an H1 title and one paragraph describing the user-
 
 ## Features
 
+- [App display language](./settings-language.md) — the General-settings Language picker, its persisted defaults keys, and the restart-to-apply contract.
 - [Cloud ASR engine setup](./voice-engine-cloud.md) — Cloud filter lists the three engines, config sheets render per vendor, Test Connection shows the right success/error surface.
 - [AI provider verification](./ai-provider-verify.md) — expanding a provider, entering a key, fetching models, and verifying moves it to the verified list.
 - [Dictation history](./history-view.md) — the History page lists past dictations with actions; empty state renders correctly.

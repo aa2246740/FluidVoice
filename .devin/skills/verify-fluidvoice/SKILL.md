@@ -19,7 +19,7 @@ open "DerivedData/Build/Products/Debug/FluidVoice Debug.app"
 
 Ready check: `pgrep -f "FluidVoice Debug"` returns a pid AND a screenshot shows the main window (dismiss the "What's New" sheet with its X first). To enlarge the window use the macOS Window → Zoom menu — double-clicking the title bar does not zoom this build.
 
-**UI language:** the current build ships only `zh-Hans.lproj` — the app renders in Chinese on every system locale and `defaults write … AppleLanguages` does not switch it back. Match UI labels against the Chinese text (`云端`, `筛选`, `设置 API Key`, `已连接`, `激活`, `使用中`); English label names in the feature files are kept alongside in quotes for readability.
+**UI language:** the app is bilingual — `en` (declared development region, resolves via source strings) and `zh-Hans`. Settings → General/通用 has a Language/语言 row with `System Default`/`跟随系统`, `English`, `简体中文`; an explicit choice writes the per-app `AppleLanguages` + `AppLanguage` defaults and applies on the NEXT launch. `defaults write com.FluidApp.app.debug AppleLanguages` also works again for forcing a language from the shell. Match labels against whichever language the running instance renders — feature files list both (`云端`="Cloud", `设置 API Key`="Set API Key", `已连接`="Connected", `激活`="Activate", `使用中`="Active").
 
 Single-instance app — never launch a second copy or drive an instance you did not start.
 
@@ -45,6 +45,7 @@ Then screenshot: window present, no modal error sheet. If the build is stale or 
 - AI Providers → expand a provider row → enter key → click the `arrow.clockwise` button → model picker fills from live `/models` → "Verify model" → provider moves to "Verified providers (N)" with a green checkmark.
 - When credentials are already saved, the config sheet opens with the key prefilled (masked) and Test Connection enabled — the empty-field disabled state only applies to a first-time setup.
 - Saving the config of an engine that is already active de-activates it (the "Active"/`使用中` badge drops and the row offers `激活` again until you re-activate it — known app quirk, screenshot the state either way).
+- Menus and sidebar rows frequently need a second click: a first click on a sidebar item can merely focus the window, and a first click on a popup-menu item can highlight it without committing — screenshot after each click and click again if the state did not change.
 - Real dictation (hotkey + live mic) is NOT drivable on a VM — no microphone. Mark it untested; do not fake it.
 
 ## Evidence

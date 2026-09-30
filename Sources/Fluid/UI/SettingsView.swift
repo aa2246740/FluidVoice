@@ -399,7 +399,7 @@ struct SettingsView: View {
                                     set: { SettingsStore.shared.appLanguage = $0 }
                                 )) {
                                     ForEach(SettingsStore.AppLanguage.allCases) { option in
-                                        Text(option.displayName).tag(option)
+                                        Text(option.displayName.fluidLocalized).tag(option)
                                     }
                                 }
                                 .pickerStyle(.menu)
