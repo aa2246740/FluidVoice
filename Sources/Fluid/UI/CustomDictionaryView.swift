@@ -403,8 +403,8 @@ struct CustomDictionaryView: View {
                 .foregroundStyle(self.isWordDrawerPresented ? self.theme.palette.accent : self.theme.palette.primaryText)
         }
 
-        .accessibilityLabel(self.isWordDrawerPresented ? "Collapse your dictionary" : "Expand your dictionary")
-        .help(self.isWordDrawerPresented ? "Collapse your dictionary" : "Expand your dictionary")
+        .accessibilityLabel((self.isWordDrawerPresented ? "Collapse your dictionary" : "Expand your dictionary").fluidLocalized)
+        .help((self.isWordDrawerPresented ? "Collapse your dictionary" : "Expand your dictionary").fluidLocalized)
     }
 
     private var drawerEntries: [SettingsStore.CustomDictionaryEntry] {
@@ -460,8 +460,8 @@ struct CustomDictionaryView: View {
                     ForEach(self.drawerEntries) { entry in
                         HStack(alignment: .center, spacing: 12) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(entry.replacement).font(self.theme.typography.bodyStrong)
-                                Text(entry.triggers.joined(separator: ", "))
+                                Text(entry.replacement.fluidLocalized).font(self.theme.typography.bodyStrong)
+                                Text(entry.triggers.joined(separator: ", ").fluidLocalized)
                                     .font(self.theme.typography.caption)
                                     .foregroundStyle(self.theme.palette.secondaryText)
                                     .lineLimit(3)
@@ -501,7 +501,7 @@ struct CustomDictionaryView: View {
                         Divider().opacity(0.3)
                     }
                     if self.drawerEntries.isEmpty {
-                        Text(self.wordSearch.isEmpty ? "Add a word to see it here." : "No matching words.")
+                        Text((self.wordSearch.isEmpty ? "Add a word to see it here." : "No matching words.").fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.theme.palette.secondaryText)
                             .padding(.vertical, self.theme.metrics.spacing.lg)
@@ -643,7 +643,7 @@ struct CustomDictionaryView: View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.sm) {
             self.dictionaryComposerModeSegmented
 
-            Text(self.composerModeDetail)
+            Text(self.composerModeDetail.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -773,7 +773,7 @@ struct CustomDictionaryView: View {
                         .font(self.theme.typography.caption)
                         .foregroundStyle(self.theme.palette.tertiaryText)
 
-                    Text(CustomDictionaryManualEntry.replacementDisplayText(self.sanitizedManualReplacement))
+                    Text(CustomDictionaryManualEntry.replacementDisplayText(self.sanitizedManualReplacement).fluidLocalized)
                         .font(self.theme.typography.captionStrong)
                         .foregroundStyle(self.theme.palette.accent)
                 }
@@ -821,9 +821,9 @@ struct CustomDictionaryView: View {
     }
 
     private var voiceMatchingSettingsRow: some View {
-        Text(self.pronunciationEnabled
+        Text((self.pronunciationEnabled
             ? "Pronunciation dictionary is on. Voice training uses the fast sound-order matcher."
-            : "Voice training is off. Enable “Learn from your pronunciation” in Settings → Experimental.")
+            : "Voice training is off. Enable “Learn from your pronunciation” in Settings → Experimental.").fluidLocalized)
             .font(self.theme.typography.caption)
             .foregroundStyle(self.theme.palette.secondaryText)
             .fixedSize(horizontal: false, vertical: true)
@@ -859,7 +859,7 @@ struct CustomDictionaryView: View {
                     )
                     self.trainingInstruction(
                         number: 3,
-                        text: "Say \(self.trainingTargetReference) naturally, then pause. FluidVoice records and listens again automatically."
+                        text: String.fluidLocalizedFormat("Say %@ naturally, then pause. FluidVoice records and listens again automatically.", String(describing: self.trainingTargetReference))
                     )
                     self.trainingInstruction(
                         number: 4,
@@ -878,7 +878,7 @@ struct CustomDictionaryView: View {
                     usesVoiceMatching: self.activePronunciationMatching
                 )
 
-                Text(self.trainingReadinessCaption)
+                Text(self.trainingReadinessCaption.fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(
                         self.trainingFinalOutputIsReady
@@ -970,11 +970,11 @@ struct CustomDictionaryView: View {
     private var trainingFinalOutputPanel: some View {
         HStack(alignment: .center, spacing: self.theme.metrics.spacing.md) {
             VStack(alignment: .leading, spacing: 5) {
-                Text(self.activePronunciationMatching ? "Spelling to save" : "Final output")
+                Text((self.activePronunciationMatching ? "Spelling to save" : "Final output").fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(self.theme.palette.secondaryText)
 
-                Text(self.activePronunciationMatching ? self.normalizedTrainingReplacement : self.trainingFinalOutputText)
+                Text((self.activePronunciationMatching ? self.normalizedTrainingReplacement : self.trainingFinalOutputText).fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
                     .foregroundStyle(self.lastTrainingOutput.isEmpty ? self.theme.palette.tertiaryText : self.theme.palette.primaryText)
                     .lineLimit(1)
@@ -1266,7 +1266,7 @@ struct CustomDictionaryView: View {
             .fluidGlassAction()
             .disabled(!self.vocabBoostingEnabled)
             .opacity(self.vocabBoostingEnabled ? 1 : 0.45)
-            .help(self.vocabBoostingEnabled ? "Modify custom words" : "Turn on Boosting to modify custom words.")
+            .help((self.vocabBoostingEnabled ? "Modify custom words" : "Turn on Boosting to modify custom words.").fluidLocalized)
             .popover(isPresented: self.$isCustomWordsPresented, arrowEdge: .top) {
                 self.customWordsPopover
             }
@@ -1386,7 +1386,7 @@ struct CustomDictionaryView: View {
 
     private var boostWordEditor: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.md) {
-            Text(self.boostEditorTitle)
+            Text(self.boostEditorTitle.fluidLocalized)
                 .font(self.theme.typography.captionStrong)
 
             VStack(alignment: .leading, spacing: 6) {
@@ -1403,11 +1403,11 @@ struct CustomDictionaryView: View {
                     .font(self.theme.typography.captionStrong)
                 Picker("Word Priority", selection: self.$boostTermStrength) {
                     ForEach(BoostStrengthPreset.allCases) { preset in
-                        Text(preset.rawValue).tag(preset)
+                        Text(preset.rawValue.fluidLocalized).tag(preset)
                     }
                 }
                 .pickerStyle(.segmented)
-                Text(self.boostTermStrength.hint)
+                Text(self.boostTermStrength.hint.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -1570,13 +1570,11 @@ struct CustomDictionaryView: View {
                 )
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(self.punctuationAutoConvertEnabled ? "Spoken Formatting is On" : "Spoken Formatting is Off")
+                Text((self.punctuationAutoConvertEnabled ? "Spoken Formatting is On" : "Spoken Formatting is Off").fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
-                Text(
-                    self.punctuationAutoConvertEnabled
+                Text((self.punctuationAutoConvertEnabled
                         ? "Formatting actions and punctuation will run after the start word."
-                        : "Your rules stay saved, but they will not change dictated text."
-                )
+                        : "Your rules stay saved, but they will not change dictated text.").fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -1674,7 +1672,7 @@ struct CustomDictionaryView: View {
     private func formattingActionRow(_ action: SettingsStore.SpokenFormattingAction) -> some View {
         let rule = self.formattingActionRule(for: action)
         return HStack(spacing: self.theme.metrics.spacing.md) {
-            Text(action.displaySymbol)
+            Text(action.displaySymbol.fluidLocalized)
                 .font(.fluidSystem(size: 18, weight: .semibold, design: .rounded))
                 .foregroundStyle(self.theme.palette.accent)
                 .frame(width: 32, height: 32)
@@ -1684,9 +1682,9 @@ struct CustomDictionaryView: View {
                 )
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(action.title)
+                Text(action.title.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
-                Text(rule.aliases.isEmpty ? "No spoken phrases set" : rule.aliases.joined(separator: ", "))
+                Text((rule.aliases.isEmpty ? "No spoken phrases set" : rule.aliases.joined(separator: ", ")).fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .lineLimit(1)
@@ -1704,7 +1702,7 @@ struct CustomDictionaryView: View {
                 .toggleStyle(.switch)
                 .tint(self.theme.palette.accent)
                 .disabled(rule.aliases.isEmpty)
-                .help(rule.aliases.isEmpty ? "Add a spoken phrase before enabling this action." : "Enable \(action.title)")
+                .help((rule.aliases.isEmpty ? "Add a spoken phrase before enabling this action." : String.fluidLocalizedFormat("Enable %@", String(describing: action.title))).fluidLocalized)
         }
         .padding(.horizontal, self.theme.metrics.spacing.md)
         .padding(.vertical, 8)
@@ -1782,11 +1780,11 @@ struct CustomDictionaryView: View {
     private var punctuationTrySayingPreview: some View {
         VStack(alignment: .leading, spacing: 4) {
             self.punctuationExampleText(
-                spoken: "\(self.punctuationPreviewPrefix) comma",
+                spoken: String.fluidLocalizedFormat("%@ comma", String(describing: self.punctuationPreviewPrefix)),
                 typed: ","
             )
             self.punctuationExampleText(
-                spoken: "\(self.punctuationPreviewPrefix) next line",
+                spoken: String.fluidLocalizedFormat("%@ next line", String(describing: self.punctuationPreviewPrefix)),
                 typed: "New Line"
             )
         }
@@ -1818,7 +1816,7 @@ struct CustomDictionaryView: View {
 
     private var punctuationRuleEditor: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.md) {
-            Text(self.punctuationEditorTitle)
+            Text(self.punctuationEditorTitle.fluidLocalized)
                 .font(self.theme.typography.captionStrong)
 
             ViewThatFits(in: .horizontal) {
@@ -1908,9 +1906,9 @@ struct CustomDictionaryView: View {
                 .foregroundStyle(self.theme.palette.tertiaryText)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
-                Text(detail)
+                Text(detail.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -2302,7 +2300,7 @@ struct CustomDictionaryView: View {
         guard !CustomDictionaryTrainingMerge.isOversizedResponse(transcript, intendedReplacement: self.normalizedTrainingReplacement) else {
             self.isAutomaticTrainingEnabled = false
             self.trainingHasError = true
-            self.trainingStatusMessage = "That was longer than expected. Say only “\(self.normalizedTrainingReplacement)”, then pause. This try wasn’t saved."
+            self.trainingStatusMessage = String.fluidLocalizedFormat("That was longer than expected. Say only “%@”, then pause. This try wasn’t saved.", String(describing: self.normalizedTrainingReplacement))
             return
         }
         if self.activePronunciationMatching,
@@ -2434,7 +2432,7 @@ struct CustomDictionaryView: View {
         let filtered = await VoiceTrainingAliasFilter.filter(self.trainingVariants)
         guard self.trainingSaveID == saveID, !Task.isCancelled, self.pronunciationEnabled else { return }
         DebugLogger.shared.info(
-            "VOICE_TRAINING_ALIAS_FILTER accepted=\(filtered.accepted.count) rejected=\(filtered.rejected.count) available=\(filtered.lookupAvailable)",
+            "VOICE_TRAINING_ALIAS_FILTER accepted=\( filtered.accepted.count) rejected=\( filtered.rejected.count) available=\( filtered.lookupAvailable)",
             source: "CustomDictionary"
         )
         guard savePronunciation || !filtered.accepted.isEmpty else {
@@ -2564,7 +2562,7 @@ struct CustomDictionaryView: View {
         } else if self.trainingVariants.isEmpty {
             self.trainingStatusMessage = ""
         } else {
-            self.trainingStatusMessage = "Loaded \(self.trainingVariants.count) saved \(self.trainingVariants.count == 1 ? "capture" : "captures")."
+            self.trainingStatusMessage = String.fluidLocalizedFormat("Loaded %@ saved %@.", String(describing: self.trainingVariants.count), String(describing: self.trainingVariants.count == 1 ? "capture" : "captures"))
         }
         self.trainingHasError = false
     }
@@ -2619,11 +2617,11 @@ struct CustomDictionaryView: View {
     private func loadBoostTerms() {
         do {
             self.boostTerms = try ParakeetVocabularyStore.shared.loadUserBoostTerms()
-            self.boostStatusMessage = "Loaded \(self.boostTerms.count) custom words."
+            self.boostStatusMessage = String.fluidLocalizedFormat("Loaded %@ custom words.", String(describing: self.boostTerms.count))
             self.boostHasError = false
         } catch {
             self.boostTerms = []
-            self.boostStatusMessage = "Couldn't load custom words: \(error.localizedDescription)"
+            self.boostStatusMessage = String.fluidLocalizedFormat("Couldn't load custom words: %@", String(describing: error.localizedDescription))
             self.boostHasError = true
         }
     }
@@ -2631,10 +2629,10 @@ struct CustomDictionaryView: View {
     private func saveBoostTerms() {
         do {
             try ParakeetVocabularyStore.shared.saveUserBoostTerms(self.boostTerms)
-            self.boostStatusMessage = "Saved \(self.boostTerms.count) custom words."
+            self.boostStatusMessage = String.fluidLocalizedFormat("Saved %@ custom words.", String(describing: self.boostTerms.count))
             self.boostHasError = false
         } catch {
-            self.boostStatusMessage = "Couldn't save custom words: \(error.localizedDescription)"
+            self.boostStatusMessage = String.fluidLocalizedFormat("Couldn't save custom words: %@", String(describing: error.localizedDescription))
             self.boostHasError = true
         }
     }
@@ -2654,7 +2652,7 @@ struct CustomDictionaryView: View {
 
             self.presentInfoAlert(
                 title: "Dictionary Exported",
-                message: "Saved \(document.replacements.count) replacement rules and \(document.customWords.count) custom words."
+                message: String.fluidLocalizedFormat("Saved %@ replacement rules and %@ custom words.", String(describing: document.replacements.count), String(describing: document.customWords.count))
             )
         } catch {
             self.presentErrorAlert(title: "Dictionary Export Failed", message: error.localizedDescription)
@@ -2681,7 +2679,7 @@ struct CustomDictionaryView: View {
 
             self.presentInfoAlert(
                 title: "Dictionary Imported",
-                message: "Now using \(summary.replacementCount) replacement rules and \(summary.customWordCount) custom words."
+                message: String.fluidLocalizedFormat("Now using %@ replacement rules and %@ custom words.", String(describing: summary.replacementCount), String(describing: summary.customWordCount))
             )
         } catch {
             self.presentErrorAlert(title: "Dictionary Import Failed", message: error.localizedDescription)
@@ -2690,16 +2688,16 @@ struct CustomDictionaryView: View {
 
     private func confirmDictionaryImport(_ document: DictionaryTransferDocument) -> DictionaryTransferImportMode? {
         let confirm = NSAlert()
-        confirm.messageText = "Import this dictionary?"
-        confirm.informativeText = """
-        Found \(document.replacements.count) replacement rules and \(document.customWords.count) custom words.
+        confirm.messageText = "Import this dictionary?".fluidLocalized
+        confirm.informativeText = String.fluidLocalizedFormat("""
+        Found %@ replacement rules and %@ custom words.
 
         Merge adds them to your current dictionary. Replace clears the current dictionary first.
-        """
+        """, String(describing: document.replacements.count), String(describing: document.customWords.count))
         confirm.alertStyle = .warning
-        confirm.addButton(withTitle: "Merge")
-        confirm.addButton(withTitle: "Replace")
-        confirm.addButton(withTitle: "Cancel")
+        confirm.addButton(withTitle: "Merge".fluidLocalized)
+        confirm.addButton(withTitle: "Replace".fluidLocalized)
+        confirm.addButton(withTitle: "Cancel".fluidLocalized)
 
         switch confirm.runModal() {
         case .alertFirstButtonReturn:
@@ -2713,16 +2711,16 @@ struct CustomDictionaryView: View {
 
     private func presentInfoAlert(title: String, message: String) {
         let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
+        alert.messageText = title.fluidLocalized
+        alert.informativeText = message.fluidLocalized
         alert.alertStyle = .informational
         alert.runModal()
     }
 
     private func presentErrorAlert(title: String, message: String) {
         let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
+        alert.messageText = title.fluidLocalized
+        alert.informativeText = message.fluidLocalized
         alert.alertStyle = .critical
         alert.runModal()
     }
@@ -2780,12 +2778,12 @@ private extension CustomDictionaryView {
 
     func trainingInstruction(number: Int, text: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text("\(number)")
+            Text("\( number)")
                 .font(self.theme.typography.captionStrong)
                 .foregroundStyle(self.theme.palette.accent)
                 .frame(width: 16, alignment: .center)
 
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
         }
@@ -2865,7 +2863,7 @@ private struct VoiceMatchingSettingsRow: View {
         } label: {
             HStack(spacing: 7) {
                 Image(systemName: systemImage)
-                Text(title)
+                Text(title.fluidLocalized)
                 if isResearchPreview {
                     Text("Research Preview")
                         .font(self.theme.typography.captionSmall)
@@ -3028,7 +3026,7 @@ private enum DictionaryTrainingCopy {
     }
 
     static func composerDetail(mode: DictionaryComposerMode, target: String) -> String {
-        mode == .train && target != "the word" ? "Teach \(target) by speaking it." : mode.detail
+        mode == .train && target != "the word" ? String.fluidLocalizedFormat("Teach %@ by speaking it.", String(describing: target)) : mode.detail
     }
 
     static func readinessCaption(
@@ -3038,15 +3036,15 @@ private enum DictionaryTrainingCopy {
         usesVoiceMatching: Bool
     ) -> String {
         if isAlreadyCorrect {
-            return "No replacement is needed for \(target)."
+            return String.fluidLocalizedFormat("No replacement is needed for %@.", String(describing: target))
         }
         if isReady {
             return usesVoiceMatching
-                ? "3 samples captured for \(target). Save, then try it in a sentence."
+                ? String.fluidLocalizedFormat("3 samples captured for %@. Save, then try it in a sentence.", String(describing: target))
                 : "Ready. The last 3 recordings are covered by this correction."
         }
         return usesVoiceMatching
-            ? "Say \(target) 3 times to capture pronunciation samples."
+            ? String.fluidLocalizedFormat("Say %@ 3 times to capture pronunciation samples.", String(describing: target))
             : "Repeat until 3 recordings in a row need no new corrections."
     }
 }
@@ -3100,7 +3098,7 @@ private struct DictionaryComposerModeTab: View {
             HStack(spacing: self.theme.metrics.spacing.sm) {
                 Image(systemName: self.mode.systemImage)
                     .font(.fluidSystem(size: 12, weight: .semibold))
-                Text(self.mode.title)
+                Text(self.mode.title.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
             }
             .foregroundStyle(self.foreground)
@@ -3371,10 +3369,10 @@ private struct ReplacementConfirmationToast: View {
             }
 
             VStack(spacing: 3) {
-                Text(self.confirmation.title)
+                Text(self.confirmation.title.fluidLocalized)
                     .font(self.theme.typography.sectionTitle)
                     .foregroundStyle(self.theme.palette.primaryText)
-                Text(self.confirmation.detail)
+                Text(self.confirmation.detail.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .multilineTextAlignment(.center)
@@ -3434,12 +3432,12 @@ private struct DictionaryTrainingReadinessRing: View {
                 .rotationEffect(.degrees(-90))
 
             VStack(spacing: 1) {
-                Text("\(self.progress)/\(self.total)")
+                Text("\( self.progress)/\( self.total)")
                     .font(self.theme.typography.sectionTitle)
                     .foregroundStyle(self.isReady ? self.theme.palette.accent : self.theme.palette.primaryText)
                     .monospacedDigit()
 
-                Text(self.usesVoiceMatching ? "samples" : "covered")
+                Text((self.usesVoiceMatching ? "samples" : "covered").fluidLocalized)
                     .font(self.theme.typography.captionSmall)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -3467,7 +3465,7 @@ private struct TrainingVariantChip: View {
                 .foregroundStyle(self.theme.palette.accent)
                 .frame(minWidth: 11)
 
-            Text(self.variant)
+            Text(self.variant.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .lineLimit(1)
                 .truncationMode(.tail)
@@ -3500,7 +3498,7 @@ private struct DictionaryPreviewChip: View {
     @Environment(\.theme) private var theme
 
     var body: some View {
-        Text(self.text)
+        Text(self.text.fluidLocalized)
             .font(self.theme.typography.caption)
             .padding(.horizontal, 7)
             .padding(.vertical, 4)
@@ -3564,14 +3562,14 @@ struct BoostTermRow: View {
 
     var body: some View {
         HStack(spacing: self.theme.metrics.spacing.sm) {
-            Text(self.term.text)
+            Text(self.term.text.fluidLocalized)
                 .font(self.theme.typography.bodySmallStrong)
 
             Spacer()
 
             if let weight = self.term.weight {
                 let strength = BoostStrengthPreset.nearest(for: weight)
-                Text(strength.rawValue)
+                Text(strength.rawValue.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
@@ -3627,7 +3625,7 @@ struct DictionaryEntryRow: View {
         HStack(alignment: .center, spacing: self.theme.metrics.spacing.sm) {
             FlowLayout(spacing: 4) {
                 ForEach(self.entry.triggers, id: \.self) { trigger in
-                    Text(trigger)
+                    Text(trigger.fluidLocalized)
                         .font(self.theme.typography.caption)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
@@ -3640,7 +3638,7 @@ struct DictionaryEntryRow: View {
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.tertiaryText)
 
-            Text(CustomDictionaryManualEntry.replacementDisplayText(self.entry.replacement))
+            Text(CustomDictionaryManualEntry.replacementDisplayText(self.entry.replacement).fluidLocalized)
                 .font(self.theme.typography.bodySmallStrong)
                 .foregroundStyle(self.theme.palette.accent)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -3689,7 +3687,7 @@ private struct PunctuationDictionaryRuleRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: self.theme.metrics.spacing.sm) {
-            Text(self.rule.aliases.joined(separator: ", "))
+            Text(self.rule.aliases.joined(separator: ", ").fluidLocalized)
                 .font(self.theme.typography.captionStrong)
                 .foregroundStyle(self.theme.palette.primaryText)
                 .lineLimit(1)
@@ -3700,7 +3698,7 @@ private struct PunctuationDictionaryRuleRow: View {
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.tertiaryText)
 
-            Text(self.rule.symbol)
+            Text(self.rule.symbol.fluidLocalized)
                 .font(self.theme.typography.bodySmallStrong)
                 .foregroundStyle(self.theme.palette.accent)
                 .frame(width: 60, alignment: .leading)
@@ -3886,7 +3884,7 @@ private struct DictionaryReplacementPreview: View {
             GridRow(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 6) {
                     ForEach(self.triggers, id: \.self) { trigger in
-                        Text(trigger)
+                        Text(trigger.fluidLocalized)
                             .font(.fluidSystem(.body))
                             .foregroundStyle(
                                 self.duplicateTriggers.contains(trigger)
@@ -3904,7 +3902,7 @@ private struct DictionaryReplacementPreview: View {
 
                 Text(CustomDictionaryManualEntry.replacementDisplayText(
                     CustomDictionaryManualEntry.sanitizedReplacement(self.replacement)
-                ))
+                ).fluidLocalized)
                 .font(.fluidSystem(.body).weight(.semibold))
                 .foregroundStyle(self.theme.palette.accent)
                 .fixedSize(horizontal: false, vertical: true)

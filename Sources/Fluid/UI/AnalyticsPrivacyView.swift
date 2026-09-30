@@ -99,7 +99,7 @@ struct AnalyticsPrivacyView: View {
     }
 
     private func sectionTitle(_ text: String) -> some View {
-        Text(text)
+        Text(text.fluidLocalized)
             .font(.fluidSystem(size: 12, weight: .semibold))
             .foregroundStyle(self.theme.palette.accent)
             .padding(.top, 4)
@@ -109,7 +109,7 @@ struct AnalyticsPrivacyView: View {
         HStack(alignment: .top, spacing: 8) {
             Text("•")
                 .foregroundStyle(.secondary)
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(.fluidSystem(size: 13))
                 .foregroundStyle(.primary)
             Spacer(minLength: 0)

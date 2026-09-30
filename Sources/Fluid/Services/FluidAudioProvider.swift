@@ -1521,12 +1521,12 @@ final class FluidAudioProvider: TranscriptionProvider {
 
     func detectBoostedTerms(in text: String, limit: Int = 2) -> [String] {
         guard self.isWordBoostingActive, !self.boostedTermLookup.isEmpty else { return [] }
-        let normalizedText = " \(Self.normalizeForLookup(text)) "
+        let normalizedText = String.fluidLocalizedFormat(" %@ ", String(describing: Self.normalizeForLookup(text)))
         guard normalizedText.count > 2 else { return [] }
 
         var hits: [String] = []
         hits.reserveCapacity(min(limit, 2))
-        for candidate in self.boostedTermLookup where normalizedText.contains(" \(candidate) ") {
+        for candidate in self.boostedTermLookup where normalizedText.contains(String.fluidLocalizedFormat(" %@ ", String(describing: candidate))) {
             hits.append(candidate)
             if hits.count >= limit {
                 break

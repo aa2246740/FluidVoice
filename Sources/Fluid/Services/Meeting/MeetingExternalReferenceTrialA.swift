@@ -34,7 +34,7 @@ nonisolated enum MeetingExternalReferenceTrialAGate {
 
     static func stimulusWindowIsPlaying(title: String?) -> Bool {
         guard let title else { return false }
-        let prefix = "\(Self.stimulusWindowTitleMarker) — \(Self.stimulusWindowPlayingMarker)"
+        let prefix = String.fluidLocalizedFormat("%@ — %@", String(describing: Self.stimulusWindowTitleMarker), String(describing: Self.stimulusWindowPlayingMarker))
         guard title.hasPrefix(prefix) else { return false }
         let suffix = title.dropFirst(prefix.count)
         // Chrome may append its product name, but a state token must end at a title boundary;

@@ -171,7 +171,7 @@ struct FileTranscriptionView: View {
         }
         .onChange(of: self.transcriptionService.error) { _, error in
             guard let error, !error.isEmpty else { return }
-            AccessibilityNotification.Announcement("File transcription failed. \(error)").post()
+            AccessibilityNotification.Announcement(String.fluidLocalizedFormat("File transcription failed. %@", String(describing: error))).post()
         }
         .alert("Delete transcript?", isPresented: Binding(
             get: { self.pendingDeleteEntry != nil },
@@ -234,12 +234,12 @@ struct FileTranscriptionView: View {
                         .foregroundColor(self.theme.palette.accent)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(fileURL.lastPathComponent)
+                        Text(fileURL.lastPathComponent.fluidLocalized)
                             .font(self.theme.typography.sectionTitle)
                             .lineLimit(1)
                             .truncationMode(.middle)
 
-                        Text(self.selectedFileIsVideo ? "Video file" : "Audio file")
+                        Text((self.selectedFileIsVideo ? "Video file" : "Audio file").fluidLocalized)
                             .font(self.theme.typography.caption)
                             .foregroundColor(.secondary)
                     }
@@ -256,7 +256,7 @@ struct FileTranscriptionView: View {
                             }
                             .fluidGlassAction()
                             .disabled(self.transcriptionService.isTranscribing)
-                            .help(self.transcriptionService.isTranscribing ? "Wait for transcription to finish" : "Remove file")
+                            .help((self.transcriptionService.isTranscribing ? "Wait for transcription to finish" : "Remove file").fluidLocalized)
                             Button(action: {
                                 Task {
                                     await self.transcribeFile()
@@ -264,7 +264,7 @@ struct FileTranscriptionView: View {
                             }) {
                                 HStack {
                                     Image(systemName: "waveform")
-                                    Text(self.transcriptionService.isTranscribing ? "Transcribing…" : "Transcribe file")
+                                    Text((self.transcriptionService.isTranscribing ? "Transcribing…" : "Transcribe file").fluidLocalized)
                                 }
                             }
                             .fluidGlassAction(prominent: true)
@@ -272,11 +272,9 @@ struct FileTranscriptionView: View {
                                 self.transcriptionService.isTranscribing ||
                                     self.conflictingActivity != nil
                             )
-                            .help(
-                                self.conflictingActivity != nil
+                            .help((self.conflictingActivity != nil
                                     ? "Wait for the active transcription to finish"
-                                    : "Transcribe the selected file"
-                            )
+                                    : "Transcribe the selected file").fluidLocalized)
                         }
                     }
                 }
@@ -298,9 +296,9 @@ struct FileTranscriptionView: View {
                                 Text("Label speakers")
                                     .font(self.theme.typography.bodySmall)
 
-                                Text(self.selectedFileIsVideo
+                                Text((self.selectedFileIsVideo
                                     ? "Available for audio files only"
-                                    : "Identify who said what (downloads speaker models on first use)")
+                                    : "Identify who said what (downloads speaker models on first use)").fluidLocalized)
                                     .font(self.theme.typography.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -348,7 +346,7 @@ struct FileTranscriptionView: View {
                         .font(self.theme.typography.titleIcon)
                         .foregroundStyle(self.theme.palette.accent)
                     VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                        Text(self.isDropTargeted ? "Drop to select file" : "Transcribe a file")
+                        Text((self.isDropTargeted ? "Drop to select file" : "Transcribe a file").fluidLocalized)
                             .font(self.theme.typography.sectionTitle)
                         Text("Drop audio or video here, or choose a file.")
                             .font(self.theme.typography.bodySmall)
@@ -363,7 +361,7 @@ struct FileTranscriptionView: View {
                 .frame(maxWidth: .infinity)
                 .padding(self.theme.metrics.spacing.lg)
                 .contentShape(Rectangle())
-                .help(FileTranscriptionService.supportedFormatsDescription)
+                .help(FileTranscriptionService.supportedFormatsDescription.fluidLocalized)
                 .background(
                     RoundedRectangle(cornerRadius: self.theme.metrics.corners.lg, style: .continuous)
                         .fill(self.theme.palette.cardBackground)
@@ -412,7 +410,7 @@ struct FileTranscriptionView: View {
                     .controlSize(.small)
                     .fixedSize()
 
-                Text(self.transcriptionService.currentStatus)
+                Text(self.transcriptionService.currentStatus.fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundColor(.secondary)
             }
@@ -531,9 +529,9 @@ struct FileTranscriptionView: View {
 
             if self.filteredEntries.isEmpty {
                 VStack(spacing: self.theme.metrics.spacing.sm) {
-                    Text(self.searchQuery.isEmpty ? "No transcripts yet" : "No matching transcripts")
+                    Text((self.searchQuery.isEmpty ? "No transcripts yet" : "No matching transcripts").fluidLocalized)
                         .font(self.theme.typography.bodySmallStrong)
-                    Text(self.searchQuery.isEmpty ? "Transcribe a file to start your library." : "Try a filename or words from the transcript.")
+                    Text((self.searchQuery.isEmpty ? "Transcribe a file to start your library." : "Try a filename or words from the transcript.").fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(self.theme.palette.secondaryText)
                 }
@@ -585,14 +583,14 @@ struct FileTranscriptionView: View {
                 self.fileHistoryStore.selectedEntryID = entry.id
             } label: {
                 VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                    Text(entry.displayTitle)
+                    Text(entry.displayTitle.fluidLocalized)
                         .font(self.theme.typography.bodySmallStrong)
                         .lineLimit(2)
                         .truncationMode(.middle)
-                    Text(self.rowMetadata[entry.id]?.relativeDate ?? "")
+                    Text(self.rowMetadata[entry.id]?.relativeDate ?? "".fluidLocalized)
                         .font(self.theme.typography.captionSmall)
                         .foregroundStyle(self.theme.palette.secondaryText)
-                    Text(self.rowMetadata[entry.id]?.preview ?? "")
+                    Text(self.rowMetadata[entry.id]?.preview ?? "".fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(self.theme.palette.secondaryText)
                         .lineLimit(1)
@@ -633,7 +631,7 @@ struct FileTranscriptionView: View {
             Image(systemName: "doc.text.magnifyingglass")
                 .font(self.theme.typography.titleIcon)
                 .foregroundStyle(self.theme.palette.secondaryText)
-            Text(self.searchQuery.isEmpty ? "Your transcript appears here" : "No matching transcript")
+            Text((self.searchQuery.isEmpty ? "Your transcript appears here" : "No matching transcript").fluidLocalized)
                 .font(self.theme.typography.sectionTitle)
             Text("Select a file on the left to read, copy, or export its transcript.")
                 .font(self.theme.typography.bodySmall)
@@ -647,14 +645,14 @@ struct FileTranscriptionView: View {
     private func transcriptDetail(entry: FileTranscriptionEntry) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.md) {
-                Text(entry.displayTitle)
+                Text(entry.displayTitle.fluidLocalized)
                     .font(self.theme.typography.sectionTitle)
                     .lineLimit(2)
                     .truncationMode(.middle)
                     .editableTitle(entry.displayTitle, id: entry.id.uuidString) {
                         self.fileHistoryStore.renameEntry(id: entry.id, to: $0)
                     }
-                Text(self.rowMetadata[entry.id]?.fullDate ?? "")
+                Text(self.rowMetadata[entry.id]?.fullDate ?? "".fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                 HStack(spacing: self.theme.metrics.spacing.md) {
@@ -673,7 +671,7 @@ struct FileTranscriptionView: View {
                         .fluidGlassAction(prominent: true)
                         Menu {
                             ForEach(ExportFormat.allCases, id: \.self) { format in
-                                Button(format.rawValue) {
+                                Button(format.rawValue.fluidLocalized) {
                                     self.exportFormat = format
                                     self.exportResult = entry.toTranscriptionResult()
                                     self.showingExportDialog = true
@@ -716,11 +714,11 @@ struct FileTranscriptionView: View {
                         ForEach(entry.speakerSegments) { segment in
                             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
                                 HStack {
-                                    Text(segment.speaker).foregroundStyle(self.theme.palette.accent)
-                                    Text(segment.timestampText).foregroundStyle(self.theme.palette.secondaryText)
+                                    Text(segment.speaker.fluidLocalized).foregroundStyle(self.theme.palette.accent)
+                                    Text(segment.timestampText.fluidLocalized).foregroundStyle(self.theme.palette.secondaryText)
                                 }
                                 .font(self.theme.typography.captionStrong)
-                                Text(segment.text)
+                                Text(segment.text.fluidLocalized)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -745,7 +743,7 @@ struct FileTranscriptionView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.red)
 
-            Text(error)
+            Text(error.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
 
             Spacer()
@@ -773,7 +771,7 @@ struct FileTranscriptionView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.red)
 
-            Text(message)
+            Text(message.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
 
             Spacer()

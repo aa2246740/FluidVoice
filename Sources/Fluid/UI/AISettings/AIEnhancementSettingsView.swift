@@ -101,7 +101,7 @@ struct AIEnhancementSettingsView: View {
                     self.viewModel.appPromptBindingErrorMessage = ""
                 }
             } message: {
-                Text(self.viewModel.appPromptBindingErrorMessage)
+                Text(self.viewModel.appPromptBindingErrorMessage.fluidLocalized)
             }
     }
 }

@@ -24,7 +24,7 @@ struct DictationPromptRequest {
                 data = try JSONEncoder().encode(["transcript": transcript])
             } catch {
                 // A dictionary containing only Swift strings is always JSON encodable.
-                preconditionFailure("Unable to encode dictation transcript: \(error)")
+                preconditionFailure(String.fluidLocalizedFormat("Unable to encode dictation transcript: %@", String(describing: error)))
             }
             guard let encoded = String(data: data, encoding: .utf8) else {
                 preconditionFailure("JSONEncoder returned invalid UTF-8")

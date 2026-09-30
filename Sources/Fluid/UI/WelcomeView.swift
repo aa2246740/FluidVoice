@@ -247,7 +247,7 @@ struct OnboardingFlowView: View {
     }
 
     private var recommendedModelReasonText: String {
-        "Recommended for \(self.selectedOnboardingLanguage.displayName). You can see more options if needed."
+        String.fluidLocalizedFormat("Recommended for %@. You can see more options if needed.", self.selectedOnboardingLanguage.displayName.fluidLocalized)
     }
 
     private var isRecommendedModelDownloaded: Bool {
@@ -447,16 +447,16 @@ struct OnboardingFlowView: View {
                 .font(self.theme.typography.title)
                 .foregroundStyle(self.theme.palette.primaryText)
 
-            Text(self.step.subtitle)
+            Text(self.step.subtitle.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
                 .foregroundStyle(self.theme.palette.secondaryText)
 
             HStack {
-                Text("Step \(self.step.rawValue + 1) of \(Step.allCases.count)")
+                Text("Step \( self.step.rawValue + 1) of \( Step.allCases.count)")
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text(self.step.title)
+                Text(self.step.title.fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(self.theme.palette.accent)
             }
@@ -680,7 +680,7 @@ struct OnboardingFlowView: View {
                     .foregroundStyle(isSelected ? FluidOnboardingLandingColors.blue : Color.white.opacity(0.72))
                     .frame(width: 22)
 
-                Text(language.popularDisplayName)
+                Text(language.popularDisplayName.fluidLocalized)
                     .font(.fluidSystem(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -725,8 +725,8 @@ struct OnboardingFlowView: View {
                 }
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(language.displayName)
-        .accessibilityValue(isSelected ? "Selected" : "")
+        .accessibilityLabel(language.displayName.fluidLocalized)
+        .accessibilityValue((isSelected ? "Selected" : "").fluidLocalized)
     }
 
     private var otherLanguageCard: some View {
@@ -752,7 +752,7 @@ struct OnboardingFlowView: View {
                     .foregroundStyle(isSelected ? FluidOnboardingLandingColors.blue : Color.white.opacity(self.isShowingAllLanguages ? 0.78 : 0.72))
                     .frame(width: 22)
 
-                Text(isSelected ? self.selectedOnboardingLanguage.displayName : "Other")
+                Text((isSelected ? self.selectedOnboardingLanguage.displayName : "Other").fluidLocalized)
                     .font(.fluidSystem(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -785,7 +785,7 @@ struct OnboardingFlowView: View {
             self.setHoveredLanguage(isHovered ? "other" : nil)
         }
         .accessibilityLabel("Other languages")
-        .accessibilityValue(self.isShowingAllLanguages ? "Expanded" : "Collapsed")
+        .accessibilityValue((self.isShowingAllLanguages ? "Expanded" : "Collapsed").fluidLocalized)
     }
 
     private var allLanguagesPicker: some View {
@@ -824,7 +824,7 @@ struct OnboardingFlowView: View {
 
             Menu("Choose a language") {
                 ForEach(self.searchedOnboardingLanguages) { language in
-                    Button(language.displayName) { self.selectOnboardingLanguage(language) }
+                    Button(language.displayName.fluidLocalized) { self.selectOnboardingLanguage(language) }
                 }
             }
             .fluidDropdownStyle()
@@ -839,7 +839,7 @@ struct OnboardingFlowView: View {
             self.selectOnboardingLanguage(language)
         } label: {
             HStack(spacing: 10) {
-                Text(language.displayName)
+                Text(language.displayName.fluidLocalized)
                     .font(.fluidSystem(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
 
@@ -933,7 +933,7 @@ struct OnboardingFlowView: View {
         ) { isHovered in
             self.setHoveredFooterButton(isHovered ? kind : nil)
         }
-        .accessibilityLabel(title)
+        .accessibilityLabel(title.fluidLocalized)
     }
 
     private func setHoveredFooterButton(_ button: OnboardingFooterButton?) {
@@ -1043,13 +1043,13 @@ struct OnboardingFlowView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                                 .padding(.bottom, 16)
 
-                            Text(self.recommendedModelReasonText)
+                            Text(self.recommendedModelReasonText.fluidLocalized)
                                 .font(.fluidSystem(size: 15, weight: .medium))
                                 .foregroundStyle(Color.white.opacity(0.62))
                                 .multilineTextAlignment(.center)
                                 .padding(.bottom, 14)
 
-                            Text(self.selectedOnboardingLanguage.displayName)
+                            Text(self.selectedOnboardingLanguage.displayName.fluidLocalized)
                                 .font(.fluidSystem(size: 13, weight: .semibold))
                                 .foregroundStyle(FluidOnboardingLandingColors.blue)
                                 .padding(.horizontal, 12)
@@ -1095,7 +1095,7 @@ struct OnboardingFlowView: View {
                                         let page = min(self.otherModelsPage, lastPage)
                                         Button("Previous models") { self.otherModelsPage = max(0, page - 1) }
                                             .disabled(page == 0)
-                                        Text("\(page + 1) / \(lastPage + 1)")
+                                        Text("\( page + 1) / \( lastPage + 1)")
                                         Button("Next models") { self.otherModelsPage = min(lastPage, page + 1) }
                                             .disabled(page == lastPage)
                                     }
@@ -1356,12 +1356,12 @@ struct OnboardingFlowView: View {
 
     private var accessibilityPermissionSubtitle: String {
         if self.isAccessibilityReady {
-            return "\(self.appDisplayName) can place text into the app you're using."
+            return String.fluidLocalizedFormat("%@ can place text into the app you're using.", String(describing: self.appDisplayName))
         }
         if self.accessibilitySetupInProgress {
-            return "Use the floating guide to drag \(self.appDisplayName) into the Accessibility apps list."
+            return String.fluidLocalizedFormat("Use the floating guide to drag %@ into the Accessibility apps list.", String(describing: self.appDisplayName))
         }
-        return "Open Settings, then use the floating guide to add \(self.appDisplayName)."
+        return String.fluidLocalizedFormat("Open Settings, then use the floating guide to add %@.", String(describing: self.appDisplayName))
     }
 
     private var appDisplayName: String {
@@ -1384,7 +1384,7 @@ struct OnboardingFlowView: View {
             self.toggleOtherModelRoutes()
         } label: {
             HStack(spacing: 6) {
-                Text(self.isShowingOtherModelRoutes ? "Hide other models" : "Show other models")
+                Text((self.isShowingOtherModelRoutes ? "Hide other models" : "Show other models").fluidLocalized)
 
                 Image(systemName: self.isShowingOtherModelRoutes ? "chevron.up" : "chevron.down")
                     .font(.fluidSystem(size: 8, weight: .bold))
@@ -1402,7 +1402,7 @@ struct OnboardingFlowView: View {
         }
         .buttonStyle(.plain)
         .focusable(false)
-        .accessibilityLabel(self.isShowingOtherModelRoutes ? "Hide other models" : "Show other models")
+        .accessibilityLabel((self.isShowingOtherModelRoutes ? "Hide other models" : "Show other models").fluidLocalized)
     }
 
     private func toggleOtherModelRoutes() {
@@ -1525,7 +1525,7 @@ struct OnboardingFlowView: View {
 
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 10) {
-                Text(self.onboardingModelTitle(for: model))
+                Text(self.onboardingModelTitle(for: model).fluidLocalized)
                     .font(self.theme.typography.sectionTitle)
                     .foregroundStyle(.white)
                     .lineLimit(2)
@@ -1539,7 +1539,7 @@ struct OnboardingFlowView: View {
                     .foregroundStyle(Color.white.opacity(0.58))
                     .frame(width: 24, height: 24)
                     .contentShape(Circle())
-                    .accessibilityLabel(self.onboardingModelTooltip(for: route))
+                    .accessibilityLabel(self.onboardingModelTooltip(for: route).fluidLocalized)
                     .onHover { isHovered in
                         self.hoveredModelInfoRouteID = isHovered ? route.id : nil
                     }
@@ -1567,7 +1567,7 @@ struct OnboardingFlowView: View {
 
                 Spacer()
 
-                Text(model.downloadSize)
+                Text(model.downloadSize.fluidLocalized)
                     .font(self.theme.typography.bodySmallStrong)
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -1693,7 +1693,7 @@ struct OnboardingFlowView: View {
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Speed \(Int(model.speedPercent * 100)) percent. Accuracy \(Int(model.accuracyPercent * 100)) percent.")
+        .accessibilityLabel("Speed \( Int(model.speedPercent * 100)) percent. Accuracy \( Int(model.accuracyPercent * 100)) percent.")
     }
 
     private func onboardingModelPreparationStatus(isUninstalling: Bool) -> some View {
@@ -1716,7 +1716,7 @@ struct OnboardingFlowView: View {
                     .tint(FluidOnboardingLandingColors.blue)
 
                 HStack(spacing: 6) {
-                    Text(self.asr.modelPreparationStatusText)
+                    Text(self.asr.modelPreparationStatusText.fluidLocalized)
                         .font(self.theme.typography.captionStrong)
                         .foregroundStyle(Color.white.opacity(0.56))
                         .lineLimit(1)
@@ -1728,11 +1728,9 @@ struct OnboardingFlowView: View {
                         .controlSize(.small)
                         .fixedSize()
 
-                    Text(
-                        isUninstalling
+                    Text((isUninstalling
                             ? "Deleting..."
-                            : self.asr.modelPreparationStatusText
-                    )
+                            : self.asr.modelPreparationStatusText).fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(Color.white.opacity(0.62))
                     .lineLimit(1)
@@ -1772,7 +1770,7 @@ struct OnboardingFlowView: View {
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(color)
 
-                Text(label)
+                Text(label.fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(Color.white.opacity(0.66))
                     .lineLimit(1)
@@ -1811,7 +1809,7 @@ struct OnboardingFlowView: View {
             }
             .frame(height: 9)
 
-            Text("\(Int(fillPercent * 100))%")
+            Text("\( Int(fillPercent * 100))%")
                 .font(self.theme.typography.bodySmallStrong)
                 .foregroundStyle(fillPercent > 0 ? color : Color.white.opacity(0.48))
                 .lineLimit(1)
@@ -1896,7 +1894,7 @@ struct OnboardingFlowView: View {
                         .font(.fluidSystem(size: configuration.iconSize, weight: .bold))
                 }
 
-                Text(configuration.title)
+                Text(configuration.title.fluidLocalized)
                     .font(.fluidSystem(size: configuration.fontSize, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
@@ -1934,7 +1932,7 @@ struct OnboardingFlowView: View {
 
     private func onboardingModelTooltip(for route: VoiceEngineLanguageRoute) -> String {
         let model = route.model
-        return "\(self.onboardingModelSubtitle(for: model)) - \(model.downloadSize)\n\(model.cardDescription)"
+        return String.fluidLocalizedFormat("%@ - %@\n%@", String(describing: self.onboardingModelSubtitle(for: model)), String(describing: model.downloadSize), String(describing: model.cardDescription))
     }
 
     private func onboardingModelTitle(for model: SettingsStore.SpeechModel) -> String {
@@ -1990,7 +1988,7 @@ struct OnboardingFlowView: View {
                         Image(systemName: systemImage)
                             .font(.fluidSystem(size: 14, weight: .bold))
 
-                        Text("\(stepNumber)")
+                        Text("\( stepNumber)")
                             .font(.fluidSystem(size: 10, weight: .bold))
                     }
                     .foregroundStyle(FluidOnboardingLandingColors.blue)
@@ -1999,11 +1997,11 @@ struct OnboardingFlowView: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 8) {
-                    Text(title)
+                    Text(title.fluidLocalized)
                         .font(.fluidSystem(size: 17, weight: .semibold))
                         .foregroundStyle(.white)
 
-                    Text(resolvedStatusTitle)
+                    Text(resolvedStatusTitle.fluidLocalized)
                         .font(.fluidSystem(size: 10, weight: .bold))
                         .foregroundStyle(isReady ? Color.green.opacity(0.92) : FluidOnboardingLandingColors.blue)
                         .padding(.horizontal, 7)
@@ -2014,7 +2012,7 @@ struct OnboardingFlowView: View {
                         )
                 }
 
-                Text(subtitle)
+                Text(subtitle.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.55))
                     .lineLimit(2)
@@ -2469,7 +2467,7 @@ private struct OnboardingMicrophoneSetupPanel: View {
                         )
                     ) {
                         ForEach(self.devices) { device in
-                            Text(device.name).tag(device.uid)
+                            Text(device.name.fluidLocalized).tag(device.uid)
                         }
                     }
                     .labelsHidden()
@@ -2493,7 +2491,7 @@ private struct OnboardingMicrophoneSetupPanel: View {
                     .fill(self.status.color)
                     .frame(width: 6, height: 6)
 
-                Text(self.status.text)
+                Text(self.status.text.fluidLocalized)
                     .font(.fluidSystem(size: 11, weight: .semibold))
                     .foregroundStyle(self.status.color)
 
@@ -2517,7 +2515,7 @@ private struct OnboardingMicrophoneSetupPanel: View {
                 .frame(width: 248)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Microphone input level")
-                .accessibilityValue("\(Int((self.level * 100).rounded())) percent")
+                .accessibilityValue("\( Int((self.level * 100).rounded())) percent")
             }
             .padding(.horizontal, 18)
             .frame(height: 50)

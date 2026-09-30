@@ -69,7 +69,7 @@ struct LiquidBar: View {
                 Image(systemName: self.icon)
                     .font(self.theme.typography.tiny)
                     .foregroundStyle(self.color)
-                Text(self.label)
+                Text(self.label.fluidLocalized)
                     .font(self.theme.typography.tinyStrong)
                     .foregroundStyle(.secondary)
             }

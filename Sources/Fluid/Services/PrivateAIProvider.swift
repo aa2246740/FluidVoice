@@ -67,7 +67,7 @@ enum PrivateAIModelDownloadProgressText {
     static func buttonTitle(for progress: PrivateAIModelDownloadProgress?) -> String {
         if progress?.isComplete == true { return "Verifying" }
         guard let fraction = progress?.fractionCompleted else { return "Downloading" }
-        return "Downloading \(Int(fraction * 100))%"
+        return String.fluidLocalizedFormat("Downloading %@%", String(describing: Int(fraction * 100)))
     }
 
     static func statusText(for progress: PrivateAIModelDownloadProgress?) -> String {
@@ -83,27 +83,27 @@ enum PrivateAIModelDownloadProgressText {
         guard let fraction = progress.fractionCompleted else {
             return "Downloading. This can take a few minutes."
         }
-        return "Downloading \(Int(fraction * 100))%. This can take a few minutes."
+        return String.fluidLocalizedFormat("Downloading %@%. This can take a few minutes.", String(describing: Int(fraction * 100)))
     }
 
     static func byteText(for progress: PrivateAIModelDownloadProgress?) -> String? {
         guard let progress else { return nil }
 
         if progress.isComplete {
-            return "\(Self.byteCountText(progress.totalBytesWritten)) downloaded"
+            return String.fluidLocalizedFormat("%@ downloaded", String(describing: Self.byteCountText(progress.totalBytesWritten)))
         }
 
         guard progress.hasWrittenBytes else {
             guard let expected = progress.totalBytesExpected, expected > 0 else { return nil }
-            return "\(Self.byteCountText(expected)) download"
+            return String.fluidLocalizedFormat("%@ download", String(describing: Self.byteCountText(expected)))
         }
 
         let written = Self.byteCountText(progress.totalBytesWritten)
         guard let expected = progress.totalBytesExpected, expected > 0 else {
-            return "\(written) downloaded"
+            return String.fluidLocalizedFormat("%@ downloaded", String(describing: written))
         }
 
-        return "\(written) of \(Self.byteCountText(expected))"
+        return String.fluidLocalizedFormat("%@ of %@", String(describing: written), String(describing: Self.byteCountText(expected)))
     }
 
     static func detailText(for progress: PrivateAIModelDownloadProgress?) -> String {
@@ -114,7 +114,7 @@ enum PrivateAIModelDownloadProgressText {
         guard let byteText = Self.byteText(for: progress) else { return "Downloading..." }
         guard progress.hasWrittenBytes else { return byteText }
         guard let fraction = progress.fractionCompleted else { return byteText }
-        return "\(byteText) (\(Int(fraction * 100))%)"
+        return String.fluidLocalizedFormat("%@ (%@%)", String(describing: byteText), String(describing: Int(fraction * 100)))
     }
 
     private static func byteCountText(_ bytes: Int64) -> String {

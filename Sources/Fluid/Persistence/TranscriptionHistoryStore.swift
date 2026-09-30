@@ -188,7 +188,7 @@ struct TranscriptionHistoryEntry: Codable, Identifiable, Equatable, Sendable {
 
     static func formattedDuration(milliseconds: Int) -> String {
         if milliseconds < 1000 {
-            return "\(milliseconds) ms"
+            return String.fluidLocalizedFormat("%@ ms", String(describing: milliseconds))
         }
         return String(format: "%.1f s", Double(milliseconds) / 1000)
     }
@@ -197,7 +197,7 @@ struct TranscriptionHistoryEntry: Codable, Identifiable, Equatable, Sendable {
         let rounded = tokensPerSecond >= 100
             ? String(Int(tokensPerSecond.rounded()))
             : String(format: "%.1f", tokensPerSecond)
-        return compact ? "\(rounded) tok/s" : "\(rounded) tokens/sec"
+        return compact ? String.fluidLocalizedFormat("%@ tok/s", String(describing: rounded)) : String.fluidLocalizedFormat("%@ tokens/sec", String(describing: rounded))
     }
 
     func replacingAudio(_ audio: DictationAudioMetadata?) -> TranscriptionHistoryEntry {
@@ -593,7 +593,7 @@ final class TranscriptionHistoryStore: ObservableObject {
                 self.pendingDeletes.removeAll()
                 self.pendingReplacement = false
             } catch {
-                self.persistenceError = "History could not be loaded. New dictations are kept in memory until you retry. \(error.localizedDescription)"
+                self.persistenceError = String.fluidLocalizedFormat("History could not be loaded. New dictations are kept in memory until you retry. %@", String(describing: error.localizedDescription))
             }
             self.isLoading = false
         }
@@ -621,7 +621,7 @@ final class TranscriptionHistoryStore: ObservableObject {
         self.writer.write(upserts: upserts, deletes: deletes, replacing: replacing) { error in
             guard let error else { return }
             Task { @MainActor in
-                self.persistenceError = "History could not be saved. Keep FluidVoice open and retry. \(error.localizedDescription)"
+                self.persistenceError = String.fluidLocalizedFormat("History could not be saved. Keep FluidVoice open and retry. %@", String(describing: error.localizedDescription))
             }
         }
         DebugLogger.shared.debug(
@@ -638,7 +638,7 @@ final class TranscriptionHistoryStore: ObservableObject {
         }
         self.writer.write(upserts: self.entries, replacing: true) { error in
             Task { @MainActor in
-                self.persistenceError = error.map { "History could not be saved. \($0.localizedDescription)" }
+                self.persistenceError = error.map { String.fluidLocalizedFormat("History could not be saved. %@", String(describing: $0.localizedDescription)) }
             }
         }
     }
@@ -653,7 +653,7 @@ final class TranscriptionHistoryStore: ObservableObject {
     func finishPendingWrites() async {
         await self.loadTask?.value
         if let error = await self.writer.drain() {
-            self.persistenceError = "History could not be saved. Keep FluidVoice open and retry. \(error.localizedDescription)"
+            self.persistenceError = String.fluidLocalizedFormat("History could not be saved. Keep FluidVoice open and retry. %@", String(describing: error.localizedDescription))
         }
     }
 
@@ -753,7 +753,7 @@ extension TranscriptionHistoryStore {
                 if mins == 0 {
                     return "\(hours)h"
                 }
-                return "\(hours)h \(mins)m"
+                return String.fluidLocalizedFormat("%@h %@m", String(describing: hours), String(describing: mins))
             }
         }
     }
@@ -825,7 +825,7 @@ extension TranscriptionHistoryStore {
             if mins == 0 {
                 return "\(hours)h"
             }
-            return "\(hours)h \(mins)m"
+            return String.fluidLocalizedFormat("%@h %@m", String(describing: hours), String(describing: mins))
         }
     }
 

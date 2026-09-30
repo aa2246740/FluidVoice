@@ -36,23 +36,23 @@ enum ExternalCoreMLArtifactsValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .missingEntries(entries):
-            return "Missing required files: \(entries.joined(separator: ", "))"
+            return String.fluidLocalizedFormat("Missing required files: %@", String(describing: entries.joined(separator: ", ")))
         case let .manifestMissing(url):
-            return "Manifest file not found at \(url.path)"
+            return String.fluidLocalizedFormat("Manifest file not found at %@", String(describing: url.path))
         case let .manifestUnreadable(url, error):
-            return "Failed to read manifest at \(url.path): \(error.localizedDescription)"
+            return String.fluidLocalizedFormat("Failed to read manifest at %@: %@", String(describing: url.path), String(describing: error.localizedDescription))
         case let .unexpectedModelID(expected, actual):
-            return "Unexpected model_id '\(actual)'. Expected '\(expected)'."
+            return String.fluidLocalizedFormat("Unexpected model_id '%@'. Expected '%@'.", String(describing: actual), String(describing: expected))
         case let .unexpectedSampleRate(expected, actual):
-            return "Unexpected sample rate \(actual). Expected \(expected)."
+            return String.fluidLocalizedFormat("Unexpected sample rate %@. Expected %@.", String(describing: actual), String(describing: expected))
         case let .invalidMaxAudioSeconds(seconds):
-            return "Invalid max_audio_seconds \(seconds)."
+            return String.fluidLocalizedFormat("Invalid max_audio_seconds %@.", String(describing: seconds))
         case let .invalidMaxAudioSamples(samples):
-            return "Invalid max_audio_samples \(samples)."
+            return String.fluidLocalizedFormat("Invalid max_audio_samples %@.", String(describing: samples))
         case let .inconsistentAudioWindow(samples, seconds, sampleRate):
-            return "Manifest audio window is inconsistent: \(samples) samples vs \(seconds)s at \(sampleRate) Hz."
+            return String.fluidLocalizedFormat("Manifest audio window is inconsistent: %@ samples vs %@s at %@ Hz.", String(describing: samples), String(describing: seconds), String(describing: sampleRate))
         case let .invalidOverlapSamples(overlapSamples, maxAudioSamples):
-            return "Invalid overlap_samples \(overlapSamples) for max_audio_samples \(maxAudioSamples)."
+            return String.fluidLocalizedFormat("Invalid overlap_samples %@ for max_audio_samples %@.", String(describing: overlapSamples), String(describing: maxAudioSamples))
         }
     }
 }

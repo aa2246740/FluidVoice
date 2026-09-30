@@ -80,8 +80,8 @@ struct ReleaseFeaturePreview: View {
     private func stat(_ value: String, label: String, symbol: String) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Image(systemName: symbol).font(.system(size: 10)).foregroundStyle(FluidBrandColors.blue)
-            Text(value).font(.system(size: 16, weight: .semibold, design: .rounded))
-            Text(label).font(.system(size: 6, weight: .medium)).foregroundStyle(self.theme.palette.secondaryText)
+            Text(value.fluidLocalized).font(.system(size: 16, weight: .semibold, design: .rounded))
+            Text(label.fluidLocalized).font(.system(size: 6, weight: .medium)).foregroundStyle(self.theme.palette.secondaryText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -107,9 +107,9 @@ struct ReleaseFeaturePreview: View {
                 .font(.system(size: 11)).foregroundStyle(FluidBrandColors.blue)
                 .frame(width: 23, height: 23)
                 .background(FluidBrandColors.blue.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
-            Text(name).font(.system(size: 10, weight: .medium))
+            Text(name.fluidLocalized).font(.system(size: 10, weight: .medium))
             Spacer(minLength: 0)
-            Text(detail).font(.system(size: 8)).foregroundStyle(self.theme.palette.secondaryText)
+            Text(detail.fluidLocalized).font(.system(size: 8)).foregroundStyle(self.theme.palette.secondaryText)
         }
     }
 }

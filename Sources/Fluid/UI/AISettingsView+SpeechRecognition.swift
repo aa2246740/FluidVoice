@@ -51,22 +51,22 @@ extension VoiceEngineSettingsView {
                             Spacer()
                             Menu {
                                 ForEach(SpeechProviderFilter.allCases) { option in
-                                    Button(option.rawValue) {
+                                    Button(option.rawValue.fluidLocalized) {
                                         self.viewModel.providerFilter = option
                                     }
                                 }
                             } label: {
-                                Text("Filter: \(self.viewModel.providerFilter.rawValue)")
+                                Text("Filter: \(self.viewModel.providerFilter.rawValue.fluidLocalized)")
                             }
                             .fluidDropdownStyle()
                             Menu {
                                 ForEach(ModelSortOption.allCases) { option in
-                                    Button(option.rawValue) {
+                                    Button(option.rawValue.fluidLocalized) {
                                         self.viewModel.modelSortOption = option
                                     }
                                 }
                             } label: {
-                                Text("Sort by: \(self.viewModel.modelSortOption.rawValue)")
+                                Text("Sort by: \(self.viewModel.modelSortOption.rawValue.fluidLocalized)")
                             }
                             .fluidDropdownStyle()
                         }
@@ -94,7 +94,7 @@ extension VoiceEngineSettingsView {
                             Divider().padding(.vertical, 2)
 
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(hasActiveModel ? "Other Models" : "Available Models")
+                                Text((hasActiveModel ? "Other Models" : "Available Models").fluidLocalized)
                                     .font(self.theme.typography.sectionTitle)
                                     .foregroundStyle(self.voiceEngineTitleText)
                                 VStack(spacing: 8) {
@@ -135,12 +135,12 @@ extension VoiceEngineSettingsView {
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(model.humanReadableName)
+                            Text(model.humanReadableName.fluidLocalized)
                                 .font(.fluidSystem(size: 16, weight: .bold))
                                 .foregroundStyle(self.theme.palette.primaryText)
 
                             if let badge = model.badgeText {
-                                Text(badge)
+                                Text(badge.fluidLocalized)
                                     .font(.fluidSystem(.caption2))
                                     .fontWeight(.semibold)
                                     .padding(.horizontal, 6)
@@ -152,14 +152,14 @@ extension VoiceEngineSettingsView {
                             Spacer()
                         }
 
-                        Text(model.cardDescription)
+                        Text(model.cardDescription.fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.voiceEngineSecondaryText)
                             .lineLimit(2)
                     }
 
                     HStack(spacing: 8) {
-                        Label(model.downloadSize, systemImage: "internaldrive")
+                        Label(model.downloadSize.fluidLocalized, systemImage: "internaldrive")
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.voiceEngineSecondaryText)
 
@@ -172,7 +172,7 @@ extension VoiceEngineSettingsView {
                                 .foregroundStyle(self.theme.palette.accent)
                         }
 
-                        Text(model.languageSupport)
+                        Text(model.languageSupport.fluidLocalized)
                             .font(self.theme.typography.bodySmallStrong)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -183,7 +183,7 @@ extension VoiceEngineSettingsView {
                     }
 
                     if let supportedLanguageCodes = model.supportedLanguageCodes {
-                        Text(supportedLanguageCodes)
+                        Text(supportedLanguageCodes.fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.voiceEngineSecondaryText)
                             .lineLimit(2)
@@ -195,7 +195,7 @@ extension VoiceEngineSettingsView {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .font(self.theme.typography.bodySmall)
                                 .foregroundStyle(.orange)
-                            Text(memoryWarning)
+                            Text(memoryWarning.fluidLocalized)
                                 .font(self.theme.typography.bodySmall)
                                 .foregroundStyle(.orange)
                         }
@@ -255,10 +255,10 @@ extension VoiceEngineSettingsView {
                 .frame(width: 28, height: 28)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(model.humanReadableName)
+                Text(model.humanReadableName.fluidLocalized)
                     .font(self.theme.typography.bodyStrong)
                     .foregroundStyle(self.voiceEngineTitleText)
-                Text(self.speechModelSubtitle(for: model))
+                Text(self.speechModelSubtitle(for: model).fluidLocalized)
                     .font(self.theme.typography.body)
                     .foregroundStyle(self.voiceEngineSecondaryText)
 
@@ -313,13 +313,13 @@ extension VoiceEngineSettingsView {
                         } else {
                             ProgressView()
                                 .controlSize(.mini)
-                            Text(self.viewModel.asr.modelPreparationStatusText)
+                            Text(self.viewModel.asr.modelPreparationStatusText.fluidLocalized)
                                 .font(self.theme.typography.bodySmall)
                                 .foregroundStyle(self.voiceEngineSecondaryText)
                         }
                     }
 
-                    Button(self.viewModel.isCancellingModelDownload ? "Cancelling…" : "Cancel") {
+                    Button((self.viewModel.isCancellingModelDownload ? "Cancelling…" : "Cancel").fluidLocalized) {
                         self.viewModel.cancelSpeechModelDownload()
                     }
                     .fluidOutlinedButton()
@@ -354,13 +354,13 @@ extension VoiceEngineSettingsView {
                         } else {
                             ProgressView()
                                 .controlSize(.mini)
-                            Text(self.viewModel.asr.modelPreparationStatusText)
+                            Text(self.viewModel.asr.modelPreparationStatusText.fluidLocalized)
                                 .font(self.theme.typography.bodySmall)
                                 .foregroundStyle(self.voiceEngineSecondaryText)
                         }
                     }
 
-                    Button(self.viewModel.asr.isCancellingModelPreparation ? "Cancelling…" : "Cancel") {
+                    Button((self.viewModel.asr.isCancellingModelPreparation ? "Cancelling…" : "Cancel").fluidLocalized) {
                         self.viewModel.cancelActiveModelPreparation()
                     }
                     .fluidOutlinedButton()
@@ -525,7 +525,7 @@ extension VoiceEngineSettingsView {
                         self.settings.selectedCohereLanguage = language
                     } label: {
                         HStack {
-                            Text(language.displayName)
+                            Text(language.displayName.fluidLocalized)
                             if language == self.settings.selectedCohereLanguage {
                                 Image(systemName: "checkmark")
                             }
@@ -631,7 +631,7 @@ extension VoiceEngineSettingsView {
 
     private func whisperLanguagePickerRow(title: String, isSelected: Bool) -> some View {
         HStack(spacing: 8) {
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
                 .foregroundStyle(.primary)
             Spacer(minLength: 12)
@@ -649,7 +649,7 @@ extension VoiceEngineSettingsView {
     private func languageChipLabel(_ title: String) -> some View {
         HStack(spacing: 10) {
             Image(systemName: "globe").foregroundStyle(self.theme.palette.accent)
-            Text(title).lineLimit(1)
+            Text(title.fluidLocalized).lineLimit(1)
             FluidDropdownChevron()
         }
         .font(self.theme.typography.bodySmall)
@@ -688,7 +688,7 @@ extension VoiceEngineSettingsView {
                         self.isShowingNemotronLanguagePicker = false
                     } label: {
                         HStack(spacing: 8) {
-                            Text(language.displayName)
+                            Text(language.displayName.fluidLocalized)
                                 .font(self.theme.typography.bodySmall)
                                 .foregroundStyle(.primary)
                             Spacer(minLength: 12)
@@ -715,7 +715,7 @@ extension VoiceEngineSettingsView {
             if (self.viewModel.asr.isDownloadingModel || self.viewModel.asr.isLoadingModel) && !self.viewModel.asr.isAsrReady {
                 HStack(spacing: 8) {
                     ProgressView().controlSize(.small).fixedSize()
-                    Text(self.viewModel.asr.isLoadingModel ? "Loading model…" : "Downloading model…")
+                    Text((self.viewModel.asr.isLoadingModel ? "Loading model…" : "Downloading model…").fluidLocalized)
                         .font(self.theme.typography.bodySmall)
                         .foregroundStyle(self.voiceEngineSecondaryText)
                 }
@@ -805,7 +805,7 @@ extension VoiceEngineSettingsView {
                     // NVIDIA logo larger to fill more of the container
                     .frame(width: isNvidia ? 24 : 18, height: isNvidia ? 24 : 18)
             } else {
-                Text(String(model.brandName.prefix(2)).uppercased())
+                Text(String(model.brandName.prefix(2)).uppercased().fluidLocalized)
                     .font(.fluidSystem(size: 10, weight: .bold, design: .rounded))
                     .foregroundStyle(self.theme.palette.primaryText)
             }

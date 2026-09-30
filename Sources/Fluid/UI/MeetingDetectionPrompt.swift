@@ -209,7 +209,7 @@ final class MeetingDetectionPromptController: ObservableObject {
         let appName = resolved.flatMap {
             FileManager.default.displayName(atPath: $0.path).replacingOccurrences(of: ".app", with: "")
         } ?? "Meeting"
-        self.appDisplayName = request.serviceName.map { "\($0) · in \(appName)" } ?? appName
+        self.appDisplayName = request.serviceName.map { String.fluidLocalizedFormat("%@ · in %@", String(describing: $0), String(describing: appName)) } ?? appName
 
         let panel = self.panelOrCreate()
         self.placeAtDefaultPosition(panel)
@@ -225,7 +225,7 @@ final class MeetingDetectionPromptController: ObservableObject {
         }
         DebugLogger.shared.log("prompt-shown bundle=\(request.bundleIdentifier)", source: "MeetingAutoDetector")
         AccessibilityNotification.Announcement(
-            "Record this meeting? \(self.appDisplayName). Nothing is recording yet."
+            String.fluidLocalizedFormat("Record this meeting? %@. Nothing is recording yet.", String(describing: self.appDisplayName))
         ).post()
 
         self.clearAutoDismiss()
@@ -448,7 +448,7 @@ final class MeetingDetectionPromptController: ObservableObject {
 
     static func startErrorMessage(from error: Error, appDisplayName: String) -> String {
         if case MeetingCaptureError.applicationUnavailable = error {
-            return "\(appDisplayName) is no longer available to record."
+            return String.fluidLocalizedFormat("%@ is no longer available to record.", String(describing: appDisplayName))
         }
         return (error as? LocalizedError)?.errorDescription ?? "Can't start recording right now."
     }
@@ -539,7 +539,7 @@ private struct MeetingDetectionPromptContent: View {
                     Text("Record this meeting?")
                         .font(self.theme.typography.bodyStrong)
                         .foregroundStyle(self.theme.palette.primaryText)
-                    Text(self.controller.appDisplayName)
+                    Text(self.controller.appDisplayName.fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(self.theme.palette.secondaryText)
                         .lineLimit(1)
@@ -579,7 +579,7 @@ private struct MeetingDetectionPromptContent: View {
                     self.controller.startTapped()
                 } label: {
                     Label(
-                        self.controller.request?.cta == .setup ? "Set up" : "Record",
+                        (self.controller.request?.cta == .setup ? "Set up" : "Record").fluidLocalized,
                         systemImage: self.controller.request?.cta == .setup ? "gearshape" : "record.circle"
                     )
                 }
@@ -610,7 +610,7 @@ private struct MeetingDetectionPromptContent: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Record this meeting? \(self.controller.appDisplayName). Nothing is recording yet. Record, or dismiss.")
+        .accessibilityLabel("Record this meeting? \( self.controller.appDisplayName). Nothing is recording yet. Record, or dismiss.")
     }
 }
 

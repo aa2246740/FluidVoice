@@ -123,10 +123,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             await TranscriptionHistoryStore.shared.finishPendingWrites()
             if let error = TranscriptionHistoryStore.shared.persistenceError {
                 let alert = NSAlert()
-                alert.messageText = "History could not be saved"
-                alert.informativeText = error
-                alert.addButton(withTitle: "Keep Open")
-                alert.addButton(withTitle: "Quit Anyway")
+                alert.messageText = "History could not be saved".fluidLocalized
+                alert.informativeText = error.fluidLocalized
+                alert.addButton(withTitle: "Keep Open".fluidLocalized)
+                alert.addButton(withTitle: "Quit Anyway".fluidLocalized)
                 sender.reply(toApplicationShouldTerminate: alert.runModal() == .alertSecondButtonReturn)
                 return
             }
@@ -482,7 +482,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                     DebugLogger.shared.error("Update check failed: \(error)", source: "AppDelegate")
                     self.showUpdateAlert(
                         title: "Update Check Failed",
-                        message: "Unable to check for updates. Please try again later.\n\nError: \(error.localizedDescription)"
+                        message: String.fluidLocalizedFormat("Unable to check for updates. Please try again later.\n\nError: %@", String(describing: error.localizedDescription))
                     )
                 }
             }
@@ -561,11 +561,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         DebugLogger.shared.info("Showing update notification for version \(version)", source: "AppDelegate")
 
         let alert = NSAlert()
-        alert.messageText = "Update Available"
-        alert.informativeText = "FluidVoice \(version) is now available. Would you like to install it now?\n\nThe app will restart automatically after installation."
+        alert.messageText = "Update Available".fluidLocalized
+        alert.informativeText = String.fluidLocalizedFormat("FluidVoice %@ is now available. Would you like to install it now?\n\nThe app will restart automatically after installation.", String(describing: version))
         alert.alertStyle = .informational
-        alert.addButton(withTitle: "Install Now")
-        alert.addButton(withTitle: "Later")
+        alert.addButton(withTitle: "Install Now".fluidLocalized)
+        alert.addButton(withTitle: "Later".fluidLocalized)
 
         let response = alert.runModal()
 
@@ -583,10 +583,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     private func showUpdateAlert(title: String, message: String) {
         DebugLogger.shared.info("🔔 Showing alert: \(title)", source: "AppDelegate")
         let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
+        alert.messageText = title.fluidLocalized
+        alert.informativeText = message.fluidLocalized
         alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "OK".fluidLocalized)
         alert.runModal()
     }
 }

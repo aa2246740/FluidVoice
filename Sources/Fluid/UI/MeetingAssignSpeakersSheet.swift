@@ -128,7 +128,7 @@ struct MeetingAssignSpeakersSheet: View {
                         .keyboardShortcut(.cancelAction)
                         .disabled(self.isSaving)
                     Spacer()
-                    Button(self.isSaving ? "Saving…" : "Save names") { Task { await self.save() } }
+                    Button((self.isSaving ? "Saving…" : "Save names").fluidLocalized) { Task { await self.save() } }
                         .meetingGlassAction(prominent: true)
                         .keyboardShortcut(.defaultAction)
                         .disabled(self.isSaving)
@@ -169,7 +169,7 @@ struct MeetingAssignSpeakersSheet: View {
                 Circle()
                     .fill(tint)
                     .frame(width: 10, height: 10)
-                Text(speaker.displayName)
+                Text(speaker.displayName.fluidLocalized)
                     .font(self.theme.typography.captionSmall)
                     .tracking(1.1)
                     .textCase(.uppercase)
@@ -188,7 +188,7 @@ struct MeetingAssignSpeakersSheet: View {
             } else {
                 VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
                     ForEach(Array(quotes.enumerated()), id: \.offset) { _, quote in
-                        Text(quote)
+                        Text(quote.fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .foregroundStyle(self.theme.palette.secondaryText)
                             .padding(.leading, self.theme.metrics.spacing.md)
@@ -205,7 +205,7 @@ struct MeetingAssignSpeakersSheet: View {
                     get: { self.drafts[speaker.id] ?? speaker.displayName },
                     set: { self.drafts[speaker.id] = $0 }
                 ),
-                prompt: Text(speaker.displayName)
+                prompt: Text(speaker.displayName.fluidLocalized)
             )
             .textFieldStyle(.roundedBorder)
             .controlSize(.large)

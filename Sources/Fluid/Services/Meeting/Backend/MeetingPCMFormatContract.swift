@@ -22,7 +22,7 @@ nonisolated struct MeetingPCMFormatContract: Equatable, Sendable {
         switch self.layout {
         case .mono: layoutDescription = "mono"
         case .stereo: layoutDescription = "stereo"
-        case let .explicit(bytes): layoutDescription = "explicit(\(bytes.count) bytes)"
+        case let .explicit(bytes): layoutDescription = String.fluidLocalizedFormat("explicit(%@ bytes)", String(describing: bytes.count))
         }
         return "lpcm-f32 rate=\(self.sampleRate) channels=\(self.channelCount) layout=\(layoutDescription)"
     }
@@ -134,7 +134,7 @@ nonisolated enum MeetingPCMFormatResolver {
             )
         else {
             throw MeetingPCMFormatContractError.unsupported(
-                "cannot construct audio format for \(channels) layout-less channels"
+                String.fluidLocalizedFormat("cannot construct audio format for %@ layout-less channels", String(describing: channels))
             )
         }
         return discreteFormat

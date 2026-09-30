@@ -28,7 +28,7 @@ struct MeetingSummaryView: View {
                     .font(.system(.title3, design: .serif).weight(.medium))
                     .foregroundStyle(self.theme.palette.primaryText)
                     .accessibilityAddTraits(.isHeader)
-                Text(self.controller.model == nil ? "Meeting summaries require a build with Fluid Intelligence." : self.hint)
+                Text((self.controller.model == nil ? "Meeting summaries require a build with Fluid Intelligence." : self.hint).fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -36,7 +36,7 @@ struct MeetingSummaryView: View {
                 HStack(spacing: self.theme.metrics.spacing.sm) {
                     if self.controller.installed {
                         Picker("Summary type", selection: self.$kind) {
-                            ForEach(MeetingSummaryKind.allCases) { kind in Text(kind.title).tag(kind) }
+                            ForEach(MeetingSummaryKind.allCases) { kind in Text(kind.title.fluidLocalized).tag(kind) }
                         }
                         .labelsHidden()
                         .pickerStyle(.menu)
@@ -47,12 +47,12 @@ struct MeetingSummaryView: View {
                     self.actions
                 }
                 if self.controller.downloading {
-                    Text(PrivateAIModelDownloadProgressText.detailText(for: self.controller.progress))
+                    Text(PrivateAIModelDownloadProgressText.detailText(for: self.controller.progress).fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(self.theme.palette.secondaryText)
                 }
                 if let error = self.controller.error {
-                    Text(error).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
+                    Text(error.fluidLocalized).font(self.theme.typography.bodySmall).foregroundStyle(self.theme.palette.warning)
                         .textSelection(.enabled)
                 }
                 if !self.controller.output.isEmpty {
@@ -87,7 +87,7 @@ struct MeetingSummaryView: View {
                 } else if self.controller.downloading {
                     Button {} label: {
                         VStack(spacing: 4) {
-                            Text(PrivateAIModelDownloadProgressText.buttonTitle(for: self.controller.progress))
+                            Text(PrivateAIModelDownloadProgressText.buttonTitle(for: self.controller.progress).fluidLocalized)
                             ProgressView(value: self.controller.progress?.fractionCompleted)
                                 .progressViewStyle(.linear)
                                 .frame(width: 160)

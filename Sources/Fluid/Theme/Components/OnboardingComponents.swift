@@ -11,7 +11,7 @@ struct OnboardingModelInfoTooltip: View {
     let font: Font
 
     var body: some View {
-        Text(self.text)
+        Text(self.text.fluidLocalized)
             .font(self.font)
             .foregroundStyle(.white.opacity(0.92))
             .fixedSize(horizontal: false, vertical: true)
@@ -60,7 +60,7 @@ struct FluidOnboardingLandingHero<Actions: View>: View {
                 .padding(.bottom, self.eyebrow.isEmpty ? 40 : 26)
 
             if !self.eyebrow.isEmpty {
-                Text(self.eyebrow)
+                Text(self.eyebrow.fluidLocalized)
                     .font(.fluidSystem(size: 14, weight: .bold))
                     .tracking(4.2)
                     .foregroundStyle(FluidOnboardingLandingColors.blue.opacity(0.72))
@@ -69,13 +69,13 @@ struct FluidOnboardingLandingHero<Actions: View>: View {
             }
 
             VStack(spacing: 4) {
-                Text(self.title)
+                Text(self.title.fluidLocalized)
                     .font(.fluidSystem(size: 52, weight: .semibold))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.82)
 
-                Text(self.accentTitle)
+                Text(self.accentTitle.fluidLocalized)
                     .font(.fluidSystem(size: 50, weight: .semibold))
                     .italic()
                     .foregroundStyle(FluidOnboardingLandingColors.blue)
@@ -87,8 +87,8 @@ struct FluidOnboardingLandingHero<Actions: View>: View {
             .padding(.bottom, 28)
 
             VStack(spacing: 8) {
-                Text(self.firstDetail)
-                Text(self.secondDetail)
+                Text(self.firstDetail.fluidLocalized)
+                Text(self.secondDetail.fluidLocalized)
             }
             .font(.fluidSystem(size: 22, weight: .medium))
             .foregroundStyle(Color.white.opacity(0.70))
@@ -363,8 +363,8 @@ struct FluidOnboardingLandingPrimaryButton: NSViewRepresentable {
         button.focusRingType = .none
         button.keyEquivalent = "\r"
         button.keyEquivalentModifierMask = []
-        button.setAccessibilityLabel(self.title)
-        button.update(title: self.title, isHighlighted: false)
+        button.setAccessibilityLabel(self.title.fluidLocalized)
+        button.update(title: self.title.fluidLocalized, isHighlighted: false)
         return button
     }
 
@@ -372,13 +372,13 @@ struct FluidOnboardingLandingPrimaryButton: NSViewRepresentable {
         context.coordinator.action = self.action
 
         guard let button = button as? LandingPrimaryNSButton else {
-            button.title = self.title
-            button.setAccessibilityLabel(self.title)
+            button.title = self.title.fluidLocalized
+            button.setAccessibilityLabel(self.title.fluidLocalized)
             return
         }
 
-        button.setAccessibilityLabel(self.title)
-        button.update(title: self.title, isHighlighted: button.isHighlighted)
+        button.setAccessibilityLabel(self.title.fluidLocalized)
+        button.update(title: self.title.fluidLocalized, isHighlighted: button.isHighlighted)
     }
 
     final class Coordinator: NSObject {

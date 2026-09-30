@@ -1230,7 +1230,7 @@ nonisolated enum MeetingModelValidationError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case let .unsupportedSchema(version):
-            return "Unsupported meeting schema version \(version)."
+            return String.fluidLocalizedFormat("Unsupported meeting schema version %@.", String(describing: version))
         case .unsupportedLanguage:
             return "Meeting transcription currently supports English only."
         case .missingMicrophone:

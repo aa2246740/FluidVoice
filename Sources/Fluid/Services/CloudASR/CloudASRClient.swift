@@ -95,15 +95,15 @@ nonisolated enum CloudASRError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case let .missingCredentials(vendor):
-            return "\(vendor.displayName): API key is not configured. Open Voice Engine settings and enter your key."
+            return String.fluidLocalizedFormat("%@: API key is not configured. Open Voice Engine settings and enter your key.", String(describing: vendor.displayName))
         case .invalidEndpoint:
             return "Cloud ASR endpoint URL is invalid."
         case let .http(status, message):
-            return "Cloud ASR request failed (HTTP \(status)): \(message)"
+            return String.fluidLocalizedFormat("Cloud ASR request failed (HTTP %@): %@", String(describing: status), String(describing: message))
         case let .vendor(code, message):
-            return "Cloud ASR error \(code): \(message)"
+            return String.fluidLocalizedFormat("Cloud ASR error %@: %@", String(describing: code), String(describing: message))
         case let .malformedResponse(detail):
-            return "Cloud ASR returned an unexpected response: \(detail)"
+            return String.fluidLocalizedFormat("Cloud ASR returned an unexpected response: %@", String(describing: detail))
         }
     }
 }
@@ -284,7 +284,7 @@ nonisolated struct CloudASRClient: Sendable {
     }
 
     private static func preview(_ data: Data, limit: Int) -> String {
-        String(bytes: data.prefix(limit), encoding: .utf8) ?? "<\(data.count) bytes>"
+        String(bytes: data.prefix(limit), encoding: .utf8) ?? String.fluidLocalizedFormat("<%@ bytes>", String(describing: data.count))
     }
 
     private static func errorMessage(from json: [String: Any], data: Data) -> String {

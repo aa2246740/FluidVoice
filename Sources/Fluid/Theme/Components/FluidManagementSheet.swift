@@ -20,8 +20,8 @@ struct FluidManagementSheet<Content: View>: View {
                     .frame(width: 52, height: 52)
                     .background(FluidBrandColors.blue.opacity(0.10), in: RoundedRectangle(cornerRadius: 16))
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(self.title).font(self.theme.typography.title)
-                    Text(self.subtitle).font(self.theme.typography.body).foregroundStyle(self.theme.palette.secondaryText)
+                    Text(self.title.fluidLocalized).font(self.theme.typography.title)
+                    Text(self.subtitle.fluidLocalized).font(self.theme.typography.body).foregroundStyle(self.theme.palette.secondaryText)
                 }
                 Spacer()
                 Button("Done", action: self.close)
@@ -52,7 +52,7 @@ struct FluidManagementGroup<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(self.title).font(self.theme.typography.bodyStrong).foregroundStyle(self.theme.palette.secondaryText)
+            Text(self.title.fluidLocalized).font(self.theme.typography.bodyStrong).foregroundStyle(self.theme.palette.secondaryText)
             VStack(alignment: .leading, spacing: 16, content: self.content)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(20)
@@ -70,9 +70,9 @@ struct FluidManagementRow<Control: View>: View {
     var body: some View {
         HStack(spacing: 24) {
             VStack(alignment: .leading, spacing: 5) {
-                Text(self.title).font(self.theme.typography.bodyStrong)
+                Text(self.title.fluidLocalized).font(self.theme.typography.bodyStrong)
                 if !self.detail.isEmpty {
-                    Text(self.detail).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText)
+                    Text(self.detail.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }

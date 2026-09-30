@@ -18,13 +18,13 @@ nonisolated enum LLMError: Error, LocalizedError, @unchecked Sendable {
         case .invalidResponse:
             return "Invalid response from LLM"
         case let .httpError(code, message):
-            return "HTTP \(code): \(message.trimmingCharacters(in: .whitespacesAndNewlines))"
+            return String.fluidLocalizedFormat("HTTP %@: %@", String(describing: code), String(describing: message.trimmingCharacters(in: .whitespacesAndNewlines)))
         case let .networkError(error):
             return Self.userFacingNetworkMessage(from: error)
         case .encodingError:
             return "Failed to encode request"
         case let .timeout(seconds):
-            return "Request timed out after \(Int(seconds)) seconds"
+            return String.fluidLocalizedFormat("Request timed out after %@ seconds", String(describing: Int(seconds)))
         case let .invalidRequest(message):
             return message
         }
@@ -32,7 +32,7 @@ nonisolated enum LLMError: Error, LocalizedError, @unchecked Sendable {
 
     private static func userFacingNetworkMessage(from error: Error) -> String {
         guard let urlError = error as? URLError else {
-            return "Network error: \(error.localizedDescription)"
+            return String.fluidLocalizedFormat("Network error: %@", String(describing: error.localizedDescription))
         }
 
         switch urlError.code {
@@ -49,7 +49,7 @@ nonisolated enum LLMError: Error, LocalizedError, @unchecked Sendable {
         case .secureConnectionFailed, .serverCertificateUntrusted, .serverCertificateHasBadDate, .serverCertificateNotYetValid:
             return "Network error: TLS certificate validation failed."
         default:
-            return "Network error: \(urlError.localizedDescription)"
+            return String.fluidLocalizedFormat("Network error: %@", String(describing: urlError.localizedDescription))
         }
     }
 }

@@ -2155,7 +2155,7 @@ final class GlobalHotkeyManager: NSObject {
         self.activeModifierOnlyShortcut = decision.activeModifierOnlyShortcut
         if decision.markInterrupted {
             self.markModifierOnlyPressInterrupted(
-                message: "\(self.label(for: behavior.holdModeType)) modifier-only press interrupted - extra modifier pressed"
+                message: String.fluidLocalizedFormat("%@ modifier-only press interrupted - extra modifier pressed", String(describing: self.label(for: behavior.holdModeType)))
             )
         }
         self.otherKeyPressedDuringModifier = decision.otherKeyPressedDuringModifier

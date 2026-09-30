@@ -32,7 +32,7 @@ struct DictionaryMatchDiagnosticsView: View {
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
             HStack {
-                Text(self.running ? "Checking this recording…" : "Pronunciation match")
+                Text((self.running ? "Checking this recording…" : "Pronunciation match").fluidLocalized)
                     .font(self.theme.typography.bodyStrong)
                 Spacer()
                 if self.running { ProgressView().controlSize(.small) }
@@ -46,7 +46,7 @@ struct DictionaryMatchDiagnosticsView: View {
                             Text("Recording \(sample.sampleNumber ?? 1)")
                                 .font(self.theme.typography.caption)
                                 .foregroundStyle(self.theme.palette.secondaryText)
-                            Text(sample.score.map { String(format: "%.3f", $0) } ?? "—")
+                            Text(sample.score.map { String(format: "%.3f", $0) } ?? "—".fluidLocalized)
                                 .monospacedDigit()
                                 .font(self.theme.typography.bodyStrong)
                                 .foregroundStyle((sample.score ?? -.infinity) >= Float(self.threshold) ? self.theme.palette.accent : self.theme.palette.primaryText)
@@ -54,7 +54,7 @@ struct DictionaryMatchDiagnosticsView: View {
                     }
                 }
             }
-            Text(self.report?.inspection != nil && self.inspectionExpanded ? "Automatic search: \(self.status)" : self.status)
+            Text((self.report?.inspection != nil && self.inspectionExpanded ? String.fluidLocalizedFormat("Automatic search: %@", String(describing: self.status)) : self.status).fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,7 +62,7 @@ struct DictionaryMatchDiagnosticsView: View {
                 HStack {
                     Text("Match level")
                     Spacer()
-                    Text(String(format: "%.2f", self.threshold)).monospacedDigit()
+                    Text(String(format: "%.2f", self.threshold).fluidLocalized).monospacedDigit()
                 }
                 .font(self.theme.typography.bodyStrong)
                 Slider(value: self.$threshold, in: 0.4...0.95, step: 0.01) { editing in
@@ -78,11 +78,11 @@ struct DictionaryMatchDiagnosticsView: View {
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
             }
-            Text(self.saving ? "Saving…" : "Applies to “\(self.word)” on your next dictation.")
+            Text((self.saving ? "Saving…" : String.fluidLocalizedFormat("Applies to “%@” on your next dictation.", String(describing: self.word))).fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
             if let error = self.error {
-                Text(error).font(self.theme.typography.caption).foregroundStyle(.red)
+                Text(error.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.red)
             }
             if let report = self.report, report.inspection != nil {
                 Divider()
@@ -170,13 +170,13 @@ struct DictionaryMatchDiagnosticsView: View {
 
     private var status: String {
         guard let candidate = self.candidate, let score = candidate.score else {
-            return self.recordingBusy ? "Listening to your current test." : "Dictate in the textbox to see how closely it matches “\(self.word)”."
+            return self.recordingBusy ? "Listening to your current test." : String.fluidLocalizedFormat("Dictate in the textbox to see how closely it matches “%@”.", String(describing: self.word))
         }
         guard candidate.eligible else { return "Add more recordings for this word to enable matching." }
-        if score < Float(self.threshold) { return "No recording clears your match level. Closest is \(String(format: "%.3f", Float(self.threshold) - score)) below." }
+        if score < Float(self.threshold) { return String.fluidLocalizedFormat("No recording clears your match level. Closest is %@ below.", String(describing: String(format: "%.3f", Float(self.threshold) - score))) }
         if candidate.heard.isEmpty { return "Similar sound, but no clear word boundary was found." }
         if let competitor = candidate.competingScore, competitor > score - 0.05 { return "Similar, but too close to another saved word." }
-        return "At least one recording clears your match level · “\(candidate.heard)”"
+        return String.fluidLocalizedFormat("At least one recording clears your match level · “%@”", String(describing: candidate.heard))
     }
 
     private func refreshHistory() {

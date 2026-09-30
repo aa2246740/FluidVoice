@@ -13,8 +13,8 @@ struct StatsTodayHero: View {
     private var progress: Double { self.milestone.progress }
     private var savedTime: String {
         if self.savedMinutes < 1 { return "< 1 min" }
-        if self.savedMinutes < 60 { return "\(Int(self.savedMinutes)) min" }
-        return "\(Int(self.savedMinutes) / 60)h \(Int(self.savedMinutes) % 60)m"
+        if self.savedMinutes < 60 { return String.fluidLocalizedFormat("%@ min", String(describing: Int(self.savedMinutes))) }
+        return String.fluidLocalizedFormat("%@h %@m", String(describing: Int(self.savedMinutes) / 60), String(describing: Int(self.savedMinutes) % 60))
     }
 
     var body: some View {
@@ -40,16 +40,16 @@ struct StatsTodayHero: View {
     private var headline: some View {
         VStack(alignment: .leading, spacing: 6) {
             if self.words > 0, self.savedMinutes > 0 {
-                Text(self.savedTime)
+                Text(self.savedTime.fluidLocalized)
                     .font(.fluidSystem(size: 56, weight: .semibold, design: .rounded))
                     .monospacedDigit()
                 Text("back in your day.")
                     .font(self.theme.typography.title)
             } else {
-                Text(self.words == 0 ? "Great ideas\nstart with a word." : "Look at you go.")
+                Text((self.words == 0 ? "Great ideas\nstart with a word." : "Look at you go.").fluidLocalized)
                     .font(self.theme.typography.displayTitle)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(self.words == 0 ? "Make a little space for your next big thought." : "\(self.words.formatted()) words captured, without the typing.")
+                Text((self.words == 0 ? "Make a little space for your next big thought." : String.fluidLocalizedFormat("%@ words captured, without the typing.", String(describing: self.words.formatted()))).fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(.secondary)
             }
@@ -69,7 +69,7 @@ struct StatsTodayHero: View {
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(.secondary)
             }
-            Text(self.streak == 0 ? "Your next streak starts with today." : "One day at a time. Look how far you've come.")
+            Text((self.streak == 0 ? "Your next streak starts with today." : "One day at a time. Look how far you've come.").fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -87,11 +87,11 @@ struct StatsTodayHero: View {
 
     private var nextStep: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(self.nextTarget.map { "You're \(($0 - self.words).formatted()) words from your next win." } ?? "Look how far your voice has taken you today.")
+            Text(self.nextTarget.map { String.fluidLocalizedFormat("You're %@ words from your next win.", ($0 - self.words).formatted()) } ?? "Look how far your voice has taken you today.".fluidLocalized)
                 .font(.fluidSystem(size: 30, weight: .semibold, design: .rounded))
                 .fixedSize(horizontal: false, vertical: true)
             HStack(alignment: .firstTextBaseline) {
-                Text(self.nextTarget.map { "\(self.words.formatted()) spoken. Let's make it \($0.formatted())." } ?? "\(self.words.formatted()) words spoken. Keep your ideas coming.")
+                Text(self.nextTarget.map { String.fluidLocalizedFormat("%@ spoken. Let's make it %@.", self.words.formatted(), $0.formatted()) } ?? String.fluidLocalizedFormat("%@ words spoken. Keep your ideas coming.", self.words.formatted()))
                     .font(self.theme.typography.statement)
                     .foregroundStyle(.secondary)
                 Spacer(minLength: 12)
@@ -134,7 +134,7 @@ private struct StatsStreakDay: View {
                 .foregroundStyle(self.words > 0 ? self.theme.palette.accent : self.theme.palette.secondaryText)
                 .frame(width: 24, height: 24)
                 .background(self.theme.palette.accent.opacity(self.words > 0 ? 0.15 : 0.04), in: Circle())
-            Text(self.date.formatted(.dateTime.weekday(.narrow)))
+            Text(self.date.formatted(.dateTime.weekday(.narrow)).fluidLocalized)
                 .font(self.theme.typography.captionSmall)
                 .foregroundStyle(.secondary)
         }
@@ -142,7 +142,7 @@ private struct StatsStreakDay: View {
         .overlay(alignment: self.tooltipAlignment) {
             if self.isHovered {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(self.date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
+                    Text(self.date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()).fluidLocalized)
                         .foregroundStyle(.secondary)
                     Text("\(self.words.formatted()) words")
                         .font(self.theme.typography.captionStrong)

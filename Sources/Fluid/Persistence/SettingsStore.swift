@@ -249,7 +249,7 @@ final class SettingsStore: ObservableObject {
     enum DictationModeLabels {
         static let externalDefault = "Default"
         static let smart = "Smart"
-        static let smartWithModel = "\(smart) — Fluid-1"
+        static let smartWithModel = String.fluidLocalizedFormat("%@ — Fluid-1", String(describing: smart))
     }
 
     enum DictationPromptSelection: Equatable {
@@ -797,7 +797,7 @@ final class SettingsStore: ObservableObject {
         let model = modelName.replacingOccurrences(of: "Fluid-1 ", with: "")
         // An unroutable selection runs no cleanup at all, so it reads as Basic rather than
         // as a long "· Unavailable" line that overflows the pill.
-        return model.isEmpty ? "Basic" : "\(mode) · \(model)"
+        return model.isEmpty ? "Basic" : String.fluidLocalizedFormat("%@ · %@", String(describing: mode), String(describing: model))
     }
 
     func dictationPromptDisplayName(for slot: DictationShortcutSlot, appBundleID: String?) -> String {
@@ -4202,7 +4202,7 @@ final class SettingsStore: ObservableObject {
             } catch {
                 DebugLogger.shared
                     .error(
-                        "Failed to migrate API key for \(provider.name): \(error.localizedDescription)",
+                        String.fluidLocalizedFormat("Failed to migrate API key for %@: %@", String(describing: provider.name), String(describing: error.localizedDescription)),
                         source: "SettingsStore"
                     )
             }
@@ -4457,7 +4457,7 @@ final class SettingsStore: ObservableObject {
         } else {
             DebugLogger.shared
                 .warning(
-                    "⚠️ TransformProcessType failed (error: \(result)). This is expected on some macOS versions.",
+                    String.fluidLocalizedFormat("⚠️ TransformProcessType failed (error: %@). This is expected on some macOS versions.", String(describing: result)),
                     source: "SettingsStore"
                 )
             DebugLogger.shared.debug(

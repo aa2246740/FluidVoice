@@ -186,7 +186,7 @@ nonisolated enum SpeakerLabeledTranscriptionPolicy {
         guard !gaps.isEmpty else { return nil }
         let noun = gaps.count == 1 ? "section" : "sections"
         let duration = gaps.reduce(0) { $0 + $1.durationSeconds }
-        return "Speaker labels were kept, but \(gaps.count) short audio \(noun) totaling \(String(format: "%.1f", duration)) seconds produced no text."
+        return String.fluidLocalizedFormat("Speaker labels were kept, but %@ short audio %@ totaling %@ seconds produced no text.", String(describing: gaps.count), String(describing: noun), String(describing: String(format: "%.1f", duration)))
     }
 
     static func assembleTurns(_ turns: [SpeakerRecognizedTurn]) -> SpeakerLabeledTranscript? {
@@ -306,14 +306,14 @@ nonisolated struct TranscriptionResult: Identifiable, Sendable, Codable {
             "Transcription: \(self.fileName)",
             "Date: \(self.timestamp.formatted())",
             "Duration: \(String(format: "%.1f", self.duration))s",
-            "Processing Time: \(String(format: "%.1f", self.processingTime))s",
+            String.fluidLocalizedFormat("Processing Time: %@s", String(describing: String(format: "%.1f", self.processingTime))),
             "Confidence: \(String(format: "%.1f%%", self.confidence * 100))",
         ]
         if let speakerLabelingNotice {
-            metadata.append("Speaker labeling: \(speakerLabelingNotice)")
+            metadata.append(String.fluidLocalizedFormat("Speaker labeling: %@", String(describing: speakerLabelingNotice)))
         }
         if !self.speakerLabelingGaps.isEmpty {
-            metadata.append("Unlabeled audio ranges: \(self.speakerLabelingGaps.map(\.timestampRangeText).joined(separator: ", "))")
+            metadata.append(String.fluidLocalizedFormat("Unlabeled audio ranges: %@", String(describing: self.speakerLabelingGaps.map(\.timestampRangeText).joined(separator: ", "))))
         }
         return metadata.joined(separator: "\n") + "\n\n---\n\n" + self.text
     }
@@ -375,13 +375,13 @@ final class FileTranscriptionService: ObservableObject {
             case let .activityInProgress(msg):
                 return msg
             case let .modelLoadFailed(msg):
-                return "Failed to load ASR models: \(msg)"
+                return String.fluidLocalizedFormat("Failed to load ASR models: %@", String(describing: msg))
             case let .audioConversionFailed(msg):
-                return "Failed to convert audio: \(msg)"
+                return String.fluidLocalizedFormat("Failed to convert audio: %@", String(describing: msg))
             case let .transcriptionFailed(msg):
-                return "Transcription failed: \(msg)"
+                return String.fluidLocalizedFormat("Transcription failed: %@", String(describing: msg))
             case let .fileNotSupported(msg):
-                return "File format not supported: \(msg)"
+                return String.fluidLocalizedFormat("File format not supported: %@", String(describing: msg))
             }
         }
     }
@@ -450,7 +450,7 @@ final class FileTranscriptionService: ObservableObject {
 
             guard Self.supportedFileExtensions.contains(fileExtension) else {
                 throw TranscriptionError
-                    .fileNotSupported("Format .\(fileExtension) not supported. \(Self.supportedFormatsDescription)")
+                    .fileNotSupported(String.fluidLocalizedFormat("Format .%@ not supported. %@", String(describing: fileExtension), String(describing: Self.supportedFormatsDescription)))
             }
 
             AnalyticsService.shared.recordUsage(
@@ -504,7 +504,7 @@ final class FileTranscriptionService: ObservableObject {
             }
 
             if provider.prefersNativeFileTranscription && !isVideoContainer {
-                self.currentStatus = duration > 0 ? "Transcribing audio (\(Int(duration))s)..." : "Transcribing audio..."
+                self.currentStatus = duration > 0 ? String.fluidLocalizedFormat("Transcribing audio (%@s)...", String(describing: Int(duration))) : "Transcribing audio..."
                 self.progress = 0.3
 
                 DebugLogger.shared.info(
@@ -553,7 +553,7 @@ final class FileTranscriptionService: ObservableObject {
             do {
                 audioFile = try AVAudioFile(forReading: fileURL)
             } catch {
-                throw TranscriptionError.audioConversionFailed("Could not open audio file: \(error.localizedDescription)")
+                throw TranscriptionError.audioConversionFailed(String.fluidLocalizedFormat("Could not open audio file: %@", String(describing: error.localizedDescription)))
             }
 
             let fileFormat = audioFile.processingFormat
@@ -568,7 +568,7 @@ final class FileTranscriptionService: ObservableObject {
             let sourceFramesPerChunk = AVAudioFrameCount(Double(samplesPerChunk) / resampleRatio)
             var currentFrame: AVAudioFramePosition = 0
 
-            self.currentStatus = duration > 0 ? "Transcribing audio (\(Int(duration))s)..." : "Transcribing audio..."
+            self.currentStatus = duration > 0 ? String.fluidLocalizedFormat("Transcribing audio (%@s)...", String(describing: Int(duration))) : "Transcribing audio..."
 
             while currentFrame < audioFile.length {
                 let remainingFrames = AVAudioFrameCount(audioFile.length - currentFrame)
@@ -583,7 +583,7 @@ final class FileTranscriptionService: ObservableObject {
                 do {
                     try audioFile.read(into: buffer, frameCount: framesToRead)
                 } catch {
-                    throw TranscriptionError.audioConversionFailed("Could not read audio chunk: \(error.localizedDescription)")
+                    throw TranscriptionError.audioConversionFailed(String.fluidLocalizedFormat("Could not read audio chunk: %@", String(describing: error.localizedDescription)))
                 }
 
                 // Convert buffer to 16kHz mono Float32 samples
@@ -594,7 +594,7 @@ final class FileTranscriptionService: ObservableObject {
                         targetSampleRate: sampleRate
                     )
                 } catch {
-                    throw TranscriptionError.audioConversionFailed("Could not resample audio: \(error.localizedDescription)")
+                    throw TranscriptionError.audioConversionFailed(String.fluidLocalizedFormat("Could not resample audio: %@", String(describing: error.localizedDescription)))
                 }
 
                 // Skip if chunk is too short (< 1 second)
@@ -617,7 +617,7 @@ final class FileTranscriptionService: ObservableObject {
                 // Update progress
                 let progressPercent = Double(currentFrame) / Double(audioFile.length)
                 self.progress = 0.3 + (progressPercent * 0.6) // Progress from 30% to 90%
-                self.currentStatus = "Transcribing... \(Int(progressPercent * 100))%"
+                self.currentStatus = String.fluidLocalizedFormat("Transcribing... %@%", String(describing: Int(progressPercent * 100)))
             }
 
             if allTranscriptions.isEmpty {
@@ -740,7 +740,7 @@ final class FileTranscriptionService: ObservableObject {
         var recognizedTurns: [SpeakerRecognizedTurn] = []
 
         for (index, turn) in turns.enumerated() {
-            self.currentStatus = "Transcribing speaker segments (\(index + 1)/\(turns.count))..."
+            self.currentStatus = String.fluidLocalizedFormat("Transcribing speaker segments (%@/%@)...", String(describing: index + 1), String(describing: turns.count))
             self.progress = 0.3 + (Double(index) / Double(turns.count)) * 0.65
 
             let transcribed: SpeakerTurnTranscription

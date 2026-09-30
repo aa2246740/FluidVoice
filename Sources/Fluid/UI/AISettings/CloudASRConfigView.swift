@@ -21,7 +21,7 @@ struct CloudASRConfigView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text(self.vendor.displayName)
+                Text(self.vendor.displayName.fluidLocalized)
                     .font(.headline)
                 Spacer()
                 if let url = self.vendor.consoleURL {
@@ -39,7 +39,7 @@ struct CloudASRConfigView: View {
                         .foregroundStyle(.secondary)
                     TextField("App ID (legacy, optional)", text: self.$configuration.appID)
                     SecureField("Access Token (legacy, optional)", text: self.$configuration.accessToken)
-                    TextField("Resource ID", text: self.$configuration.model, prompt: Text(CloudASRConfiguration.defaultModel(for: .volcengine)))
+                    TextField("Resource ID", text: self.$configuration.model, prompt: Text(CloudASRConfiguration.defaultModel(for: .volcengine).fluidLocalized))
                 }
 
                 if self.vendor == .dashscope {
@@ -47,11 +47,11 @@ struct CloudASRConfigView: View {
                         Text("China (Beijing)").tag(CloudASRRegion.china)
                         Text("International (Singapore)").tag(CloudASRRegion.international)
                     }
-                    TextField("Model", text: self.$configuration.model, prompt: Text(CloudASRConfiguration.defaultModel(for: .dashscope)))
+                    TextField("Model", text: self.$configuration.model, prompt: Text(CloudASRConfiguration.defaultModel(for: .dashscope).fluidLocalized))
                 }
 
                 TextField("Language (optional, e.g. zh, en)", text: self.$configuration.language, prompt: Text("Auto detect"))
-                TextField("Endpoint override (optional)", text: self.$configuration.baseURLOverride, prompt: Text(self.defaultEndpoint))
+                TextField("Endpoint override (optional)", text: self.$configuration.baseURLOverride, prompt: Text(self.defaultEndpoint.fluidLocalized))
             }
             .formStyle(.grouped)
 
@@ -60,14 +60,14 @@ struct CloudASRConfigView: View {
                 .foregroundStyle(.secondary)
 
             if let testStatus {
-                Text(testStatus)
+                Text(testStatus.fluidLocalized)
                     .font(.caption)
                     .foregroundStyle(self.testSucceeded ? Color.green : Color.red)
                     .textSelection(.enabled)
             }
 
             HStack {
-                Button(self.isTesting ? "Testing…" : "Test Connection") {
+                Button((self.isTesting ? "Testing…" : "Test Connection").fluidLocalized) {
                     self.runTest()
                 }
                 .disabled(self.isTesting || !self.configuration.hasCredentials)
@@ -100,7 +100,7 @@ struct CloudASRConfigView: View {
                 let silence = [Float](repeating: 0, count: 16_000)
                 let text = try await CloudASRClient().transcribe(samples: silence, configuration: configuration)
                 self.testSucceeded = true
-                self.testStatus = text.isEmpty ? "Connected. Credentials accepted." : "Connected. Response: \(text)"
+                self.testStatus = text.isEmpty ? "Connected. Credentials accepted." : String.fluidLocalizedFormat("Connected. Response: %@", String(describing: text))
             } catch {
                 self.testSucceeded = false
                 self.testStatus = error.localizedDescription

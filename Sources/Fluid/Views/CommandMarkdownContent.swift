@@ -276,7 +276,7 @@ struct CommandMarkdownContent: View {
                 .accessibilityAddTraits(.isHeader)
         case let .listItem(text, marker, depth):
             HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text(marker).foregroundStyle(self.theme.palette.secondaryText).frame(minWidth: 14, alignment: .trailing)
+                Text(marker.fluidLocalized).foregroundStyle(self.theme.palette.secondaryText).frame(minWidth: 14, alignment: .trailing)
                 Text(text).fixedSize(horizontal: false, vertical: true)
             }
             .padding(.leading, CGFloat(depth) * 18)
@@ -335,7 +335,7 @@ struct CommandCodeBlock: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(self.language.isEmpty ? "Code" : self.language)
+                Text((self.language.isEmpty ? "Code" : self.language).fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                 Spacer()
@@ -375,8 +375,8 @@ struct CommandCopyButton: View {
                 .foregroundStyle(.secondary)
         }
         .fluidGlassAction(circular: true)
-        .help(self.copied ? "Copied" : self.label)
-        .accessibilityLabel(self.copied ? "Copied" : self.label)
+        .help((self.copied ? "Copied" : self.label).fluidLocalized)
+        .accessibilityLabel((self.copied ? "Copied" : self.label).fluidLocalized)
         .task(id: self.copied) {
             guard self.copied else { return }
             do { try await Task.sleep(for: .seconds(1.5)) } catch { return }

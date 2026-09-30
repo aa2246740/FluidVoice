@@ -71,7 +71,7 @@ struct SearchableModelPicker: View {
             // Model button that opens popover
             Button(action: { self.isShowingPopover.toggle() }) {
                 HStack(spacing: 6) {
-                    Text(self.selectedModel.isEmpty ? "Select Model" : self.displayName(self.selectedModel))
+                    Text((self.selectedModel.isEmpty ? "Select Model" : self.displayName(self.selectedModel)).fluidLocalized)
                         .font(.fluidSystem(size: 12, weight: .semibold))
                         .lineLimit(1)
                         .truncationMode(.middle)
@@ -132,7 +132,7 @@ struct SearchableModelPicker: View {
                                                 self.isShowingPopover = false
                                             }) {
                                                 HStack {
-                                                    Text(self.displayName(model))
+                                                    Text(self.displayName(model).fluidLocalized)
                                                         .lineLimit(1)
                                                     Spacer()
                                                     if model == self.selectedModel {

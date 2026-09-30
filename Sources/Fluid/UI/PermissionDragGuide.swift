@@ -212,7 +212,7 @@ private struct PermissionDragGuideView: View {
                         value: self.isArrowRaised
                     )
 
-                Text(self.instruction)
+                Text(self.instruction.fluidLocalized)
                     .font(.fluidSystem(size: 15, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.78))
                     .lineLimit(1)
@@ -254,7 +254,7 @@ private struct PermissionDragGuideView: View {
                     .frame(width: 34, height: 34)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
-                Text(self.appName)
+                Text(self.appName.fluidLocalized)
                     .font(.fluidSystem(size: 16, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.92))
 
