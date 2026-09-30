@@ -381,6 +381,35 @@ struct SettingsView: View {
 
                             Divider().opacity(0.2)
 
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Language")
+                                        .font(self.theme.typography.bodyStrong)
+                                        .foregroundStyle(self.settingsTitleText)
+                                    Text("Choose the app display language. Restart FluidVoice to apply.")
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .font(self.theme.typography.bodySmall)
+                                        .foregroundStyle(self.settingsSecondaryText)
+                                }
+
+                                Spacer()
+
+                                Picker("", selection: Binding(
+                                    get: { SettingsStore.shared.appLanguage },
+                                    set: { SettingsStore.shared.appLanguage = $0 }
+                                )) {
+                                    ForEach(SettingsStore.AppLanguage.allCases) { option in
+                                        Text(option.displayName).tag(option)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .fluidDropdownStyle()
+                                .frame(width: 170, alignment: .trailing)
+                            }
+                            .settingsSearchTarget(.general)
+
+                            Divider().opacity(0.2)
+
                             // Automatic Updates
                             VStack(alignment: .leading, spacing: 6) {
                                 HStack(alignment: .center) {
