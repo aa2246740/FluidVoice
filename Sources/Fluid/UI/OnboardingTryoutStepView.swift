@@ -119,7 +119,7 @@ struct OnboardingTryoutStepView: View {
 
     private var promptText: String {
         if self.exampleTexts.isEmpty {
-            return "Say anything you'd want to dictate in \(self.language.displayName)."
+            return String.fluidLocalizedFormat("Say anything you'd want to dictate in %@.", self.language.displayName.fluidLocalized)
         }
         return "Try this, or say anything you'd want to dictate."
     }
@@ -143,7 +143,7 @@ struct OnboardingTryoutStepView: View {
         VStack(spacing: 12) {
             self.keyboardCard
 
-            Text(self.footerHint ?? "Feels slow or inaccurate? Go back and try another model for \(self.language.displayName).")
+            Text(self.footerHint ?? String.fluidLocalizedFormat("Feels slow or inaccurate? Go back and try another model for %@.", self.language.displayName.fluidLocalized))
                 .font(self.theme.typography.captionStrong)
                 .foregroundStyle(Color.white.opacity(0.44))
                 .multilineTextAlignment(.center)
@@ -202,7 +202,7 @@ struct OnboardingTryoutStepView: View {
                 )
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Dictation shortcut \(self.shortcutDisplay). Press once to start. Press again to stop.")
+        .accessibilityLabel("Dictation shortcut \( self.shortcutDisplay). Press once to start. Press again to stop.")
     }
 
     private var changeShortcutButton: some View {
@@ -216,7 +216,7 @@ struct OnboardingTryoutStepView: View {
         return Button {
             self.onToggleShortcut()
         } label: {
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(self.theme.typography.captionStrong)
                 .foregroundStyle(.white.opacity(foregroundOpacity))
                 .lineLimit(1)
@@ -268,7 +268,7 @@ struct OnboardingTryoutStepView: View {
 
         return VStack(alignment: .leading, spacing: 10) {
             if !examples.isEmpty {
-                Text(self.promptText)
+                Text(self.promptText.fluidLocalized)
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(Color.white.opacity(0.58))
 
@@ -276,7 +276,7 @@ struct OnboardingTryoutStepView: View {
                     self.examplePill(example)
                 }
             } else {
-                self.examplePill("Say anything in \(self.language.displayName).")
+                self.examplePill(String.fluidLocalizedFormat("Say anything in %@.", self.language.displayName.fluidLocalized))
             }
 
             ZStack(alignment: .topLeading) {
@@ -300,7 +300,7 @@ struct OnboardingTryoutStepView: View {
                     .focused(self.$isEditorFocused)
 
                 if self.shouldShowPlaceholder {
-                    Text(self.placeholderText)
+                    Text(self.placeholderText.fluidLocalized)
                         .font(self.theme.typography.bodySmallStrong)
                         .foregroundStyle(Color.white.opacity(0.38))
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -338,7 +338,7 @@ struct OnboardingTryoutStepView: View {
     }
 
     private func examplePill(_ text: String) -> some View {
-        Text(text)
+        Text(text.fluidLocalized)
             .font(self.theme.typography.captionStrong)
             .foregroundStyle(Color.white.opacity(0.72))
             .lineLimit(2)

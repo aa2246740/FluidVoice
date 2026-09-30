@@ -40,7 +40,7 @@ struct FeedbackSubmission: Encodable {
     static var appDetails: String {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
-        return "FluidVoice \(version) (\(build))\nmacOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
+        return String.fluidLocalizedFormat("FluidVoice %@ (%@)\nmacOS: %@", String(describing: version), String(describing: build), String(describing: ProcessInfo.processInfo.operatingSystemVersionString))
     }
 
     static func isValidEmail(_ value: String) -> Bool {
@@ -53,7 +53,7 @@ struct FeedbackSubmission: Encodable {
 
     var content: String {
         var text = "[\(self.category.rawValue)]\n\(self.message.trimmingCharacters(in: .whitespacesAndNewlines))"
-        if let appDetails { text += "\n\n--- App details ---\n\(appDetails)" }
+        if let appDetails { text += String.fluidLocalizedFormat("\n\n--- App details ---\n%@", String(describing: appDetails)) }
         return text
     }
 

@@ -302,14 +302,14 @@ nonisolated enum MeetingBackendError: LocalizedError, Equatable, Sendable {
             return "Meeting backend \"\(backend.rawValue)\" has no runtime available in this context."
         case let .planDisagreesWithRequest(backend, defect):
             return "Meeting backend \"\(backend.rawValue)\" returned a plan that disagrees with "
-                + "this attempt (\(defect.rawValue))."
+                + String.fluidLocalizedFormat("this attempt (%@).", String(describing: defect.rawValue))
         case let .unsupportedLanguage(backend, languageCode):
             return "Meeting backend \"\(backend.rawValue)\" cannot transcribe language \(languageCode)."
         case let .unsupportedTrackTopology(backend):
             return "Meeting backend \"\(backend.rawValue)\" cannot process this session's audio tracks."
         case let .outcomeContractMismatch(backend, declared):
             return "Meeting backend \"\(backend.rawValue)\" returned an outcome that does not match "
-                + "its declared \(declared.rawValue) result contract."
+                + String.fluidLocalizedFormat("its declared %@ result contract.", String(describing: declared.rawValue))
         }
     }
 }

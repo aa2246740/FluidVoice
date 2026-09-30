@@ -262,7 +262,7 @@ final class FunctionCallingProvider {
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
                 let errText = String(data: data, encoding: .utf8) ?? "Unknown error"
                 DebugLogger.shared.error("HTTP \(http.statusCode): \(errText)", source: "FunctionCallingProvider")
-                return .error("HTTP \(http.statusCode): \(errText)")
+                return .error(String.fluidLocalizedFormat("HTTP %@: %@", String(describing: http.statusCode), String(describing: errText)))
             }
 
             let decoded = try JSONDecoder().decode(ChatResponse.self, from: data)
@@ -385,7 +385,7 @@ final class FunctionCallingProvider {
                     "HTTP \(http.statusCode) in continueWithToolResults: \(errText)",
                     source: "FunctionCallingProvider"
                 )
-                return .error("HTTP \(http.statusCode): \(errText)")
+                return .error(String.fluidLocalizedFormat("HTTP %@: %@", String(describing: http.statusCode), String(describing: errText)))
             }
 
             let decoded = try JSONDecoder().decode(ChatResponse.self, from: data)

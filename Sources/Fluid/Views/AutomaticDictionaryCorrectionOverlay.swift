@@ -438,7 +438,7 @@ private struct MicrophoneChangeOverlayView: View {
                     .foregroundStyle(.white.opacity(0.78))
                     .frame(width: 24, height: 24)
 
-                Text(self.title)
+                Text(self.title.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .medium))
                     .foregroundStyle(.white.opacity(0.72))
 
@@ -458,7 +458,7 @@ private struct MicrophoneChangeOverlayView: View {
                 .accessibilityLabel("Dismiss microphone change")
             }
 
-            Text(self.detailText)
+            Text(self.detailText.fluidLocalized)
                 .font(.fluidSystem(size: 16, weight: .semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
@@ -466,7 +466,7 @@ private struct MicrophoneChangeOverlayView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 8) {
-                Text(self.explanation)
+                Text(self.explanation.fluidLocalized)
                     .font(.fluidSystem(size: 11))
                     .foregroundStyle(.white.opacity(0.58))
                     .lineLimit(1)
@@ -507,11 +507,11 @@ private struct MicrophoneChangeOverlayView: View {
         }
         switch (self.notice.previousName, self.notice.currentName) {
         case let (previous?, current?):
-            return "\(previous)  →  \(current)"
+            return String.fluidLocalizedFormat("%@  →  %@", String(describing: previous), String(describing: current))
         case let (previous?, nil):
-            return "\(previous) is no longer available"
+            return String.fluidLocalizedFormat("%@ is no longer available", String(describing: previous))
         case let (nil, current?):
-            return "Now using \(current)"
+            return String.fluidLocalizedFormat("Now using %@", String(describing: current))
         case (nil, nil):
             return "Connect or restore a microphone in Settings"
         }
@@ -684,7 +684,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
 
             self.correctionPair
 
-            Text(self.correctionChoiceDescription)
+            Text(self.correctionChoiceDescription.fluidLocalized)
                 .font(.fluidSystem(size: 11))
                 .foregroundStyle(.white.opacity(0.58))
                 .lineLimit(1)
@@ -717,7 +717,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
                 }
             }
             if self.session.hasError {
-                Text(self.session.statusMessage).font(.fluidSystem(size: 11)).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                Text(self.session.statusMessage.fluidLocalized).font(.fluidSystem(size: 11)).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
             }
         }
         .transition(.opacity)
@@ -736,7 +736,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
                         if self.settings.automaticDictionarySuggestionFrequency == frequency {
                             Label(frequency.displayName, systemImage: "checkmark")
                         } else {
-                            Text(frequency.displayName)
+                            Text(frequency.displayName.fluidLocalized)
                         }
                     }
                 }
@@ -792,7 +792,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
                         accent: self.accent
                     )
 
-                    Text(self.overlayReadinessCaption)
+                    Text(self.overlayReadinessCaption.fluidLocalized)
                         .font(.fluidSystem(size: 10.5, weight: .medium))
                         .foregroundStyle(self.session.isReady ? self.accent : .white.opacity(0.58))
                         .fixedSize(horizontal: false, vertical: true)
@@ -848,7 +848,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
             0,
             CustomDictionaryTrainingMerge.readyCoveredCount - self.session.readinessProgress
         )
-        return "\(remaining) correct \(remaining == 1 ? "try" : "tries") to unlock Add Replacement."
+        return String.fluidLocalizedFormat(remaining == 1 ? "%lld correct try to unlock Add Replacement." : "%lld correct tries to unlock Add Replacement.", remaining)
     }
 
     private func trainingInstruction(number: Int, text: String) -> some View {
@@ -858,7 +858,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
                 .foregroundStyle(self.accent)
                 .frame(width: 14)
 
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(.fluidSystem(size: 10.5))
                 .foregroundStyle(.white.opacity(0.58))
                 .fixedSize(horizontal: false, vertical: true)
@@ -877,7 +877,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
             }
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(self.session.successTitle)
+                Text(self.session.successTitle.fluidLocalized)
                     .font(.fluidSystem(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 Text("“\(self.session.candidate.heardText)” will become “\(self.session.candidate.correctedText)”.")
@@ -913,7 +913,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
                     .frame(width: 24, height: 24)
             }
 
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(.fluidSystem(size: 12, weight: .medium))
                 .foregroundStyle(.white.opacity(0.72))
 
@@ -938,14 +938,14 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
 
     private var correctionPair: some View {
         HStack(spacing: 8) {
-            Text(self.session.candidate.heardText)
+            Text(self.session.candidate.heardText.fluidLocalized)
                 .foregroundStyle(.white.opacity(0.78))
 
             Image(systemName: "arrow.right")
                 .font(.fluidSystem(size: 11, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.42))
 
-            Text(self.session.candidate.correctedText)
+            Text(self.session.candidate.correctedText.fluidLocalized)
                 .foregroundStyle(.white)
         }
         .font(.fluidSystem(size: 16, weight: .semibold))
@@ -960,7 +960,7 @@ private struct AutomaticDictionaryCorrectionOverlayView: View {
                 Text("Final output")
                     .font(.fluidSystem(size: 10, weight: .medium))
                     .foregroundStyle(.white.opacity(0.46))
-                Text(self.session.finalOutputText)
+                Text(self.session.finalOutputText.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .semibold))
                     .foregroundStyle(.white.opacity(self.session.lastOutput.isEmpty ? 0.48 : 0.9))
                     .lineLimit(1)
@@ -1049,7 +1049,7 @@ private struct CorrectionOverlayReadinessRing: View {
                     .foregroundStyle(self.isReady ? self.accent : .white.opacity(0.92))
                     .monospacedDigit()
 
-                Text(self.isReady ? "Ready" : "correct")
+                Text((self.isReady ? "Ready" : "correct").fluidLocalized)
                     .font(.fluidSystem(size: 8.5, weight: .medium))
                     .foregroundStyle(.white.opacity(0.46))
             }
@@ -1199,7 +1199,7 @@ private struct CorrectionOverlayVariantChip: View {
     var body: some View {
         Button(action: self.onRemove) {
             HStack(spacing: 4) {
-                Text(self.variant)
+                Text(self.variant.fluidLocalized)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
                 Image(systemName: "xmark.circle.fill")

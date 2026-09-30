@@ -21,7 +21,7 @@ struct MeetingRecordingCanvas: View {
                     .font(self.theme.typography.captionStrong)
                     .foregroundStyle(self.isStopping ? self.theme.palette.warning : Color(nsColor: .systemRed))
                     Spacer(minLength: 0)
-                    Text(Self.durationText(context.date.timeIntervalSince(self.session.startedAt)))
+                    Text(Self.durationText(context.date.timeIntervalSince(self.session.startedAt)).fluidLocalized)
                         .font(self.theme.typography.codeCaption)
                         .foregroundStyle(self.theme.palette.secondaryText)
                 }
@@ -35,12 +35,12 @@ struct MeetingRecordingCanvas: View {
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.sm) {
                 MeetingDocumentTitle(title: self.session.title)
                     .lineLimit(2)
-                    .help(self.session.title)
-                Text(self.sourceSummary)
+                    .help(self.session.title.fluidLocalized)
+                Text(self.sourceSummary.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .lineLimit(1)
-                    .help(self.sourceSummary)
+                    .help(self.sourceSummary.fluidLocalized)
             }
 
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.md) {
@@ -74,9 +74,9 @@ struct MeetingRecordingCanvas: View {
     }
 
     private var recordingFooter: some View {
-        Text(self.isStopping
+        Text((self.isStopping
             ? "Saving your recording before transcription begins."
-            : "Speaker labels are added after recording.")
+            : "Speaker labels are added after recording.").fluidLocalized)
             .font(self.theme.typography.caption)
             .foregroundStyle(self.theme.palette.secondaryText)
             .fixedSize(horizontal: false, vertical: true)
@@ -109,7 +109,7 @@ struct MeetingRecordingCanvas: View {
         let microphoneName = self.session.selectedMicrophone.displayName
         guard self.session.mode == .onlineCall else { return microphoneName }
         let applicationName = self.session.capturedApplication?.displayName ?? "Meeting audio"
-        return "\(applicationName) · \(microphoneName)"
+        return String.fluidLocalizedFormat("%@ · %@", String(describing: applicationName), String(describing: microphoneName))
     }
 
     private static func durationText(_ duration: TimeInterval) -> String {
@@ -158,7 +158,7 @@ private struct MeetingLiveTranscriptCard: View {
             }
             if self.rows.isEmpty {
                 VStack(alignment: .leading, spacing: self.theme.metrics.spacing.sm) {
-                    Text(self.availabilityIndicator == nil ? "Listening for conversation" : "Waiting for captions")
+                    Text((self.availabilityIndicator == nil ? "Listening for conversation" : "Waiting for captions").fluidLocalized)
                         .font(self.theme.typography.body)
                         .foregroundStyle(self.theme.palette.secondaryText)
                     Text("Your conversation will appear here as people speak.")
@@ -233,12 +233,12 @@ struct MeetingProcessingCanvas: View {
                             .font(self.theme.typography.sectionTitle)
                             .frame(width: 24)
                         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                            Text(Self.title(for: stage))
+                            Text(Self.title(for: stage).fluidLocalized)
                                 .font(self.theme.typography.bodyStrong)
                                 .foregroundStyle(self.stage != .completed && index > self.activeIndex
                                     ? self.theme.palette.secondaryText : self.theme.palette.primaryText)
                             if stage == self.stage {
-                                Text(Self.detail(for: stage))
+                                Text(Self.detail(for: stage).fluidLocalized)
                                     .font(self.theme.typography.caption)
                                     .foregroundStyle(self.theme.palette.secondaryText)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -247,7 +247,7 @@ struct MeetingProcessingCanvas: View {
                         Spacer()
                     }
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel("\(Self.title(for: stage)), \(self.accessibilityStatus(for: stage, index: index))")
+                    .accessibilityLabel("\( Self.title(for: stage)), \( self.accessibilityStatus(for: stage, index: index))")
                 }
             }
             .padding(.vertical, self.theme.metrics.spacing.sm)
@@ -326,7 +326,7 @@ private struct MeetingDocumentActionLabel: View {
             if let symbol {
                 Image(systemName: symbol).frame(width: 14, height: 14)
             }
-            Text(self.title)
+            Text(self.title.fluidLocalized)
             if self.disclosure {
                 Image(systemName: "chevron.down")
                     .font(self.theme.typography.captionSmall)
@@ -454,7 +454,7 @@ struct MeetingResultCanvas: View {
                             Text("No transcript text")
                                 .font(self.theme.typography.bodyStrong)
                                 .foregroundStyle(self.theme.palette.primaryText)
-                            Text(self.emptyTranscriptDescription)
+                            Text(self.emptyTranscriptDescription.fluidLocalized)
                                 .font(self.theme.typography.body)
                                 .foregroundStyle(self.theme.palette.secondaryText)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -608,12 +608,12 @@ struct MeetingResultCanvas: View {
         guard speakerCount > self.reliableSpeakerLimit else {
             return "Speaker labels are automatic and may not be exact. Click a name to fix it."
         }
-        return "\(speakerCount) speakers found. Above \(self.reliableSpeakerLimit), labels are less reliable: one person may show up twice, or two people as one."
+        return String.fluidLocalizedFormat("%@ speakers found. Above %@, labels are less reliable: one person may show up twice, or two people as one.", String(describing: speakerCount), String(describing: self.reliableSpeakerLimit))
     }
 
     private func speakerAccuracyNoteView(_ note: String, speakerCount: Int) -> some View {
         Label {
-            Text(note).fixedSize(horizontal: false, vertical: true)
+            Text(note.fluidLocalized).fixedSize(horizontal: false, vertical: true)
         } icon: {
             Image(systemName: speakerCount > Self.reliableSpeakerLimit ? "exclamationmark.circle" : "info.circle")
         }
@@ -657,7 +657,7 @@ struct MeetingResultCanvas: View {
         .meetingGlassAction()
         .disabled(!hasText || self.documentSection != .transcript)
         .help("Copy transcript")
-        .accessibilityLabel(self.copied ? "Transcript copied" : "Copy transcript")
+        .accessibilityLabel((self.copied ? "Transcript copied" : "Copy transcript").fluidLocalized)
         Menu {
             Menu("Export", systemImage: "square.and.arrow.up") {
                 Button("Text…") { self.onExportTranscript(self.session, .text, self.showsProbableEchoes) }
@@ -708,7 +708,7 @@ struct MeetingResultCanvas: View {
             if !eligibleTargets.isEmpty {
                 Menu("Merge into") {
                     ForEach(eligibleTargets) { target in
-                        Button(target.displayName) {
+                        Button(target.displayName.fluidLocalized) {
                             self.onMergeSpeakers(speaker.id, target.id)
                         }
                     }
@@ -724,7 +724,7 @@ struct MeetingResultCanvas: View {
         else {
             return speaker.displayName
         }
-        return "\(speaker.displayName) (You)"
+        return String.fluidLocalizedFormat("%@ (You)", String(describing: speaker.displayName))
     }
 
     // Only explicitly persisted legacy ownership metadata receives the local-user treatment.
@@ -737,24 +737,24 @@ struct MeetingResultCanvas: View {
 
     private var meetingMetadata: some View {
         HStack(spacing: self.theme.metrics.spacing.md) {
-            Text(self.session.startedAt.formatted(date: .abbreviated, time: .omitted))
+            Text(self.session.startedAt.formatted(date: .abbreviated, time: .omitted).fluidLocalized)
                 .fixedSize()
-                .help(self.session.startedAt.formatted(date: .complete, time: .shortened))
+                .help(self.session.startedAt.formatted(date: .complete, time: .shortened).fluidLocalized)
             Text("·").accessibilityHidden(true)
             Label(Self.durationText(self.session.duration), systemImage: "clock")
                 .fixedSize()
             Text("·").accessibilityHidden(true)
             Label(self.sourceName, systemImage: self.session.mode == .onlineCall ? "macwindow" : "person.2")
                 .lineLimit(1)
-                .help("\(self.sourceName)\nMicrophone: \(self.session.selectedMicrophone.displayName)")
+                .help("\( self.sourceName)\nMicrophone: \( self.session.selectedMicrophone.displayName)")
         }
         .font(self.theme.typography.caption)
         .foregroundStyle(self.theme.palette.secondaryText)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(self.session.startedAt.formatted(date: .abbreviated, time: .shortened)), " +
-                "\(Self.durationText(self.session.duration)), \(self.sourceName), " +
-                "microphone: \(self.session.selectedMicrophone.displayName)"
+            "\( self.session.startedAt.formatted(date: .abbreviated, time: .shortened)), " +
+                "\( Self.durationText(self.session.duration)), \( self.sourceName), " +
+                "microphone: \( self.session.selectedMicrophone.displayName)"
         )
     }
 
@@ -870,7 +870,7 @@ struct MeetingFailureCanvas: View {
             MeetingDocumentTitle(title: self.session?.title ?? "Recording setup")
             Divider()
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xl) {
-                Text(self.message)
+                Text(self.message.fluidLocalized)
                     .font(self.theme.typography.body)
                     .foregroundStyle(self.theme.palette.primaryText)
                     .textSelection(.enabled)
@@ -972,21 +972,21 @@ private struct MeetingTrackHealthRow: View {
                 ProgressView(value: min(max(Double(self.health.level), 0), 1))
                     .progressViewStyle(.linear)
                     .frame(width: 44)
-                    .accessibilityLabel("\(self.title) level")
+                    .accessibilityLabel("\( self.title) level")
                 Image(systemName: self.statusIcon)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.statusColor)
-                    .accessibilityLabel(self.statusText)
+                    .accessibilityLabel(self.statusText.fluidLocalized)
             }
             if self.health.status == .degraded || self.health.status == .unavailable {
-                Text(self.statusText)
+                Text(self.statusText.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.warning)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .help("\(self.title): \(self.statusText)")
+        .help("\( self.title): \( self.statusText)")
     }
 }
 
@@ -1011,7 +1011,7 @@ private struct MeetingSpeakerChip: View {
         .buttonStyle(.borderless)
         .meetingHoverFeedback()
         .help("Edit speaker names")
-        .accessibilityLabel("Edit speaker name: \(self.title)")
+        .accessibilityLabel("Edit speaker name: \( self.title)")
     }
 }
 
@@ -1030,14 +1030,14 @@ private struct MeetingTranscriptSegmentRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: self.theme.metrics.spacing.lg) {
-            Text(MeetingTranscriptExporter.timestampText(self.segment.start.seconds))
+            Text(MeetingTranscriptExporter.timestampText(self.segment.start.seconds).fluidLocalized)
                 .font(self.theme.typography.codeCaption)
                 .foregroundStyle(self.theme.palette.secondaryText)
                 .frame(width: 58, alignment: .leading)
                 .padding(.top, 2)
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.sm) {
                 if self.showsSpeakerLabel { self.speakerLabel }
-                Text(self.segment.text)
+                Text(self.segment.text.fluidLocalized)
                     .font(self.theme.typography.body)
                     .foregroundStyle(self.theme.palette.primaryText)
                     .lineSpacing(5)
@@ -1052,7 +1052,7 @@ private struct MeetingTranscriptSegmentRow: View {
         .contextMenu {
             Menu("Reassign to") {
                 ForEach(self.reassignTargets) { target in
-                    Button(target.displayName) {
+                    Button(target.displayName.fluidLocalized) {
                         self.onReassign(target.id)
                     }
                 }
@@ -1061,12 +1061,12 @@ private struct MeetingTranscriptSegmentRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(MeetingTranscriptExporter.timestampText(self.segment.start.seconds)), \(self.speakerName), \(self.segment.text)"
+            "\( MeetingTranscriptExporter.timestampText(self.segment.start.seconds)), \( self.speakerName), \( self.segment.text)"
         )
     }
 
     private var speakerLabel: some View {
-        let name = Text(self.speakerName)
+        let name = Text(self.speakerName.fluidLocalized)
             .foregroundColor(self.nameColor)
             .fontWeight(.semibold)
             .font(self.theme.typography.bodySmallStrong)
@@ -1087,7 +1087,7 @@ private struct MeetingTranscriptSegmentRow: View {
                 .meetingHoverFeedback(cornerRadius: self.theme.metrics.corners.sm)
                 .disabled(!self.isQuiescent)
                 // No .help here: the tooltip lands on top of the turn's first line of text.
-                .accessibilityLabel("Rename \(self.speakerName)")
+                .accessibilityLabel("Rename \( self.speakerName)")
                 .pointerStyle(.link)
             } else {
                 name

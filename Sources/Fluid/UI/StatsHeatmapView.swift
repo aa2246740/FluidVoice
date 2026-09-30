@@ -17,8 +17,8 @@ struct StatsHeatmapView: View {
         self.labels = Dictionary(uniqueKeysWithValues: period.days.map { day in
             (day.date, DayLabels(
                 shortDate: day.date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()),
-                accessible: "\(day.date.formatted(date: .complete, time: .omitted)), \(day.words) words",
-                words: "\(day.words.formatted()) words"
+                accessible: String.fluidLocalizedFormat("%@, %@ words", String(describing: day.date.formatted(date: .complete, time: .omitted)), String(describing: day.words)),
+                words: String.fluidLocalizedFormat("%@ words", String(describing: day.words.formatted()))
             ))
         })
     }
@@ -38,7 +38,7 @@ struct StatsHeatmapView: View {
             VStack(spacing: 4) {
                 Color.clear.frame(height: 16)
                 ForEach(0..<7) { row in
-                    Text(row.isMultiple(of: 2) ? calendar.shortWeekdaySymbols[(calendar.firstWeekday - 1 + row) % 7] : "")
+                    Text((row.isMultiple(of: 2) ? calendar.shortWeekdaySymbols[(calendar.firstWeekday - 1 + row) % 7] : "").fluidLocalized)
                         .font(self.theme.typography.captionSmall)
                         .foregroundStyle(.secondary)
                         .frame(width: 30, height: 16)
@@ -50,7 +50,7 @@ struct StatsHeatmapView: View {
                 HStack(alignment: .top, spacing: 4) {
                     ForEach(columns.indices, id: \.self) { column in
                         VStack(spacing: 4) {
-                            Text(period.monthLabel(for: column))
+                            Text(period.monthLabel(for: column).fluidLocalized)
                                 .font(self.theme.typography.captionSmall)
                                 .foregroundStyle(.secondary)
                                 .fixedSize()
@@ -87,10 +87,10 @@ struct StatsHeatmapView: View {
                 .overlay(alignment: tooltipAlignment) {
                     if self.hoveredDate == day.date {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(self.labels[day.date]?.shortDate ?? "")
+                            Text(self.labels[day.date]?.shortDate ?? "".fluidLocalized)
                                 .font(self.theme.typography.caption)
                                 .foregroundStyle(.secondary)
-                            Text(self.labels[day.date]?.words ?? "")
+                            Text(self.labels[day.date]?.words ?? "".fluidLocalized)
                                 .font(self.theme.typography.bodySmallStrong)
                         }
                         .padding(10)
@@ -110,7 +110,7 @@ struct StatsHeatmapView: View {
                         self.hoveredDate = nil
                     }
                 }
-                .accessibilityLabel(self.labels[day.date]?.accessible ?? "")
+                .accessibilityLabel(self.labels[day.date]?.accessible ?? "".fluidLocalized)
                 .accessibilityElement(children: .ignore)
 
         } else {

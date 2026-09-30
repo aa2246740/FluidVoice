@@ -134,7 +134,7 @@ struct CommandMessageView: View {
                     failed: failed
                 )
                 if let duration = self.toolOutput?.executionTime, duration > 0 {
-                    Text(duration < 1000 ? "\(duration) ms" : String(format: "%.1f s", Double(duration) / 1000))
+                    Text((duration < 1000 ? String.fluidLocalizedFormat("%@ ms", String(describing: duration)) : String(format: "%.1f s", Double(duration) / 1000)).fluidLocalized)
                         .font(self.theme.typography.captionSmall)
                         .foregroundStyle(self.theme.palette.tertiaryText)
                         .monospacedDigit()
@@ -142,7 +142,7 @@ struct CommandMessageView: View {
                 }
             }
             if failed, !self.outputExpanded, let error = self.toolOutput?.error, !error.isEmpty {
-                Text(error)
+                Text(error.fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(self.theme.palette.warning)
                     .lineLimit(3)
@@ -180,7 +180,7 @@ struct CommandMessageView: View {
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Image(systemName: symbol).frame(width: 16)
-                Text(title).lineLimit(2).multilineTextAlignment(.leading)
+                Text(title.fluidLocalized).lineLimit(2).multilineTextAlignment(.leading)
                 Image(systemName: expanded.wrappedValue ? "chevron.down" : "chevron.right")
                     .font(.fluidSystem(size: 9, weight: .semibold))
                 Spacer(minLength: 0)
@@ -191,9 +191,9 @@ struct CommandMessageView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(title)
-        .accessibilityValue(expanded.wrappedValue ? "Expanded" : "Collapsed")
-        .help(expanded.wrappedValue ? "Hide details" : "Show details")
+        .accessibilityLabel(title.fluidLocalized)
+        .accessibilityValue((expanded.wrappedValue ? "Expanded" : "Collapsed").fluidLocalized)
+        .help((expanded.wrappedValue ? "Hide details" : "Show details").fluidLocalized)
     }
 }
 

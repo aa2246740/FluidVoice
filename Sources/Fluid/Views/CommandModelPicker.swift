@@ -126,7 +126,7 @@ struct CommandModelPicker: View {
                     ForEach(rows) { row in
                         switch row {
                         case let .provider(_, name):
-                            Text(name)
+                            Text(name.fluidLocalized)
                                 .font(self.theme.typography.captionStrong)
                                 .foregroundStyle(self.theme.palette.secondaryText)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -172,12 +172,12 @@ struct CommandModelPicker: View {
             Button(action: self.onSelect) {
                 HStack(spacing: self.theme.metrics.spacing.sm) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(self.option.displayName)
+                        Text(self.option.displayName.fluidLocalized)
                             .font(self.theme.typography.bodySmall)
                             .lineLimit(1)
                             .truncationMode(.middle)
                         if self.option.modelID != self.option.displayName {
-                            Text(self.option.modelID)
+                            Text(self.option.modelID.fluidLocalized)
                                 .font(self.theme.typography.captionSmall)
                                 .foregroundStyle(self.theme.palette.secondaryText)
                                 .lineLimit(1)
@@ -214,8 +214,8 @@ struct CommandModelPicker: View {
 
     private func emptyState(title: String, message: String) -> some View {
         VStack(spacing: self.theme.metrics.spacing.sm) {
-            Text(title).font(self.theme.typography.bodySmallStrong)
-            Text(message)
+            Text(title.fluidLocalized).font(self.theme.typography.bodySmallStrong)
+            Text(message.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.secondaryText)
         }

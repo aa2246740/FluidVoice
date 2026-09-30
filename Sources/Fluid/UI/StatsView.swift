@@ -100,7 +100,7 @@ struct StatsView: View {
     private var timeSavedCard: some View {
         StatCard(title: "ESTIMATED TIME SAVED", icon: "clock.fill") {
             VStack(alignment: .leading, spacing: 8) {
-                Text(self.stats.formattedTimeSaved(typingWPM: self.settings.userTypingWPM))
+                Text(self.stats.formattedTimeSaved(typingWPM: self.settings.userTypingWPM).fluidLocalized)
                     .font(.fluidSystem(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 
@@ -168,7 +168,7 @@ struct StatsView: View {
     private var totalWordsCard: some View {
         StatCard(title: "TOTAL WORDS", icon: "text.word.spacing") {
             VStack(alignment: .leading, spacing: 8) {
-                Text(self.formatNumber(self.stats.totalWords))
+                Text(self.formatNumber(self.stats.totalWords).fluidLocalized)
                     .font(.fluidSystem(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 
@@ -196,7 +196,7 @@ struct StatsView: View {
                         .font(.fluidSystem(size: 32, weight: .bold, design: .rounded))
                         .foregroundStyle(self.stats.currentStreak > 0 ? self.theme.palette.warning : .primary)
 
-                    Text(self.stats.currentStreak == 1 ? "day" : "days")
+                    Text((self.stats.currentStreak == 1 ? "day" : "days").fluidLocalized)
                         .font(.fluidSystem(size: 14, weight: .medium))
                         .foregroundStyle(.secondary)
                 }
@@ -213,11 +213,11 @@ struct StatsView: View {
     private var fluidIntelligenceCard: some View {
         StatCard(title: "FLUID INTELLIGENCE", icon: "sparkles") {
             VStack(alignment: .leading, spacing: 8) {
-                Text(self.formatNumber(self.stats.fluidFixedWords))
+                Text(self.formatNumber(self.stats.fluidFixedWords).fluidLocalized)
                     .font(.fluidSystem(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 
-                Text(self.stats.fluidFixedWords == 0 ? "Words fixed by Smart mode show up here" : "words fixed for you by Smart mode")
+                Text((self.stats.fluidFixedWords == 0 ? "Words fixed by Smart mode show up here" : "words fixed for you by Smart mode").fluidLocalized)
                     .font(.fluidSystem(size: 11))
                     .foregroundStyle(.secondary)
             }
@@ -227,7 +227,7 @@ struct StatsView: View {
     private var keystrokesCard: some View {
         StatCard(title: "KEYSTROKES SAVED", icon: "keyboard") {
             VStack(alignment: .leading, spacing: 8) {
-                Text(self.formatNumber(self.stats.totalCharacters))
+                Text(self.formatNumber(self.stats.totalCharacters).fluidLocalized)
                     .font(.fluidSystem(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 

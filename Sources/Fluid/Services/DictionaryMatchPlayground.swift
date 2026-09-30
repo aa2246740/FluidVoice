@@ -22,7 +22,7 @@ nonisolated struct DictionaryMatchReport: Codable, Sendable {
         var explanation: String {
             guard let score else { return "No usable audio window" }
             if !self.eligible { return "Not active: needs more compatible recordings" }
-            if score < self.requiredScore { return "Below cutoff by \(String(format: "%.3f", self.requiredScore - score))" }
+            if score < self.requiredScore { return String.fluidLocalizedFormat("Below cutoff by %@", String(format: "%.3f", self.requiredScore - score)) }
             if self.heard.isEmpty { return "Score clears cutoff, but no word overlaps this audio window" }
             if let competingScore, competingScore > score - 0.05 { return "Close competing best window: less than 0.05 separation" }
             return "Above score cutoff in this replay; verify the matched phrase"
@@ -102,7 +102,7 @@ actor DictionaryMatchPlayground {
         guard let targetProfile = allProfiles.first(where: {
             $0.label.caseInsensitiveCompare(target) == .orderedSame && ["parakeet-v2", "parakeet-v3"].contains($0.modelKey)
         }) else {
-            throw DictionaryMatchPlaygroundError.unavailable("No saved Parakeet pronunciation recordings for “\(target)”. Train this word by voice first.")
+            throw DictionaryMatchPlaygroundError.unavailable(String.fluidLocalizedFormat("No saved Parakeet pronunciation recordings for “%@”. Train this word by voice first.", String(describing: target)))
         }
         let matching = allProfiles.filter { $0.modelKey == targetProfile.modelKey }.sorted {
             let lhsTarget = $0.dictionaryEntryID == targetProfile.dictionaryEntryID

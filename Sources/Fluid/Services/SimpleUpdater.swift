@@ -478,7 +478,7 @@ final class SimpleUpdater {
             backing: .buffered,
             defer: false
         )
-        panel.title = "Installing FluidVoice \(version)"
+        panel.title = String.fluidLocalizedFormat("Installing FluidVoice %@", String(describing: version))
         panel.level = .floating
         panel.isOpaque = false
         panel.backgroundColor = .clear
@@ -501,7 +501,7 @@ final class SimpleUpdater {
         icon.imageScaling = .scaleProportionallyUpOrDown
         content.addSubview(icon)
 
-        let title = NSTextField(labelWithString: "Installing FluidVoice \(version)")
+        let title = NSTextField(labelWithString: String.fluidLocalizedFormat("Installing FluidVoice %@", String(describing: version)))
         title.frame = NSRect(x: 92, y: 76, width: 304, height: 24)
         title.font = .fluidSystemFont(ofSize: 16, weight: .semibold)
         content.addSubview(title)

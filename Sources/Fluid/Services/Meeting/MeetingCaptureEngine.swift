@@ -106,7 +106,7 @@ actor MeetingCaptureEngine: MeetingCaptureControlling {
                 } else {
                     let captureDecisionMessage = reason == MeetingCapturePathDecider.diagnosticForceScreenCaptureKitReason
                         ? "C2 diagnostic forced paired ScreenCaptureKit; this is not a production fallback."
-                        : "Meeting voice-processing capture declined: \(reason)"
+                        : String.fluidLocalizedFormat("Meeting voice-processing capture declined: %@", String(describing: reason))
                     DebugLogger.shared.log(
                         captureDecisionMessage,
                         source: "MeetingCaptureEngine"
@@ -1288,7 +1288,7 @@ private final nonisolated class ScreenCaptureMeetingRuntime: NSObject, MeetingCa
         self.eventHandler(.interrupted(
             kind: .captureStoppedUnexpectedly,
             trackID: self.microphoneWriter.trackID,
-            detail: "AEC microphone pipeline failed closed (\(failure.rawValue)); recording was stopped to preserve transcript safety."
+            detail: String.fluidLocalizedFormat("AEC microphone pipeline failed closed (%@); recording was stopped to preserve transcript safety.", String(describing: failure.rawValue))
         ))
     }
 
@@ -1408,7 +1408,7 @@ private final nonisolated class ScreenCaptureMeetingRuntime: NSObject, MeetingCa
                     self.currentStreamStopped ? self.activeMicrophone : nil
                 }
             case let .unchanged(election):
-                inputDetail = "The capture microphone remained \(election.identity.displayName)."
+                inputDetail = String.fluidLocalizedFormat("The capture microphone remained %@.", String(describing: election.identity.displayName))
                 replacementMicrophone = self.stateLock.withLock {
                     self.currentStreamStopped ? election.identity : nil
                 }
@@ -1423,7 +1423,7 @@ private final nonisolated class ScreenCaptureMeetingRuntime: NSObject, MeetingCa
                         revision: revision
                     )
                     guard publication == .commit else { return }
-                    inputDetail = "Capture moved to the settled microphone \(replacementMicrophone.displayName)."
+                    inputDetail = String.fluidLocalizedFormat("Capture moved to the settled microphone %@.", String(describing: replacementMicrophone.displayName))
                 } catch {
                     self.reportRouteReplacementFailure(error)
                     return
@@ -1696,7 +1696,7 @@ private final nonisolated class ScreenCaptureMeetingRuntime: NSObject, MeetingCa
         self.eventHandler(.interrupted(
             kind: .captureStoppedUnexpectedly,
             trackID: nil,
-            detail: "Audio-device handoff failed closed: \(error.localizedDescription)"
+            detail: String.fluidLocalizedFormat("Audio-device handoff failed closed: %@", String(describing: error.localizedDescription))
         ))
     }
 
@@ -2511,7 +2511,7 @@ nonisolated enum MeetingCaptureError: LocalizedError {
         case .applicationNotSelected:
             return "Choose the application that contains the online meeting."
         case let .applicationUnavailable(name):
-            return "\(name) is no longer available to record."
+            return String.fluidLocalizedFormat("%@ is no longer available to record.", String(describing: name))
         case .noCaptureDisplay:
             return "No display is available for meeting-audio capture."
         case .microphoneUnavailable:
@@ -2519,17 +2519,17 @@ nonisolated enum MeetingCaptureError: LocalizedError {
         case .microphonePermissionDenied:
             return "Microphone permission is required to record this meeting."
         case let .screenCapturePermissionDenied(detail):
-            return "Screen & System Audio permission is required. \(detail)"
+            return String.fluidLocalizedFormat("Screen & System Audio permission is required. %@", String(describing: detail))
         case .insufficientDiskSpace:
             return "Not enough free space is available for PCM meeting capture. Free space for at least a one-hour recording and processing workspace, then try again."
         case let .captureStartFailed(detail):
-            return "Meeting recording could not start. \(detail)"
+            return String.fluidLocalizedFormat("Meeting recording could not start. %@", String(describing: detail))
         case let .captureStopFailed(detail, _):
-            return "Meeting recording could not stop cleanly. \(detail)"
+            return String.fluidLocalizedFormat("Meeting recording could not stop cleanly. %@", String(describing: detail))
         case .unsupportedAudioFormat:
             return "The selected audio source uses an unsupported format."
         case let .writerFailed(detail):
-            return "Meeting audio could not be saved. \(detail)"
+            return String.fluidLocalizedFormat("Meeting audio could not be saved. %@", String(describing: detail))
         }
     }
 }
@@ -4423,7 +4423,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
         case .evaluateVPIO:
             if let reason = vpioDeclineReason {
                 self.beginDowngradeTransition(
-                    reason: "Output route changed: \(reason)",
+                    reason: String.fluidLocalizedFormat("Output route changed: %@", String(describing: reason)),
                     routeDriven: true
                 )
             }
@@ -4714,7 +4714,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             self.invalidateAVCaptureFailureToken(failureToken, generation: generation)
             self.failPendingDowngrade(
                 generation: generation,
-                detail: "Microphone unavailable after a route change: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("Microphone unavailable after a route change: %@", String(describing: error.localizedDescription))
             )
             self.finishTransition(generation)
             return
@@ -4730,7 +4730,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             try? await component.stop()
             self.failPendingDowngrade(
                 generation: generation,
-                detail: "Microphone unavailable after a route change: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("Microphone unavailable after a route change: %@", String(describing: error.localizedDescription))
             )
             self.finishTransition(generation)
             return
@@ -5115,7 +5115,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
         else {
             self.failPendingDowngrade(
                 generation: generation,
-                detail: "Microphone rebind failed after retry: \(lastCandidateFailure)"
+                detail: String.fluidLocalizedFormat("Microphone rebind failed after retry: %@", String(describing: lastCandidateFailure))
             )
             self.finishTransition(generation)
             return
@@ -5206,7 +5206,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
                 self.eventHandler(.interrupted(
                     kind: .captureStoppedUnexpectedly,
                     trackID: nil,
-                    detail: "Could not persist the microphone rebind: \(error.localizedDescription)"
+                    detail: String.fluidLocalizedFormat("Could not persist the microphone rebind: %@", String(describing: error.localizedDescription))
                 ))
             }
             self.finishTransition(generation)
@@ -5586,7 +5586,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
         } catch {
             self.failSafeRecovery(
                 generation: generation,
-                detail: "Could not retire fallback microphone capture: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("Could not retire fallback microphone capture: %@", String(describing: error.localizedDescription))
             )
             self.finishTransition(generation)
             return
@@ -5698,7 +5698,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             await self.restoreAVCaptureAfterRecoveryFailure(
                 generation: generation,
                 boundary: boundary,
-                detail: "Voice processing could not restart: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("Voice processing could not restart: %@", String(describing: error.localizedDescription))
             )
             return
         }
@@ -5795,7 +5795,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             await self.restoreAVCaptureAfterRecoveryFailure(
                 generation: generation,
                 boundary: boundary,
-                detail: "Could not persist voice-processing recovery: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("Could not persist voice-processing recovery: %@", String(describing: error.localizedDescription))
             )
             return
         }
@@ -5911,7 +5911,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
         } catch {
             self.failSafeRecovery(
                 generation: generation,
-                detail: "\(detail) Fallback microphone recreation failed: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("%@ Fallback microphone recreation failed: %@", String(describing: detail), String(describing: error.localizedDescription))
             )
             self.finishTransition(generation)
             return
@@ -5943,7 +5943,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             try? await component.stop()
             self.failSafeRecovery(
                 generation: generation,
-                detail: "\(detail) Fallback microphone could not start: \(error.localizedDescription)"
+                detail: String.fluidLocalizedFormat("%@ Fallback microphone could not start: %@", String(describing: detail), String(describing: error.localizedDescription))
             )
             self.finishTransition(generation)
             return
@@ -5960,7 +5960,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             try? await component.stop()
             self.failSafeRecovery(
                 generation: generation,
-                detail: "\(detail) Fallback microphone delivered no audio."
+                detail: String.fluidLocalizedFormat("%@ Fallback microphone delivered no audio.", String(describing: detail))
             )
             self.finishTransition(generation)
             return
@@ -6018,7 +6018,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             try? await component.stop()
             self.failSafeRecovery(
                 generation: generation,
-                detail: "\(detail) Fallback microphone metadata could not be saved."
+                detail: String.fluidLocalizedFormat("%@ Fallback microphone metadata could not be saved.", String(describing: detail))
             )
             self.finishTransition(generation)
             return
@@ -6238,7 +6238,7 @@ private final nonisolated class VoiceProcessingMeetingRuntime: MeetingCaptureRun
             group.addTask { try await operation() }
             group.addTask {
                 try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
-                throw MeetingCaptureError.captureStartFailed("Voice-processing capture start exceeded \(Int(seconds))s.")
+                throw MeetingCaptureError.captureStartFailed(String.fluidLocalizedFormat("Voice-processing capture start exceeded %@s.", String(describing: Int(seconds))))
             }
             defer { group.cancelAll() }
             guard let result = try await group.next() else {

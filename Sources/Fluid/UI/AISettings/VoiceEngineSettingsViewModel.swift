@@ -225,7 +225,7 @@ final class VoiceEngineSettingsViewModel: ObservableObject {
         case .nemotronStreaming, .nemotronStreaming320:
             return "Nemotron Speech 3.5 Streaming Capable uses NVIDIA's streaming CoreML pipeline. Supports around 40 languages with auto or manual language selection."
         case .cloudVolcengine, .cloudQwen3Asr, .cloudFishAudio:
-            return "\(model.displayName) sends recorded audio to the vendor's cloud API after you stop speaking. " +
+            return String.fluidLocalizedFormat("%@ sends recorded audio to the vendor's cloud API after you stop speaking. ", String(describing: model.displayName)) +
                 "Requires internet and your own API key (stored in the macOS Keychain); usage is billed by the vendor. " +
                 "Live preview is disabled to avoid per-chunk charges."
         default:

@@ -9,7 +9,7 @@ struct OnboardingShortcutKeycap: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 10, style: .continuous)
 
-        return Text(self.text)
+        return Text(self.text.fluidLocalized)
             .font(.fluidSystem(size: 20, weight: .semibold))
             .foregroundStyle(.white)
             .lineLimit(1)

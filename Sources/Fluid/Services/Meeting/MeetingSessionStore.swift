@@ -609,7 +609,7 @@ enum MeetingSessionStoreError: LocalizedError {
         case .sessionAlreadyExists:
             return "A meeting session with this identifier already exists."
         case let .unsupportedSchema(version):
-            return "This meeting was created with unsupported schema version \(version)."
+            return String.fluidLocalizedFormat("This meeting was created with unsupported schema version %@.", String(describing: version))
         case .sessionDeleted:
             return "This meeting has been deleted."
         }

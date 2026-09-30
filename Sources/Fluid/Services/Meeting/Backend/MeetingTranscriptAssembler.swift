@@ -666,7 +666,7 @@ nonisolated struct MeetingTranscriptAssembler {
                     id: Self.stableUUID(
                         "speaker:\(attemptID.uuidString):\(scopedClusterID)"
                     ),
-                    displayName: "Speaker \(ordinals[canonical] ?? 1)",
+                    displayName: String.fluidLocalizedFormat("Speaker %@", String(describing: ordinals[canonical] ?? 1)),
                     diarizationClusterID: scopedClusterID,
                     trackKind: manifest.track(token.analysisEpochID.trackID)?.kind ?? .microphone,
                     isLocalUser: false,

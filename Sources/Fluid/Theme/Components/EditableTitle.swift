@@ -49,7 +49,7 @@ private struct EditableTitleModifier: ViewModifier {
                 }
             }
         }
-        .help(self.enabled ? (self.doubleClickEnabled ? "Double-click to rename. Enter saves; Escape cancels." : "Right-click for Rename. Enter saves; Escape cancels.") : self.title)
+        .help((self.enabled ? (self.doubleClickEnabled ? "Double-click to rename. Enter saves; Escape cancels." : "Right-click for Rename. Enter saves; Escape cancels.") : self.title).fluidLocalized)
         .contextMenu {
             Button("Rename…", systemImage: "pencil", action: self.begin)
                 .disabled(!self.enabled)

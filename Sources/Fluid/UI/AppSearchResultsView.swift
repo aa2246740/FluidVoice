@@ -41,7 +41,7 @@ struct AppSearchResultsView: View {
                                 self.toggle(group)
                                 if wasExpanded { proxy.scrollTo(group.kind, anchor: .top) }
                             } label: {
-                                Text(self.expanded.contains(group.kind) ? "Show less" : "Show more (\(group.hits.count - Self.rowsPerGroup))")
+                                Text((self.expanded.contains(group.kind) ? "Show less" : String.fluidLocalizedFormat("Show more (%@)", String(describing: group.hits.count - Self.rowsPerGroup))).fluidLocalized)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .contentShape(Rectangle())
                                     .padding(.vertical, self.theme.metrics.spacing.xs / 2)
@@ -71,7 +71,7 @@ struct AppSearchResultsView: View {
         if group.hits.count > Self.rowsPerGroup {
             Button { self.toggle(group) } label: {
                 HStack(spacing: self.theme.metrics.spacing.xs) {
-                    Text(group.kind.title)
+                    Text(group.kind.title.fluidLocalized)
                     Image(systemName: self.expanded.contains(group.kind) ? "chevron.down" : "chevron.right")
                         .imageScale(.small)
                     Spacer(minLength: 0)
@@ -84,10 +84,10 @@ struct AppSearchResultsView: View {
             .buttonStyle(.plain)
             .sidebarOptionHover(isSelected: false, reduceMotion: self.reduceMotion)
             .accessibilityLabel("\(group.kind.title) results")
-            .accessibilityValue(self.expanded.contains(group.kind) ? "Expanded, \(group.hits.count) results" : "Showing \(Self.rowsPerGroup) of \(group.hits.count) results")
-            .accessibilityHint(self.expanded.contains(group.kind) ? "Show fewer results" : "Show all results")
+            .accessibilityValue((self.expanded.contains(group.kind) ? String.fluidLocalizedFormat("Expanded, %@ results", String(describing: group.hits.count)) : String.fluidLocalizedFormat("Showing %@ of %@ results", String(describing: Self.rowsPerGroup), String(describing: group.hits.count))).fluidLocalized)
+            .accessibilityHint((self.expanded.contains(group.kind) ? "Show fewer results" : "Show all results").fluidLocalized)
         } else {
-            Text(group.kind.title)
+            Text(group.kind.title.fluidLocalized)
                 .font(self.theme.typography.sidebarSection)
                 .foregroundStyle(.secondary)
         }
@@ -110,7 +110,7 @@ struct AppSearchResultsView: View {
             self.open(hit)
         } label: {
             VStack(alignment: .leading, spacing: 2) {
-                Text(hit.title)
+                Text(hit.title.fluidLocalized)
                     .font(self.theme.typography.sidebarItem)
                     .foregroundStyle(isSelected ? Color.white : Color.primary)
                     .lineLimit(1)

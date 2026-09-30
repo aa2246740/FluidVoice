@@ -73,9 +73,9 @@ enum NotificationService {
 
     private static func deliverAIProcessingFallback(error: String, using center: UNUserNotificationCenter) {
         let content = UNMutableNotificationContent()
-        content.title = "AI Enhancement failed"
-        content.body = "Typed raw transcription instead."
-        content.subtitle = error
+        content.title = "AI Enhancement failed".fluidLocalized
+        content.body = "Typed raw transcription instead.".fluidLocalized
+        content.subtitle = error.fluidLocalized
         content.sound = nil
         content.userInfo = [UserInfoKey.kind: Kind.aiProcessingFallback]
 
@@ -97,8 +97,8 @@ enum NotificationService {
 
     private static func deliverCommandModeFailure(error: String, using center: UNUserNotificationCenter) {
         let content = UNMutableNotificationContent()
-        content.title = "Command Mode needs setup"
-        content.body = error
+        content.title = "Command Mode needs setup".fluidLocalized
+        content.body = error.fluidLocalized
         content.sound = nil
         content.userInfo = [UserInfoKey.kind: Kind.commandModeFailure]
 

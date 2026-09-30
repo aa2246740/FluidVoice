@@ -99,7 +99,7 @@ struct DashboardView: View {
         .onAppear {
             self.stats.activate(self.statsOwner)
             let hour = Calendar.current.component(.hour, from: Date())
-            let salutation = hour < 12 ? "Good morning" : (hour < 18 ? "Good afternoon" : "Good evening")
+            let salutation = (hour < 12 ? "Good morning" : (hour < 18 ? "Good afternoon" : "Good evening")).fluidLocalized
             let name = NSFullUserName().split(separator: " ").first.map(String.init) ?? ""
             self.greeting = name.isEmpty ? "\(salutation)." : "\(salutation), \(name)."
         }
@@ -110,7 +110,7 @@ struct DashboardView: View {
     }
 
     private var header: some View {
-        Text(self.greeting)
+        Text(self.greeting.fluidLocalized)
             .font(.fluidSystem(size: 34, weight: .regular, design: .serif))
             .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
@@ -138,7 +138,7 @@ struct DashboardView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 20, alignment: .leading), count: layout.statisticColumns(count: fixed > 0 ? 4 : 3)), alignment: .leading, spacing: 20) {
                 self.stat("Today", value: today.words.formatted(), detail: "words dictated")
                 self.stat("Time saved", value: today.words == 0 ? "0m" : today.formattedTimeSaved(typingWPM: self.settings.userTypingWPM), detail: "estimated today")
-                self.stat("Streak", value: streak.map { "\($0) \($0 == 1 ? "day" : "days")" } ?? "—", detail: "keep it going")
+                self.stat("Streak", value: streak.map { String.fluidLocalizedFormat("%@ %@", String(describing: $0), ($0 == 1 ? "day" : "days").fluidLocalized) } ?? "—", detail: "keep it going".fluidLocalized)
                 // Quiet proof that Smart mode earns its keep; absent until it has fixed something.
                 if fixed > 0 {
                     self.stat("Fluid Intelligence", value: fixed.formatted(), detail: "words fixed for you")
@@ -161,10 +161,10 @@ struct DashboardView: View {
 
     private func stat(_ title: String, value: String, detail: String) -> some View {
         VStack(alignment: .leading, spacing: 7) {
-            Text(title).font(self.theme.typography.caption).foregroundStyle(.secondary)
-            Text(value).font(.fluidSystem(size: 27, weight: .semibold)).monospacedDigit()
+            Text(title.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
+            Text(value.fluidLocalized).font(.fluidSystem(size: 27, weight: .semibold)).monospacedDigit()
                 .lineLimit(1).minimumScaleFactor(0.7)
-            Text(detail).font(self.theme.typography.caption).foregroundStyle(.secondary)
+            Text(detail.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
@@ -332,7 +332,7 @@ struct DashboardView: View {
     @ViewBuilder
     private var shortcutKey: some View {
         let button = Button(action: self.openShortcutSettings) {
-            Text(self.settings.primaryDictationShortcuts.first?.displayString ?? "Off")
+            Text(self.settings.primaryDictationShortcuts.first?.displayString ?? "Off".fluidLocalized)
                 .font(.fluidSystem(size: 25, weight: .medium))
                 .lineLimit(2).minimumScaleFactor(0.5)
                 .multilineTextAlignment(.center)
@@ -371,9 +371,9 @@ private struct DashboardRecentRow: View {
             HStack(spacing: 12) {
                 HistoryAppIcon(appName: self.entry.appName)
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(self.entry.previewText).font(self.theme.typography.bodySmall).lineLimit(2)
+                    Text(self.entry.previewText.fluidLocalized).font(self.theme.typography.bodySmall).lineLimit(2)
                     HStack(spacing: 6) {
-                        Text(self.entry.appName.isEmpty ? "Unknown app" : self.entry.appName)
+                        Text((self.entry.appName.isEmpty ? "Unknown app" : self.entry.appName).fluidLocalized)
                         Text("·")
                         Text(self.entry.timestamp, style: .date)
                     }
@@ -394,9 +394,9 @@ private struct DashboardRecentRow: View {
         .buttonStyle(.plain)
         .disabled(self.entry.clipboardText == nil)
         .onHover { self.hovered = $0 && self.entry.clipboardText != nil }
-        .help(self.copied ? "Copied" : "Click anywhere to copy dictation")
-        .accessibilityLabel(self.copied ? "Copied dictation" : "Copy dictation")
-        .accessibilityValue(self.entry.previewText)
+        .help((self.copied ? "Copied" : "Click anywhere to copy dictation").fluidLocalized)
+        .accessibilityLabel((self.copied ? "Copied dictation" : "Copy dictation").fluidLocalized)
+        .accessibilityValue(self.entry.previewText.fluidLocalized)
         .task(id: self.copyRevision) {
             guard self.copyRevision > 0 else { return }
             do { try await Task.sleep(for: .seconds(2)) } catch { return }
@@ -423,8 +423,8 @@ private struct DashboardQuickAction: View {
                     .foregroundStyle(.secondary)
                     .frame(width: 22)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(self.title).font(self.theme.typography.bodySmallStrong).lineLimit(1)
-                    Text(self.detail).font(self.theme.typography.caption).foregroundStyle(.secondary)
+                    Text(self.title.fluidLocalized).font(self.theme.typography.bodySmallStrong).lineLimit(1)
+                    Text(self.detail.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
                 Spacer(minLength: 0)
@@ -459,8 +459,8 @@ private struct DashboardSetupCard: View {
             HStack(spacing: 12) {
                 FluidIconTile(icon: self.icon, tint: self.theme.palette.accent)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(self.title).font(self.theme.typography.bodySmallStrong).lineLimit(1)
-                    Text(self.detail).font(self.theme.typography.caption).foregroundStyle(.secondary)
+                    Text(self.title.fluidLocalized).font(self.theme.typography.bodySmallStrong).lineLimit(1)
+                    Text(self.detail.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
                 Spacer(minLength: 0)

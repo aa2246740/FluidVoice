@@ -27,9 +27,9 @@ nonisolated enum AIProcessingError: LocalizedError {
         case .noVerifiedProvider:
             return "No verified AI provider selected"
         case let .missingAPIKey(provider):
-            return "API key not set for \(provider)"
+            return String.fluidLocalizedFormat("API key not set for %@", String(describing: provider))
         case let .missingModel(provider):
-            return "No model selected for \(provider)"
+            return String.fluidLocalizedFormat("No model selected for %@", String(describing: provider))
         case .emptyResponse:
             return "AI returned an empty response"
         case .dictationExceedsAIContextWindow:
@@ -55,7 +55,7 @@ nonisolated enum DictationAIFailurePresentationPolicy {
 
     static func notificationMessage(for error: Error) -> String {
         if let aiError = error as? AIProcessingError, aiError.isConfigurationError {
-            return "\(aiError.localizedDescription). Open AI Providers to configure a provider."
+            return String.fluidLocalizedFormat("%@. Open AI Providers to configure a provider.", String(describing: aiError.localizedDescription))
         }
         return error.localizedDescription
     }
@@ -492,7 +492,7 @@ struct ContentView: View {
             ) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text(self.asr.errorMessage)
+                Text(self.asr.errorMessage.fluidLocalized)
             }
             .onChange(of: self.audioObserver.changeTick) { _, _ in
                 // Hardware change detected → refresh device lists
@@ -785,7 +785,7 @@ struct ContentView: View {
         var normalized: [String: [String]] = [:]
         for (key, models) in self.availableModelsByProvider {
             let lower = key.lowercased()
-            let newKey = ModelRepository.shared.isBuiltIn(lower) ? lower : (key.hasPrefix("custom:") ? key : "custom:\(key)")
+            let newKey = ModelRepository.shared.isBuiltIn(lower) ? lower : (key.hasPrefix("custom:") ? key : "custom:\( key)")
             let clean = Array(Set(models.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) })).sorted()
             if !clean.isEmpty {
                 normalized[newKey] = clean
@@ -797,7 +797,7 @@ struct ContentView: View {
         var normalizedSel: [String: String] = [:]
         for (key, model) in self.selectedModelByProvider {
             let lower = key.lowercased()
-            let newKey = ModelRepository.shared.isBuiltIn(lower) ? lower : (key.hasPrefix("custom:") ? key : "custom:\(key)")
+            let newKey = ModelRepository.shared.isBuiltIn(lower) ? lower : (key.hasPrefix("custom:") ? key : "custom:\( key)")
             if let list = normalized[newKey], list.contains(model) {
                 normalizedSel[newKey] = model
             }
@@ -913,7 +913,7 @@ struct ContentView: View {
         DebugLogger.shared.debug("NSEvent monitor: Recording new mouse shortcut: \(newShortcut.displayString)", source: "ContentView")
 
         if newShortcut.isUnmodifiedLeftOrRightClick, let mouseButton = newShortcut.mouseButton {
-            self.shortcutRecordingMessage = "\(HotkeyShortcut.mouseButtonToString(mouseButton)) needs a modifier key"
+            self.shortcutRecordingMessage = String.fluidLocalizedFormat("%@ needs a modifier key", String(describing: HotkeyShortcut.mouseButtonToString(mouseButton)))
             self.resetPendingShortcutState()
             return event
         }
@@ -1167,7 +1167,7 @@ struct ContentView: View {
             }
 
             if shortcut.isUnmodifiedLeftOrRightClick, let mouseButton = shortcut.mouseButton {
-                return "\(HotkeyShortcut.mouseButtonToString(mouseButton)) needs a modifier key"
+                return String.fluidLocalizedFormat("%@ needs a modifier key", String(describing: HotkeyShortcut.mouseButtonToString(mouseButton)))
             }
         }
 
@@ -1196,19 +1196,19 @@ struct ContentView: View {
 
         for (otherTarget, configuredShortcut) in configuredShortcuts where otherTarget != target {
             if configuredShortcut == shortcut {
-                return "Duplicate with \(otherTarget.title)"
+                return String.fluidLocalizedFormat("Duplicate with %@", String(describing: otherTarget.title))
             }
             if shortcut.conflictsWith(configuredShortcut) {
-                return "Overlaps \(otherTarget.title) — use a different modifier key"
+                return String.fluidLocalizedFormat("Overlaps %@ — use a different modifier key", String(describing: otherTarget.title))
             }
         }
         for (otherTarget, configuredShortcut) in optionalConfiguredShortcuts where otherTarget != target {
             guard let configuredShortcut else { continue }
             if configuredShortcut == shortcut {
-                return "Duplicate with \(otherTarget.title)"
+                return String.fluidLocalizedFormat("Duplicate with %@", String(describing: otherTarget.title))
             }
             if shortcut.conflictsWith(configuredShortcut) {
-                return "Overlaps \(otherTarget.title) — use a different modifier key"
+                return String.fluidLocalizedFormat("Overlaps %@ — use a different modifier key", String(describing: otherTarget.title))
             }
         }
 
@@ -1548,7 +1548,7 @@ struct ContentView: View {
                                 .foregroundStyle(isSelected ? Color.white.opacity(0.9) : Color.secondary)
                                 .frame(width: 18)
 
-                            Text(section.title)
+                            Text(section.title.fluidLocalized)
                                 .foregroundStyle(isSelected ? Color.white : Color.primary)
                         }
                         .font(self.theme.typography.sidebarItem)
@@ -1699,7 +1699,7 @@ struct ContentView: View {
     }
 
     private func sidebarSectionHeader(_ title: String) -> some View {
-        Text(title)
+        Text(title.fluidLocalized)
             .font(self.theme.typography.sidebarSection)
             .foregroundStyle(.secondary)
             .textCase(nil)
@@ -1719,7 +1719,7 @@ struct ContentView: View {
                     .frame(width: 16, height: 16)
                     .accessibilityHidden(true)
 
-                Text(title)
+                Text(title.fluidLocalized)
                     .foregroundStyle(isSelected ? Color.white : Color.primary)
             }
             .font(self.theme.typography.sidebarItem)
@@ -1738,7 +1738,7 @@ struct ContentView: View {
             Image(systemName: self.settings.themePreference.systemImageName)
                 .fluidToolbarIcon()
         }
-        .help("Theme: \(self.settings.themePreference.displayName)")
+        .help("Theme: \( self.settings.themePreference.displayName)")
         .accessibilityLabel("Theme")
     }
 
@@ -1775,7 +1775,7 @@ struct ContentView: View {
             }
         }
         .animation(self.modeTransitionAnimation, value: self.settingsNavigation.isPresented)
-        .navigationTitle(self.pagePresentation.title)
+        .navigationTitle(self.pagePresentation.title.fluidLocalized)
     }
 
     private var pagePresentation: AppPagePresentation {
@@ -1892,7 +1892,7 @@ struct ContentView: View {
                     .frame(width: 10, height: 10)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(self.labelFor(status: self.asr.micStatus))
+                    Text(self.labelFor(status: self.asr.micStatus).fluidLocalized)
                         .fontWeight(.medium)
                         .foregroundStyle(self.asr.micStatus == .authorized ? self.theme.palette.primaryText : self.theme.palette.warning)
 
@@ -1993,8 +1993,8 @@ struct ContentView: View {
                                 .fluidToolbarIcon()
                         }
                         .buttonStyle(.automatic)
-                        .help(self.columnVisibility == .detailOnly ? "Show sidebar" : "Hide sidebar")
-                        .accessibilityLabel(self.columnVisibility == .detailOnly ? "Show sidebar" : "Hide sidebar")
+                        .help((self.columnVisibility == .detailOnly ? "Show sidebar" : "Hide sidebar").fluidLocalized)
+                        .accessibilityLabel((self.columnVisibility == .detailOnly ? "Show sidebar" : "Hide sidebar").fluidLocalized)
                     }
                     ToolbarItemGroup(placement: .primaryAction) {
                         self.todayStatsButton
@@ -2088,12 +2088,12 @@ struct ContentView: View {
 
     private func instructionStep(number: String, text: String) -> some View {
         HStack(spacing: 8) {
-            Text(number + ".")
+            Text(number + ".".fluidLocalized)
                 .font(self.theme.typography.captionSmall)
                 .foregroundStyle(self.theme.palette.accent)
                 .fontWeight(.semibold)
                 .frame(width: 16)
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(.primary)
         }
@@ -2107,7 +2107,7 @@ struct ContentView: View {
             ContentUnavailableView {
                 Label("No Settings Found", systemImage: "magnifyingglass")
             } description: {
-                Text("No settings match “\(self.settingsSearchQuery)”.")
+                Text("No settings match “\( self.settingsSearchQuery)”.")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityElement(children: .combine)
@@ -2257,7 +2257,7 @@ struct ContentView: View {
         if ModelRepository.shared.isBuiltIn(trimmed) { return trimmed }
         // Saved providers use their stable id with "custom:" prefix (if not already present)
         if trimmed.hasPrefix("custom:") { return trimmed }
-        return "custom:\(trimmed)"
+        return "custom:\( trimmed)"
     }
 
     private func updateCurrentProvider() {
@@ -2481,8 +2481,8 @@ struct ContentView: View {
         )
         let finishedAt = ProcessInfo.processInfo.systemUptime
         self.appBench(
-            "focus_target_check totalMs=\((finishedAt - startedAt) * 1000) pidMs=\((pidFinishedAt - startedAt) * 1000) " +
-                "elementMs=\((finishedAt - pidFinishedAt) * 1000) elementChecked=\(checksElement) returnToStartingField=\(returnToStartingField)"
+            "focus_target_check totalMs=\( (finishedAt - startedAt) * 1000) pidMs=\( (pidFinishedAt - startedAt) * 1000) " +
+                "elementMs=\( (finishedAt - pidFinishedAt) * 1000) elementChecked=\( checksElement) returnToStartingField=\( returnToStartingField)"
         )
         return target
     }
@@ -2662,7 +2662,7 @@ struct ContentView: View {
             )
         }
         self.appBench(
-            "ai_route_resolved elapsedMs=\(Int(((ProcessInfo.processInfo.systemUptime - routeStartedAt) * 1000).rounded()))"
+            "ai_route_resolved elapsedMs=\( Int(((ProcessInfo.processInfo.systemUptime - routeStartedAt) * 1000).rounded()))"
         )
         let currentSelectedProviderID = route.providerID
         let derivedCurrentProvider = route.providerKey
@@ -3565,9 +3565,9 @@ struct ContentView: View {
     ) {
         let finishedAt = ProcessInfo.processInfo.systemUptime
         DebugLogger.shared.info(
-            "PIPELINE_SUMMARY id=\(pipelineID) t=\(finishedAt) " +
-                "stopToReadyMs=\((textReadyAt - pipelineStartedAt) * 1000) readyToDeliveryMs=\((finishedAt - textReadyAt) * 1000) " +
-                "totalMs=\((finishedAt - pipelineStartedAt) * 1000) outcome=\(outcome)",
+            "PIPELINE_SUMMARY id=\( pipelineID) t=\( finishedAt) " +
+                "stopToReadyMs=\( (textReadyAt - pipelineStartedAt) * 1000) readyToDeliveryMs=\( (finishedAt - textReadyAt) * 1000) " +
+                "totalMs=\( (finishedAt - pipelineStartedAt) * 1000) outcome=\( outcome)",
             source: "AppBenchmark"
         )
     }
@@ -3809,11 +3809,11 @@ struct ContentView: View {
 
     private func hideOverlayAsync(reason: String) {
         let expectedOverlayLifecycleID = self.overlayLifecycleID
-        self.appBench("overlay_hide_request reason=\(reason) lifecycle=\(expectedOverlayLifecycleID)")
+        self.appBench("overlay_hide_request reason=\( reason) lifecycle=\( expectedOverlayLifecycleID)")
         Task { @MainActor in
             guard self.overlayLifecycleID == expectedOverlayLifecycleID else {
                 self.appBench(
-                    "overlay_hide_skipped reason=\(reason) staleLifecycle=\(expectedOverlayLifecycleID) currentLifecycle=\(self.overlayLifecycleID)"
+                    "overlay_hide_skipped reason=\( reason) staleLifecycle=\( expectedOverlayLifecycleID) currentLifecycle=\( self.overlayLifecycleID)"
                 )
                 return
             }
@@ -3821,7 +3821,7 @@ struct ContentView: View {
             let overlayHideStartedAt = ProcessInfo.processInfo.systemUptime
             await self.menuBarManager.finishProcessingAndHideOverlay()
             self.appBench(
-                "overlay_hidden reason=\(reason) elapsedMs=\(Int(((ProcessInfo.processInfo.systemUptime - overlayHideStartedAt) * 1000).rounded()))"
+                "overlay_hidden reason=\( reason) elapsedMs=\( Int(((ProcessInfo.processInfo.systemUptime - overlayHideStartedAt) * 1000).rounded()))"
             )
         }
     }
@@ -4460,7 +4460,7 @@ struct ContentView: View {
         guard !self.presentExclusiveActivityBlockIfNeeded() else { return }
         let model = SettingsStore.shared.selectedSpeechModel
         DebugLogger.shared.info(
-            "ContentView: startRecording() for model=\(model.displayName), supportsStreaming=\(model.supportsStreaming)",
+            "ContentView: startRecording() for model=\( model.displayName), supportsStreaming=\( model.supportsStreaming)",
             source: "ContentView"
         )
         guard !self.asr.isRunningOrStarting else {
@@ -4521,13 +4521,13 @@ struct ContentView: View {
 
     private func presentExclusiveActivityBlockIfNeeded() -> Bool {
         guard let activity = self.asr.activeExclusiveActivity else { return false }
-        let message = "Wait for the active \(activity.displayName) to finish."
+        let message = String.fluidLocalizedFormat("Wait for the active %@ to finish.", String(describing: activity.displayName))
         self.asr.errorTitle = "Dictation Unavailable"
         self.asr.errorMessage = message
         self.asr.showError = true
-        AccessibilityNotification.Announcement("Dictation unavailable. \(message)").post()
+        AccessibilityNotification.Announcement(String.fluidLocalizedFormat("Dictation unavailable. %@", String(describing: message))).post()
         DebugLogger.shared.info(
-            "ContentView: dictation start blocked by \(activity.rawValue)",
+            "ContentView: dictation start blocked by \( activity.rawValue)",
             source: "ContentView"
         )
         return true
@@ -4552,7 +4552,7 @@ struct ContentView: View {
         self.prewarmDictationTask = Task {
             guard !Task.isCancelled, MeetingModelResidencyCoordinator.shared.canRunWarmup(warmupGeneration) else { return }
             DebugLogger.shared.debug(
-                "ContentView: AI dictation prewarm started slot=\(slot.rawValue)",
+                "ContentView: AI dictation prewarm started slot=\( slot.rawValue)",
                 source: "ContentView"
             )
             await PrivateAIIntegrationService.shared.prewarmDictation()
@@ -4578,10 +4578,10 @@ struct ContentView: View {
         guard let context = NotchContentState.shared.recordingTargetContext else { return false }
         let pid = context.pid
         let startedAt = ProcessInfo.processInfo.systemUptime
-        self.appBench("focus_restore_start targetPID=\(pid)")
+        self.appBench("focus_restore_start targetPID=\( pid)")
         let result = await TypingService.prepareTargetForDelivery(context)
         self.appBench(
-            "focus_restore_result result=\(result.rawValue) elapsedMs=\(Int(((ProcessInfo.processInfo.systemUptime - startedAt) * 1000).rounded()))"
+            "focus_restore_result result=\( result.rawValue) elapsedMs=\( Int(((ProcessInfo.processInfo.systemUptime - startedAt) * 1000).rounded()))"
         )
         DebugLogger.shared.debug(
             "Restore focus result: \(result.rawValue), targetPID: \(pid)",
@@ -4727,7 +4727,7 @@ struct ContentView: View {
             dictationModeCallback: {
                 DebugLogger.shared.info("Dictate mode triggered", source: "ContentView")
                 DebugLogger.shared.debug(
-                    "ContentView: selected model for dictate hotkey=\(SettingsStore.shared.selectedSpeechModel.displayName)",
+                    "ContentView: selected model for dictate hotkey=\( SettingsStore.shared.selectedSpeechModel.displayName)",
                     source: "ContentView"
                 )
                 self.beginDictationRecording(for: .primary, mode: .dictate)
@@ -5224,7 +5224,7 @@ extension ContentView {
         let provider = (modelInfo.provider ?? "unknown").replacingOccurrences(of: " ", with: "_")
         let model = (modelInfo.model ?? "unknown").replacingOccurrences(of: " ", with: "_")
         self.appBench(
-            "ai_process_call id=\(pipelineID) provider=\(provider) model=\(model) inputChars=\(inputChars)"
+            "ai_process_call id=\( pipelineID) provider=\( provider) model=\( model) inputChars=\( inputChars)"
         )
     }
 
@@ -5238,7 +5238,7 @@ extension ContentView {
             await MainActor.run { self.aiOutputText = result }
         } catch {
             DebugLogger.shared.error("callOpenAIChat failed: \(error.localizedDescription)", source: "ContentView")
-            await MainActor.run { self.aiOutputText = "Error: \(error.localizedDescription)" }
+            await MainActor.run { self.aiOutputText = "Error: \( error.localizedDescription)" }
         }
     }
 
@@ -5334,7 +5334,7 @@ extension ContentView {
             source: "ContentView"
         )
         self.asr.errorTitle = "Setup Isn't Complete"
-        self.asr.errorMessage = "Finish \(missingText) to continue."
+        self.asr.errorMessage = String.fluidLocalizedFormat("Finish %@ to continue.", String(describing: missingText))
         self.asr.showError = true
     }
 
@@ -5807,7 +5807,7 @@ private struct AccessibilitySettingsFloatingGuideView: View {
                         value: self.isArrowRaised
                     )
 
-                Text("Drag \(self.appName) into the Accessibility apps list as shown")
+                Text("Drag \( self.appName) into the Accessibility apps list as shown")
                     .font(.fluidSystem(size: 15, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.78))
                     .lineLimit(1)
@@ -5842,14 +5842,14 @@ private struct AccessibilitySettingsFloatingGuideView: View {
                 }
                 .buttonStyle(.plain)
                 .focusable(false)
-                .help("Return to \(self.appName)")
+                .help("Return to \( self.appName)")
 
                 Image(nsImage: self.appIcon)
                     .resizable()
                     .frame(width: 34, height: 34)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
-                Text(self.appName)
+                Text(self.appName.fluidLocalized)
                     .font(.fluidSystem(size: 16, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.92))
 
@@ -5883,7 +5883,7 @@ private struct AccessibilitySettingsFloatingGuideView: View {
             .onDrag {
                 NSItemProvider(object: self.appURL as NSURL)
             }
-            .accessibilityLabel("Drag \(self.appName) to the Accessibility list")
+            .accessibilityLabel("Drag \( self.appName) to the Accessibility list")
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
@@ -5978,14 +5978,14 @@ private struct TodayStatsToolbarButton: View {
                     Text("\(summary.words) words")
                     Text("·")
                         .foregroundStyle(.secondary)
-                    Text(timeSaved)
+                    Text(timeSaved.fluidLocalized)
                 } else {
                     Text("Today")
                 }
             }
             .font(.fluidSystem(size: 12, weight: .medium))
         }
-        .help(hasActivity ? "Today: \(summary.words) words · \(timeSaved) saved - view stats" : "View your stats")
+        .help((hasActivity ? "Today: \( summary.words) words · \( timeSaved) saved - view stats" : "View your stats").fluidLocalized)
         .accessibilityLabel("Today stats")
     }
 }

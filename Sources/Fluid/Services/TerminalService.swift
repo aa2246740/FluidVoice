@@ -134,7 +134,7 @@ final class TerminalService {
                 success: false,
                 command: command,
                 output: "",
-                error: "Failed to execute: \(error.localizedDescription)",
+                error: String.fluidLocalizedFormat("Failed to execute: %@", String(describing: error.localizedDescription)),
                 exitCode: -1,
                 executionTimeMs: executionTime
             )

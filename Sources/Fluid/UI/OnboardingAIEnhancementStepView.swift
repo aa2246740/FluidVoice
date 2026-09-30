@@ -207,7 +207,7 @@ struct OnboardingAIEnhancementStepView: View {
                     .transition(.opacity)
             }
             if let error = self.setup.errorMessage {
-                Text(error)
+                Text(error.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.warning)
                     .multilineTextAlignment(.center)
@@ -273,21 +273,21 @@ struct OnboardingAIEnhancementStepView: View {
                             ProgressView().controlSize(.small)
                         }
                         if let bytes = self.setup.progress?.bytes {
-                            Text(bytes.replacingOccurrences(of: " downloaded", with: " ready").replacingOccurrences(of: " download", with: ""))
+                            Text(bytes.replacingOccurrences(of: " downloaded", with: " ready").replacingOccurrences(of: " download", with: "").fluidLocalized)
                                 .font(self.theme.typography.caption)
                                 .foregroundStyle(.white.opacity(0.62))
                                 .monospacedDigit()
                                 .fixedSize()
                         }
                     }
-                    Text(self.downloadProgressTitle)
+                    Text(self.downloadProgressTitle.fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(.white.opacity(0.58))
                         .monospacedDigit()
                 } else {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.small)
-                        Text(self.preparationStatus)
+                        Text(self.preparationStatus.fluidLocalized)
                             .font(self.theme.typography.captionStrong)
                             .foregroundStyle(.white.opacity(0.62))
                     }
@@ -319,7 +319,7 @@ struct OnboardingAIEnhancementStepView: View {
     private var downloadProgressTitle: String {
         guard let fraction = self.setup.progress?.fraction, fraction.isFinite else { return "Preparing…" }
         let percent = min(max(fraction, 0), 1).formatted(.percent.precision(.fractionLength(0)))
-        return "Preparing \(percent)"
+        return String.fluidLocalizedFormat("Preparing %@", String(describing: percent))
     }
 
     private var preparationStatus: String {
@@ -399,11 +399,11 @@ struct OnboardingAIEnhancementStepView: View {
                 Label(name, systemImage: smart ? "sparkles" : "bolt.fill")
                     .font(.fluidSystem(size: 18, weight: .semibold))
                     .foregroundStyle(smart ? Color(red: 0.48, green: 0.72, blue: 1) : .white)
-                Text(subtitle)
+                Text(subtitle.fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .medium))
                     .foregroundStyle(.white.opacity(0.5))
             }
-            Text(detail)
+            Text(detail.fluidLocalized)
                 .font(.fluidSystem(size: 15))
                 .foregroundStyle(.white.opacity(0.78))
                 .fixedSize(horizontal: false, vertical: true)
@@ -431,7 +431,7 @@ struct OnboardingAIEnhancementStepView: View {
     private func action(id: String, title: String, tone: ButtonTone, width: CGFloat, action: @escaping () -> Void) -> some View {
         if #available(macOS 26, *), !self.reduceTransparency {
             Button(action: action) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 16, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: width - 32, height: 40)
@@ -497,7 +497,7 @@ struct OnboardingAIEnhancementStepView: View {
                         .font(.fluidSystem(size: 12, weight: .bold))
                 }
 
-                Text(configuration.title)
+                Text(configuration.title.fluidLocalized)
                     .font(.fluidSystem(size: configuration.fontSize, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)

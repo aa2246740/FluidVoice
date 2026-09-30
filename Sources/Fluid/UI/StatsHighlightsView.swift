@@ -12,7 +12,7 @@ struct StatsHighlightsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            self.sectionHeading("Your next chapter", subtitle: "\(self.snapshot.totalMilestonesAchieved) of 18 milestones reached")
+            self.sectionHeading("Your next chapter", subtitle: String.fluidLocalizedFormat("%@ of 18 milestones reached", String(describing: self.snapshot.totalMilestonesAchieved)))
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .top, spacing: 16) {
                     self.wordMilestone.frame(minWidth: 220)
@@ -56,8 +56,8 @@ struct StatsHighlightsView: View {
 
     private func sectionHeading(_ title: String, subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(self.theme.typography.sectionTitle)
-            Text(subtitle).font(self.theme.typography.caption).foregroundStyle(.secondary)
+            Text(title.fluidLocalized).font(self.theme.typography.sectionTitle)
+            Text(subtitle.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
         }
     }
 
@@ -118,21 +118,21 @@ struct StatsHighlightsView: View {
                 HStack(spacing: 16) {
                     self.progressRing(fraction: fraction, color: color, icon: next == nil ? "checkmark" : icon)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(value.formatted())
+                        Text(value.formatted().fluidLocalized)
                             .font(self.theme.typography.title)
                             .monospacedDigit()
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)
-                        Text(unit)
+                        Text(unit.fluidLocalized)
                             .font(self.theme.typography.caption)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(next.map { "Next stop: \($0.label)" } ?? "Every milestone reached")
+                    Text(next.map { "Next stop: \($0.label)" } ?? "Every milestone reached".fluidLocalized)
                         .font(self.theme.typography.bodySmallStrong)
-                    Text(next == nil ? "Look how far your voice has taken you." : "\((target - value).formatted()) to go · \(Int(fraction * 100))% there")
+                    Text((next == nil ? "Look how far your voice has taken you." : String.fluidLocalizedFormat("%@ to go · %@% there", String(describing: (target - value).formatted()), String(describing: Int(fraction * 100)))).fluidLocalized)
                         .font(self.theme.typography.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
@@ -197,7 +197,7 @@ struct StatsHighlightsView: View {
         } label: {
             VStack(spacing: 6) {
                 HStack {
-                    Text(name).font(self.theme.typography.bodySmallStrong).lineLimit(1)
+                    Text(name.fluidLocalized).font(self.theme.typography.bodySmallStrong).lineLimit(1)
                     Spacer()
                     Text("\(sessions.formatted()) · \(Int((share * 100).rounded()))%")
                         .font(self.theme.typography.caption)
@@ -232,14 +232,14 @@ struct StatsHighlightsView: View {
         guard let app = self.snapshot.topAppUsage.first(where: { $0.name == (self.hoveredApp ?? self.pinnedApp) }) else {
             return "Hover an app to explore · click to pin"
         }
-        return "\(app.name) · \(app.sessions.formatted()) of \(self.snapshot.totalTranscriptions.formatted()) dictations"
+        return String.fluidLocalizedFormat("%@ · %@ of %@ dictations", String(describing: app.name), String(describing: app.sessions.formatted()), String(describing: self.snapshot.totalTranscriptions.formatted()))
     }
 
     private var hourCaption: String {
         guard let hour = self.hoveredHour ?? self.pinnedHour, self.snapshot.hourlySessions.indices.contains(hour) else {
             return "Hover an hour to explore · click to pin"
         }
-        return String(format: "%02d:00–%02d:00", hour, hour + 1) + " · \(self.snapshot.hourlySessions[hour].formatted()) dictations"
+        return String(format: "%02d:00–%02d:00", hour, hour + 1) + String.fluidLocalizedFormat(" · %@ dictations", String(describing: self.snapshot.hourlySessions[hour].formatted()))
     }
 
     private var hoursCard: some View {
@@ -251,8 +251,8 @@ struct StatsHighlightsView: View {
                         .foregroundStyle(count > 0 && count == self.snapshot.hourlySessions.max() ? self.theme.palette.warning : self.theme.palette.accent.opacity(0.4))
                         .cornerRadius(3)
                         .opacity(self.hoveredHour == nil && self.pinnedHour == nil || hour == (self.hoveredHour ?? self.pinnedHour) ? 1 : 0.35)
-                        .accessibilityLabel("\(hour):00")
-                        .accessibilityValue("\(count) dictations")
+                        .accessibilityLabel("\( hour):00")
+                        .accessibilityValue("\( count) dictations")
                 }
                 .statsChartInteraction(onInspect: { x, proxy, pin in
                     guard let value: Double = proxy.value(atX: x) else { return }
@@ -267,7 +267,7 @@ struct StatsHighlightsView: View {
                 .chartXAxis {
                     AxisMarks(values: [0, 6, 12, 18]) { value in
                         AxisValueLabel {
-                            if let hour = value.as(Int.self) { Text(String(format: "%02d:00", hour)) }
+                            if let hour = value.as(Int.self) { Text(String(format: "%02d:00", hour).fluidLocalized) }
                         }
                     }
                 }
@@ -288,7 +288,7 @@ struct StatsHighlightsView: View {
     private func smallMetric(value: String, title: String, icon: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Label(value, systemImage: icon).font(self.theme.typography.bodyStrong)
-            Text(title).font(self.theme.typography.caption).foregroundStyle(.secondary)
+            Text(title.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
         }
     }
 
@@ -330,14 +330,14 @@ struct StatsHighlightsView: View {
                     Spacer()
                     Text("PERSONAL BEST").font(self.theme.typography.badge).foregroundStyle(.secondary)
                 }
-                Text(value.formatted())
+                Text(value.formatted().fluidLocalized)
                     .font(self.theme.typography.displayTitle)
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(title).font(self.theme.typography.bodySmallStrong)
-                    Text(unit).font(self.theme.typography.caption).foregroundStyle(.secondary)
+                    Text(title.fluidLocalized).font(self.theme.typography.bodySmallStrong)
+                    Text(unit.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.secondary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

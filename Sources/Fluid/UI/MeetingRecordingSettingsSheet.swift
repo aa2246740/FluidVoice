@@ -157,7 +157,7 @@ struct MeetingRecordingSettingsSheet: View {
                         Image(systemName: section.symbol)
                             .frame(width: self.theme.metrics.spacing.lg)
                             .foregroundStyle(self.theme.palette.secondaryText)
-                        Text(section.rawValue)
+                        Text(section.rawValue.fluidLocalized)
                             .font(self.selectedSection == section ? self.theme.typography.bodySmallStrong : self.theme.typography.bodySmall)
                             .foregroundStyle(self.theme.palette.primaryText)
                             .fixedSize(horizontal: false, vertical: true)
@@ -187,10 +187,10 @@ struct MeetingRecordingSettingsSheet: View {
 
     private var sectionHeading: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-            Text(self.selectedSection.rawValue)
+            Text(self.selectedSection.rawValue.fluidLocalized)
                 .font(self.theme.typography.sectionTitle)
                 .foregroundStyle(self.theme.palette.primaryText)
-            Text(self.selectedSection.guidance)
+            Text(self.selectedSection.guidance.fluidLocalized)
                 .font(self.theme.typography.bodySmall)
                 .foregroundStyle(self.theme.palette.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -212,7 +212,7 @@ struct MeetingRecordingSettingsSheet: View {
                             }
                             .pickerStyle(.inline)
                         } label: {
-                            Text(self.draft.mode == .onlineCall ? "Online call" : "In-room")
+                            Text((self.draft.mode == .onlineCall ? "Online call" : "In-room").fluidLocalized)
                         }
                         .fluidDropdownStyle(fillsWidth: true)
                         .accessibilityLabel("Default meeting type")
@@ -238,7 +238,7 @@ struct MeetingRecordingSettingsSheet: View {
                                     }
                                 }
                             } label: {
-                                Text(self.selectedApplicationName)
+                                Text(self.selectedApplicationName.fluidLocalized)
                             }
                             .fluidDropdownStyle(fillsWidth: true)
                             .accessibilityLabel("Meeting audio source")
@@ -254,12 +254,12 @@ struct MeetingRecordingSettingsSheet: View {
                             Picker("Microphone", selection: self.$draft.selectedMicrophoneID) {
                                 Text("Choose microphone…").tag(String?.none)
                                 ForEach(self.microphones) { option in
-                                    Text(option.identity.displayName).tag(Optional(option.id))
+                                    Text(option.identity.displayName.fluidLocalized).tag(Optional(option.id))
                                 }
                             }
                             .pickerStyle(.inline)
                         } label: {
-                            Text(self.microphones.first(where: { $0.id == self.draft.selectedMicrophoneID })?.identity.displayName ?? "Choose microphone…")
+                            Text(self.microphones.first(where: { $0.id == self.draft.selectedMicrophoneID })?.identity.displayName ?? "Choose microphone…".fluidLocalized)
                         }
                         .fluidDropdownStyle(fillsWidth: true)
                         .accessibilityLabel("Default meeting microphone")
@@ -311,7 +311,7 @@ struct MeetingRecordingSettingsSheet: View {
             if self.applicationSelection.wrappedValue == id {
                 Label(title, systemImage: "checkmark")
             } else {
-                Text(title)
+                Text(title.fluidLocalized)
             }
         }
     }
@@ -337,7 +337,7 @@ struct MeetingRecordingSettingsSheet: View {
         if !name.isEmpty { return name }
         let bundleIdentifier = option.identity.bundleIdentifier.trimmingCharacters(in: .whitespacesAndNewlines)
         if !bundleIdentifier.isEmpty { return bundleIdentifier }
-        if let processID = option.identity.processID { return "Audio source (\(processID))" }
+        if let processID = option.identity.processID { return String.fluidLocalizedFormat("Audio source (%@)", String(describing: processID)) }
         return "Audio source"
     }
 
@@ -352,12 +352,12 @@ struct MeetingRecordingSettingsSheet: View {
                         Menu {
                             Picker("Keep audio", selection: self.$retentionPolicy) {
                                 ForEach(MeetingAudioRetentionPolicy.allCases, id: \.self) { policy in
-                                    Text(policy.displayName).tag(policy)
+                                    Text(policy.displayName.fluidLocalized).tag(policy)
                                 }
                             }
                             .pickerStyle(.inline)
                         } label: {
-                            Text(self.retentionPolicy.displayName)
+                            Text(self.retentionPolicy.displayName.fluidLocalized)
                         }
                         .fluidDropdownStyle(fillsWidth: true)
                         .accessibilityLabel("Audio retention")
@@ -462,10 +462,10 @@ struct MeetingRecordingSettingsSheet: View {
                 .background(Color(nsColor: .white), in: RoundedRectangle(cornerRadius: self.theme.metrics.corners.md))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-                Text(name)
+                Text(name.fluidLocalized)
                     .font(self.theme.typography.bodyStrong)
                     .foregroundStyle(self.theme.palette.primaryText)
-                Text(provider)
+                Text(provider.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -493,12 +493,12 @@ struct MeetingRecordingSettingsSheet: View {
                 HStack(spacing: self.theme.metrics.spacing.md) {
                     Spacer(minLength: self.theme.metrics.spacing.md)
                     Button(action: self.onCancel) {
-                        Text(self.isFirstSetup ? "Not now" : "Cancel").frame(minWidth: 72)
+                        Text((self.isFirstSetup ? "Not now" : "Cancel").fluidLocalized).frame(minWidth: 72)
                     }
                     .meetingGlassAction()
                     .keyboardShortcut(.cancelAction)
                     Button(action: self.onSave) {
-                        Text(self.isFirstSetup ? "Save setup" : "Save").frame(minWidth: 72)
+                        Text((self.isFirstSetup ? "Save setup" : "Save").fluidLocalized).frame(minWidth: 72)
                     }
                     .meetingGlassAction(prominent: true)
                     .disabled(!self.canSave)
@@ -568,11 +568,11 @@ private struct MeetingAdaptiveSetupRow<Content: View>: View {
 
     private var label: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.xs) {
-            Text(self.title)
+            Text(self.title.fluidLocalized)
                 .font(self.theme.typography.bodyStrong)
                 .foregroundStyle(self.theme.palette.primaryText)
             if let detail {
-                Text(detail)
+                Text(detail.fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)

@@ -204,7 +204,7 @@ final nonisolated class MeetingAudioFilePCMChunkSink: MeetingAudioChunkSink, @un
             ) }
             guard FileManager.default.fileExists(atPath: parent.path, isDirectory: nil) else { throw MeetingPCMSinkError.underlyingFileError("parent does not exist") }
             guard chmod(parent.path, mode_t(0o700)) == 0 else {
-                throw MeetingPCMSinkError.underlyingFileError("could not set directory permissions: \(parent.path)")
+                throw MeetingPCMSinkError.underlyingFileError(String.fluidLocalizedFormat("could not set directory permissions: %@", String(describing: parent.path)))
             }
         }
         let final = parent.appendingPathComponent(filename)
@@ -215,7 +215,7 @@ final nonisolated class MeetingAudioFilePCMChunkSink: MeetingAudioChunkSink, @un
     }
 
     private static func rejectSymlink(_ url: URL) throws {
-        var st = stat(); guard lstat(url.path, &st) == 0 else { if errno == ENOENT { return }; throw MeetingPCMSinkError.underlyingFileError("cannot inspect \(url.path)") }
+        var st = stat(); guard lstat(url.path, &st) == 0 else { if errno == ENOENT { return }; throw MeetingPCMSinkError.underlyingFileError(String.fluidLocalizedFormat("cannot inspect %@", String(describing: url.path))) }
         if (st.st_mode & S_IFMT) == S_IFLNK { throw MeetingPCMSinkError.symlinkComponentRejected(url.path) }
     }
 

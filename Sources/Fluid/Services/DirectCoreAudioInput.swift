@@ -85,7 +85,7 @@ nonisolated struct DirectCoreAudioFormatFingerprint: Equatable {
             throw Self.error(
                 status: kAudioHardwareBadDeviceError,
                 operation: "read direct Core Audio format",
-                detail: "device \(deviceID) is not alive"
+                detail: String.fluidLocalizedFormat("device %@ is not alive", String(describing: deviceID))
             )
         }
 
@@ -103,7 +103,7 @@ nonisolated struct DirectCoreAudioFormatFingerprint: Equatable {
             throw Self.error(
                 status: kAudioHardwareUnsupportedOperationError,
                 operation: "read direct Core Audio format",
-                detail: "expected one input stream, found \(streams.count)"
+                detail: String.fluidLocalizedFormat("expected one input stream, found %@", String(describing: streams.count))
             )
         }
 
@@ -285,7 +285,7 @@ nonisolated struct DirectCoreAudioFormatFingerprint: Equatable {
         else {
             throw self.error(
                 status: status == noErr ? kAudioHardwareUnspecifiedError : status,
-                operation: "\(operation) without a topology size change"
+                operation: String.fluidLocalizedFormat("%@ without a topology size change", String(describing: operation))
             )
         }
         let values = storage.assumingMemoryBound(to: T.self)
@@ -355,11 +355,11 @@ nonisolated struct DirectCoreAudioFormatFingerprint: Equatable {
         operation: String,
         detail: String? = nil
     ) -> NSError {
-        let suffix = detail.map { ": \($0)" } ?? " (OSStatus \(status))"
+        let suffix = detail.map { String.fluidLocalizedFormat(": %@", String(describing: $0)) } ?? " (OSStatus \(status))"
         return NSError(
             domain: NSOSStatusErrorDomain,
             code: Int(status),
-            userInfo: [NSLocalizedDescriptionKey: "Failed to \(operation)\(suffix)."]
+            userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("Failed to %@%@.", String(describing: operation), String(describing: suffix))]
         )
     }
 }
@@ -942,7 +942,7 @@ final nonisolated class DirectCoreAudioLifecycleController: @unchecked Sendable 
             let startedAt = ProcessInfo.processInfo.systemUptime
             let device = try self.deviceResolver(selection)
             guard let device else {
-                throw Self.error("No input device is available for \(selection).")
+                throw Self.error(String.fluidLocalizedFormat("No input device is available for %@.", String(describing: selection)))
             }
             Self.log(
                 "Direct capture device resolved off-main reason=\(reason) " +
@@ -1240,7 +1240,7 @@ final nonisolated class DirectCoreAudioLifecycleController: @unchecked Sendable 
             guard invalidationStatus == noErr, self.isPoisoned == false else {
                 throw Self.error(
                     "Direct Core Audio lifecycle is poisoned after replacement teardown failed " +
-                        "with status \(invalidationStatus); restart the app."
+                        String.fluidLocalizedFormat("with status %@; restart the app.", String(describing: invalidationStatus))
                 )
             }
         }
@@ -1288,7 +1288,7 @@ final nonisolated class DirectCoreAudioLifecycleController: @unchecked Sendable 
             gate.retire()
             _ = input.invalidate()
             throw Self.error(
-                "Direct Core Audio format changed while preparing generation \(generation)."
+                String.fluidLocalizedFormat("Direct Core Audio format changed while preparing generation %@.", String(describing: generation))
             )
         }
 
@@ -1491,7 +1491,7 @@ final nonisolated class DirectCoreAudioLifecycleController: @unchecked Sendable 
         {
             if policy == .required {
                 throw Self.error(
-                    "Required Core Audio listener property is unavailable: \(name)."
+                    String.fluidLocalizedFormat("Required Core Audio listener property is unavailable: %@.", String(describing: name))
                 )
             }
             Self.log(
@@ -1583,7 +1583,7 @@ final nonisolated class DirectCoreAudioLifecycleController: @unchecked Sendable 
         guard status == noErr else {
             if policy != .optional {
                 throw Self.error(
-                    "Failed to register required Core Audio listener \(name) " +
+                    String.fluidLocalizedFormat("Failed to register required Core Audio listener %@ ", String(describing: name)) +
                         "(OSStatus \(status))."
                 )
             }

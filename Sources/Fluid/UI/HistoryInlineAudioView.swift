@@ -37,8 +37,8 @@ struct HistoryInlineAudioView: View {
                         Image(systemName: self.isPlaying ? "pause.fill" : "play.fill")
                     }
                     .fluidGlassAction(circular: true)
-                    .accessibilityLabel(self.isPlaying ? "Pause recording" : "Play recording")
-                    Text(Self.timeLabel(self.elapsed)).monospacedDigit().frame(width: 42)
+                    .accessibilityLabel((self.isPlaying ? "Pause recording" : "Play recording").fluidLocalized)
+                    Text(Self.timeLabel(self.elapsed).fluidLocalized).monospacedDigit().frame(width: 42)
                     Slider(value: self.$elapsed, in: 0...max(self.duration, 0.01)) { editing in
                         self.isSeeking = editing
                         if !editing {
@@ -47,7 +47,7 @@ struct HistoryInlineAudioView: View {
                     }
                     .tint(self.theme.palette.accent)
                     .accessibilityLabel("Recording position")
-                    Text(Self.timeLabel(self.duration)).monospacedDigit().frame(width: 42)
+                    Text(Self.timeLabel(self.duration).fluidLocalized).monospacedDigit().frame(width: 42)
                 }
                 .font(self.theme.typography.caption)
                 .foregroundStyle(.secondary)

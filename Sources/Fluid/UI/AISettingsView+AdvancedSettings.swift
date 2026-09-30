@@ -43,7 +43,7 @@ private struct PromptAdvancedDisclosureStyle: DisclosureGroupStyle {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityValue(configuration.isExpanded ? "Expanded" : "Collapsed")
+            .accessibilityValue((configuration.isExpanded ? "Expanded" : "Collapsed").fluidLocalized)
             if configuration.isExpanded {
                 configuration.content
             }
@@ -91,7 +91,7 @@ extension AIEnhancementSettingsView {
 
             VStack(alignment: .leading, spacing: 8) {
                 self.promptProfilesHelpRow("Built-in is the normal prompt. Assign any prompt as Primary to use it with your main hotkey.")
-                self.promptProfilesHelpRow("\(PrivateAIProviderFeature.displayName) uses its own local prompt.")
+                self.promptProfilesHelpRow(String.fluidLocalizedFormat("%@ uses its own local prompt.", String(describing: PrivateAIProviderFeature.displayName)))
                 self.promptProfilesHelpRow("Custom prompts can be assigned globally, by app, or by shortcut.")
             }
         }
@@ -107,7 +107,7 @@ extension AIEnhancementSettingsView {
                 .frame(width: 4, height: 4)
                 .padding(.top, 6)
 
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(.fluidSystem(.caption))
                 .foregroundStyle(self.theme.palette.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -259,7 +259,7 @@ extension AIEnhancementSettingsView {
     ) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 14, weight: .semibold))
                     .foregroundStyle(self.theme.palette.primaryText)
                     .lineLimit(1)
@@ -275,7 +275,7 @@ extension AIEnhancementSettingsView {
             if let notice {
                 self.promptNoticeRow(notice)
             } else if !subtitle.isEmpty {
-                Text(subtitle)
+                Text(subtitle.fluidLocalized)
                     .font(.fluidSystem(.caption2))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -351,7 +351,7 @@ extension AIEnhancementSettingsView {
         HStack(spacing: 5) {
             Image(systemName: systemImage)
                 .font(.fluidSystem(size: 9, weight: .semibold))
-            Text(text)
+            Text(text.fluidLocalized)
                 .lineLimit(1)
                 .truncationMode(.middle)
         }
@@ -374,7 +374,7 @@ extension AIEnhancementSettingsView {
         HStack(spacing: 5) {
             Image(systemName: "lock.fill")
                 .font(.fluidSystem(size: 10, weight: .semibold))
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(.fluidSystem(.caption2).weight(.medium))
                 .lineLimit(1)
                 .truncationMode(.tail)
@@ -629,7 +629,7 @@ extension AIEnhancementSettingsView {
 
         let providerName = self.viewModel.providerDisplayName(for: providerID)
         let selectedModel = self.promptEditorModelDraft.trimmingCharacters(in: .whitespacesAndNewlines)
-        let summary = selectedModel.isEmpty ? providerName : "\(providerName) - \(ModelDisplayName.forID(selectedModel))"
+        let summary = selectedModel.isEmpty ? providerName : String.fluidLocalizedFormat("%@ - %@", String(describing: providerName), String(describing: ModelDisplayName.forID(selectedModel)))
 
         return PromptCardModelPicker(
             summary: summary,
@@ -733,7 +733,7 @@ extension AIEnhancementSettingsView {
                         Image(systemName: "keyboard")
                             .font(.fluidSystem(size: 11, weight: .semibold))
                             .foregroundStyle(self.theme.palette.secondaryText)
-                        Text(shortcut.displayString)
+                        Text(shortcut.displayString.fluidLocalized)
                             .font(.fluidSystem(size: 12, weight: .semibold, design: .monospaced))
                             .foregroundStyle(self.theme.palette.primaryText)
                             .lineLimit(1)
@@ -762,7 +762,7 @@ extension AIEnhancementSettingsView {
                         self.activeShortcutRecordingTarget = .dictationPrompt(configurationKey)
                     }
                 } label: {
-                    Text(isRecording ? "Cancel" : "Change")
+                    Text((isRecording ? "Cancel" : "Change").fluidLocalized)
                         .font(.fluidSystem(size: 12, weight: .semibold))
                         .lineLimit(1)
                         .frame(width: 70, height: AISettingsLayout.controlHeight)
@@ -815,7 +815,7 @@ extension AIEnhancementSettingsView {
                         }
                     }
                 }
-            } label: { Text(self.viewModel.providerDisplayName(for: self.promptEditorProviderIDDraft)) }
+            } label: { Text(self.viewModel.providerDisplayName(for: self.promptEditorProviderIDDraft).fluidLocalized) }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fluidDropdownStyle()
                 .frame(width: AISettingsLayout.promptEditorControlColumnWidth)
@@ -899,11 +899,11 @@ extension AIEnhancementSettingsView {
     ) -> some View {
         GridRow(alignment: .center) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(.fluidSystem(size: 13, weight: .semibold))
                     .foregroundStyle(self.theme.palette.primaryText)
                 if !description.isEmpty {
-                    Text(description)
+                    Text(description.fluidLocalized)
                         .font(.fluidSystem(size: 11))
                         .foregroundStyle(self.theme.palette.secondaryText)
                         .lineLimit(2)
@@ -962,7 +962,7 @@ extension AIEnhancementSettingsView {
         let providerName = self.viewModel.providerDisplayName(for: providerID)
         let configuredModel = configuration.modelName.trimmingCharacters(in: .whitespacesAndNewlines)
         let selectedModel = configuredModel.isEmpty ? self.viewModel.selectedModel(for: providerID) : configuredModel
-        let summary = selectedModel.isEmpty ? providerName : "\(providerName) - \(ModelDisplayName.forID(selectedModel))"
+        let summary = selectedModel.isEmpty ? providerName : String.fluidLocalizedFormat("%@ - %@", String(describing: providerName), String(describing: ModelDisplayName.forID(selectedModel)))
 
         return PromptCardModelPicker(
             summary: summary,
@@ -1011,7 +1011,7 @@ extension AIEnhancementSettingsView {
             HStack(spacing: 7) {
                 Image(systemName: self.modeSymbol(mode))
                     .font(.fluidSystem(size: 11, weight: .semibold))
-                Text(self.friendlyModeName(mode))
+                Text(self.friendlyModeName(mode).fluidLocalized)
                     .font(.fluidSystem(size: 12, weight: .semibold))
             }
             .foregroundStyle(isSelected ? tone : (isHovering ? self.theme.palette.primaryText : self.theme.palette.secondaryText))
@@ -1065,7 +1065,7 @@ extension AIEnhancementSettingsView {
                             self.builtInStyleCard(
                                 title: SettingsStore.DictationModeLabels.smart,
                                 symbol: "sparkles",
-                                subtitle: "On-device · \(assignments.modelPicker.map { ModelDisplayName.forID($0.selectedModel) } ?? "Fluid Intelligence")",
+                                subtitle: String.fluidLocalizedFormat("On-device · %@", assignments.modelPicker.map { ModelDisplayName.forID($0.selectedModel) } ?? "Fluid Intelligence"),
                                 detail: "Built-in style",
                                 assignments: assignments,
                                 isEnabled: true,
@@ -1125,9 +1125,9 @@ extension AIEnhancementSettingsView {
                             Text("Where custom styles apply")
                                 .font(self.theme.typography.bodyStrong)
                             self.promptRoutingScopeRow(mode: mode)
-                            Text(isSelectedAppsOnly
+                            Text((isSelectedAppsOnly
                                 ? "Custom styles run only in the apps listed below. Other apps use the built-in prompt for the selected mode."
-                                : "Your chosen custom style can run in any app. Add an app rule below to use a different style there.")
+                                : "Your chosen custom style can run in any app. Add an app rule below to use a different style there.").fluidLocalized)
                                 .font(.fluidSystem(.caption))
                                 .foregroundStyle(self.theme.palette.secondaryText)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -1145,7 +1145,7 @@ extension AIEnhancementSettingsView {
                             }
                             let ruleCount = self.viewModel.appBindings(for: mode).count
                             if ruleCount > 0 {
-                                Text("\(ruleCount) app \(ruleCount == 1 ? "rule" : "rules")")
+                                Text(String.fluidLocalizedFormat(ruleCount == 1 ? "%lld app rule" : "%lld app rules", ruleCount))
                                     .font(.fluidSystem(.caption))
                                     .foregroundStyle(self.theme.palette.secondaryText)
                             }
@@ -1182,13 +1182,13 @@ extension AIEnhancementSettingsView {
                     .frame(width: 24, height: 24)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
+                    Text(title.fluidLocalized)
                         .font(.fluidSystem(size: 14, weight: .semibold))
                         .foregroundStyle(self.theme.palette.primaryText)
-                    Text(subtitle)
+                    Text(subtitle.fluidLocalized)
                         .font(self.theme.typography.bodySmall)
                         .foregroundStyle(self.theme.palette.secondaryText)
-                    Text(detail)
+                    Text(detail.fluidLocalized)
                         .font(self.theme.typography.bodySmall)
                         .foregroundStyle(assignments.isReady ? self.theme.palette.secondaryText : self.theme.palette.warning)
                 }
@@ -1196,7 +1196,7 @@ extension AIEnhancementSettingsView {
             }
             Spacer(minLength: 0)
             VStack(alignment: .trailing, spacing: 6) {
-                Button(action.title, action: action.perform)
+                Button(action.title.fluidLocalized, action: action.perform)
                     .fluidGlassAction()
                     .fixedSize()
                     .disabled(!isEnabled)
@@ -1224,8 +1224,8 @@ extension AIEnhancementSettingsView {
         guard let picker = assignments.modelPicker, !picker.providerName.isEmpty else {
             return "External provider required"
         }
-        guard assignments.isReady else { return "\(picker.providerName) · Setup required" }
-        return "\(picker.providerName) · \(ModelDisplayName.forID(picker.selectedModel))"
+        guard assignments.isReady else { return String.fluidLocalizedFormat("%@ · Setup required", String(describing: picker.providerName)) }
+        return String.fluidLocalizedFormat("%@ · %@", String(describing: picker.providerName), String(describing: ModelDisplayName.forID(picker.selectedModel)))
     }
 
     private func promptModeHintRow(mode: SettingsStore.PromptMode) -> some View {
@@ -1280,7 +1280,7 @@ extension AIEnhancementSettingsView {
                 Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
                     .font(.fluidSystem(size: 17))
                     .foregroundStyle(isSelected ? tone : self.theme.palette.secondaryText)
-                Text(title)
+                Text(title.fluidLocalized)
                     .font(self.theme.typography.bodySmall)
                     .foregroundStyle(isHovering ? self.theme.palette.primaryText : self.theme.palette.secondaryText)
             }
@@ -1302,11 +1302,9 @@ extension AIEnhancementSettingsView {
                 .foregroundStyle(self.theme.palette.accent)
                 .frame(width: 18, height: 18)
 
-            Text(
-                mode.normalized == .dictate
+            Text((mode.normalized == .dictate
                     ? "No default enhancement. Add app overrides to use prompts in selected apps."
-                    : "Default edit stays built-in. App overrides can use custom prompts."
-            )
+                    : "Default edit stays built-in. App overrides can use custom prompts.").fluidLocalized)
             .font(.fluidSystem(.caption2))
             .foregroundStyle(self.theme.palette.secondaryText)
             .lineLimit(1)
@@ -1366,7 +1364,7 @@ extension AIEnhancementSettingsView {
 
                     Picker("", selection: self.editModeProviderBinding) {
                         ForEach(verified) { provider in
-                            Text(provider.name).tag(provider.id)
+                            Text(provider.name.fluidLocalized).tag(provider.id)
                         }
                     }
                     .pickerStyle(.menu)
@@ -1433,7 +1431,7 @@ extension AIEnhancementSettingsView {
                         Text("No unassigned running apps")
                     } else {
                         ForEach(appTargets) { target in
-                            Button(self.appBindingTargetMenuTitle(target)) {
+                            Button(self.appBindingTargetMenuTitle(target).fluidLocalized) {
                                 self.viewModel.addAppPromptBinding(
                                     for: mode,
                                     appBundleID: target.bundleID,
@@ -1491,11 +1489,11 @@ extension AIEnhancementSettingsView {
                     .frame(width: 34, height: 34)
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(binding.appName)
+                    Text(binding.appName.fluidLocalized)
                         .font(.fluidSystem(size: 14, weight: .semibold))
                         .foregroundStyle(self.theme.palette.primaryText)
                         .lineLimit(1)
-                    Text(binding.appBundleID)
+                    Text(binding.appBundleID.fluidLocalized)
                         .font(.fluidSystem(.caption2))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -1506,7 +1504,7 @@ extension AIEnhancementSettingsView {
 
                 HStack(spacing: 8) {
                     Menu {
-                        Button(SettingsStore.DictationModeLabels.externalDefault) {
+                        Button(SettingsStore.DictationModeLabels.externalDefault.fluidLocalized) {
                             self.viewModel.setPromptID(nil, for: binding)
                         }
 
@@ -1519,12 +1517,12 @@ extension AIEnhancementSettingsView {
                         if !modeProfiles.isEmpty {
                             Divider()
                             ForEach(modeProfiles) { profile in
-                                Button(profile.name.isEmpty ? "Untitled Prompt" : profile.name) {
+                                Button((profile.name.isEmpty ? "Untitled Prompt" : profile.name).fluidLocalized) {
                                     self.viewModel.setPromptID(profile.id, for: binding)
                                 }
                             }
                         }
-                    } label: { Text(self.viewModel.promptName(for: mode, promptID: binding.promptID)) }
+                    } label: { Text(self.viewModel.promptName(for: mode, promptID: binding.promptID).fluidLocalized) }
                         .fluidDropdownStyle()
                         .frame(width: 224)
                         .buttonStyle(.plain)
@@ -1737,7 +1735,7 @@ extension AIEnhancementSettingsView {
         if target.name.caseInsensitiveCompare(target.bundleID) == .orderedSame {
             return target.bundleID
         }
-        return "\(target.name) (\(target.bundleID))"
+        return String.fluidLocalizedFormat("%@ (%@)", String(describing: target.name), String(describing: target.bundleID))
     }
 
     private func modeSymbol(_ mode: SettingsStore.PromptMode) -> String {
@@ -1767,7 +1765,7 @@ extension AIEnhancementSettingsView {
                             Text({
                                 switch mode {
                                 case let .defaultPrompt(promptMode): return "Default \(self.friendlyModeName(promptMode)) Prompt"
-                                case let .newPrompt(prefillMode): return "New \(self.friendlyModeName(prefillMode)) Prompt"
+                                case let .newPrompt(prefillMode): return "New \( self.friendlyModeName(prefillMode)) Prompt"
                                 case .edit: return "Edit Prompt"
                                 case .privateAI: return PrivateAIProviderFeature.displayName
                                 }
@@ -1840,7 +1838,7 @@ extension AIEnhancementSettingsView {
                                 .font(.fluidSystem(.caption2))
                                 .foregroundStyle(.secondary)
 
-                            Text(SettingsStore.contextTemplateText())
+                            Text(SettingsStore.contextTemplateText().fluidLocalized)
                                 .font(.fluidSystem(.caption2, design: .monospaced))
                                 .padding(8)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -1880,7 +1878,7 @@ extension AIEnhancementSettingsView {
                                     }
                                 }
                             )) {
-                                Text("Test prompt · \(hotkeyDisplay)")
+                                Text("Test prompt · \( hotkeyDisplay)")
                                     .font(.fluidSystem(.caption))
                             }
                             .toggleStyle(.switch)
@@ -1909,7 +1907,7 @@ extension AIEnhancementSettingsView {
                                 }
 
                                 if !self.promptTest.lastError.isEmpty {
-                                    Text(self.promptTest.lastError)
+                                    Text(self.promptTest.lastError.fluidLocalized)
                                         .font(.fluidSystem(.caption2))
                                         .foregroundStyle(.red)
                                         .textSelection(.enabled)

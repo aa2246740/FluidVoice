@@ -117,7 +117,7 @@ struct FeedbackView: View {
 
     private var messageField: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.sm) {
-            Text(self.category.prompt)
+            Text(self.category.prompt.fluidLocalized)
                 .font(self.theme.typography.bodyStrong)
                 .foregroundStyle(self.theme.palette.primaryText)
 
@@ -128,9 +128,9 @@ struct FeedbackView: View {
                     .focused(self.$messageFocused)
                     .padding(self.theme.metrics.spacing.sm)
                     .frame(minHeight: 168, maxHeight: 240)
-                    .accessibilityLabel(self.category.prompt)
+                    .accessibilityLabel(self.category.prompt.fluidLocalized)
                 if self.message.isEmpty {
-                    Text(self.category.hint)
+                    Text(self.category.hint.fluidLocalized)
                         .font(self.theme.typography.body)
                         .foregroundStyle(self.theme.palette.tertiaryText)
                         .padding(.horizontal, self.theme.metrics.spacing.md + 1)
@@ -141,7 +141,7 @@ struct FeedbackView: View {
             .background(self.fieldSurface(focused: self.messageFocused))
 
             HStack(alignment: .firstTextBaseline) {
-                Text(self.overLimit ? "Please shorten your message before sending." : "Leave out passwords and private information.")
+                Text((self.overLimit ? "Please shorten your message before sending." : "Leave out passwords and private information.").fluidLocalized)
                     .foregroundStyle(self.overLimit ? self.theme.palette.warning : self.theme.palette.tertiaryText)
                 Spacer(minLength: self.theme.metrics.spacing.sm)
                 if self.nearLimit {
@@ -194,7 +194,7 @@ struct FeedbackView: View {
             .toggleStyle(.switch)
             .controlSize(.small)
             if self.includeDetails {
-                Text(FeedbackSubmission.appDetails)
+                Text(FeedbackSubmission.appDetails.fluidLocalized)
                     .font(self.theme.typography.codeCaption)
                     .foregroundStyle(self.theme.palette.secondaryText)
                     .textSelection(.enabled)
@@ -223,7 +223,7 @@ struct FeedbackView: View {
                 .foregroundStyle(self.theme.palette.warning)
                 .fixedSize(horizontal: false, vertical: true)
         } else {
-            Text(self.sending ? "Sending…" : "Goes straight to the FluidVoice team.")
+            Text((self.sending ? "Sending…" : "Goes straight to the FluidVoice team.").fluidLocalized)
                 .font(self.theme.typography.caption)
                 .foregroundStyle(self.theme.palette.tertiaryText)
         }
@@ -233,7 +233,7 @@ struct FeedbackView: View {
         Button { Task { await self.submit() } } label: {
             HStack(spacing: self.theme.metrics.spacing.sm) {
                 if self.sending { ProgressView().controlSize(.small) }
-                Text(self.error == nil ? "Send feedback" : "Try again")
+                Text((self.error == nil ? "Send feedback" : "Try again").fluidLocalized)
             }
         }
         .fluidGlassAction(prominent: true)
@@ -313,7 +313,7 @@ struct FeedbackView: View {
         do {
             try await FeedbackClient().send(submission)
             self.sent = true
-            self.message = ""
+            self.message = "".fluidLocalized
             self.email = ""
             self.includeDetails = false
         } catch {

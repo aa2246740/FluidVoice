@@ -985,7 +985,7 @@ final class TypingService {
         let utf16Array = Array(text.utf16)
         self.log("[TypingService] Converting \(text.count) characters to CGEvents (UTF16 count \(utf16Array.count))")
 
-        return self.postUnicodeChunks(utf16Array, destinationDescription: "PID \(targetPID)") { event in
+        return self.postUnicodeChunks(utf16Array, destinationDescription: String.fluidLocalizedFormat("PID %@", String(describing: targetPID))) { event in
             event.postToPid(targetPID)
         }
     }

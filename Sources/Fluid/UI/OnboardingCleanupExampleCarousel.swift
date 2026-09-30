@@ -79,7 +79,7 @@ struct OnboardingCleanupExampleCarousel: View {
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel("Show \(example.title)")
-                            .accessibilityValue(self.selectedID == example.id ? "Current page" : "")
+                            .accessibilityValue((self.selectedID == example.id ? "Current page" : "").fluidLocalized)
                         }
                     }
                     self.arrow(forward: true)
@@ -92,7 +92,7 @@ struct OnboardingCleanupExampleCarousel: View {
     private func card(_ example: Example, compact: Bool, contentWidth: CGFloat, visibleWidth: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Group {
-                Text(example.title)
+                Text(example.title.fluidLocalized)
                     .font(.fluidSystem(size: 25, weight: .regular, design: .serif))
                     .tracking(-0.5)
                     .foregroundStyle(Color(red: 0.96, green: 0.95, blue: 0.91))
@@ -131,11 +131,11 @@ struct OnboardingCleanupExampleCarousel: View {
 
     private func mode(title: String, text: String, enhanced: Bool) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(.fluidSystem(size: 18, weight: .regular, design: .serif))
                 .tracking(-0.5)
                 .foregroundStyle(enhanced ? Color(red: 0.48, green: 0.72, blue: 1) : .white.opacity(0.62))
-            Text(text)
+            Text(text.fluidLocalized)
                 .font(.fluidSystem(size: 13, weight: .regular))
                 .foregroundStyle(.white.opacity(0.9))
                 .lineSpacing(4)
@@ -164,6 +164,6 @@ struct OnboardingCleanupExampleCarousel: View {
                 .contentShape(Circle())
         }
         .fluidGlassAction(circular: true)
-        .accessibilityLabel(forward ? "Next example" : "Previous example")
+        .accessibilityLabel((forward ? "Next example" : "Previous example").fluidLocalized)
     }
 }

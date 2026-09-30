@@ -2079,7 +2079,7 @@ final class MeetingProcessingPipeline: MeetingProcessingControlling {
                 accumulator.addResolvedSpeaker(
                     id: speakerID,
                     key: "remote-cluster:\(speakerID.uuidString)",
-                    displayName: "Speaker \(accumulator.nextRemoteSpeaker)",
+                    displayName: String.fluidLocalizedFormat("Speaker %@", String(describing: accumulator.nextRemoteSpeaker)),
                     clusterID: firstLabel,
                     trackKind: .applicationAudio,
                     isLocalUser: false
@@ -2720,7 +2720,7 @@ final class MeetingProcessingPipeline: MeetingProcessingControlling {
             for turn in stagedTurns {
                 let isNewSpeaker = !accumulator.speakers.contains { $0.id == turn.clusterID }
                 if isNewSpeaker {
-                    let displayName = "Room Speaker \(accumulator.nextMicrophoneSpeaker)"
+                    let displayName = String.fluidLocalizedFormat("Room Speaker %@", String(describing: accumulator.nextMicrophoneSpeaker))
                     accumulator.nextMicrophoneSpeaker += 1
                     accumulator.addResolvedSpeaker(
                         id: turn.clusterID,
@@ -2790,7 +2790,7 @@ final class MeetingProcessingPipeline: MeetingProcessingControlling {
                     accumulator.addResolvedSpeaker(
                         id: turn.clusterID,
                         key: "microphone-speaker:\(turn.clusterID.uuidString)",
-                        displayName: "Microphone Speaker \(ordinal)",
+                        displayName: String.fluidLocalizedFormat("Microphone Speaker %@", String(describing: ordinal)),
                         clusterID: turn.clusterLabel,
                         trackKind: .microphone,
                         isLocalUser: false
@@ -3163,7 +3163,7 @@ nonisolated enum MeetingProcessingError: LocalizedError {
         case .modelUnavailable:
             return "The selected speech model is not ready."
         case let .providerDoesNotSupportLanguage(languageCode):
-            return "The selected speech model cannot transcribe meeting language \(languageCode)."
+            return String.fluidLocalizedFormat("The selected speech model cannot transcribe meeting language %@.", String(describing: languageCode))
         case .audioUnreadable:
             return "A finalized meeting audio chunk could not be read."
         case .noSpeech:

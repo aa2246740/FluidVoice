@@ -85,7 +85,7 @@ struct SpokenSendIndicatorView: View {
         Image(systemName: name)
             .font(.fluidSystem(size: max(6, self.size * 0.46), weight: .semibold))
             .foregroundStyle(color)
-            .accessibilityLabel(accessibilityLabel)
+            .accessibilityLabel(accessibilityLabel.fluidLocalized)
     }
 }
 
@@ -403,13 +403,13 @@ struct ShimmerText: View {
     var font: Font = .fluidSystem(size: 9, weight: .medium)
 
     var body: some View {
-        Text(self.text)
+        Text(self.text.fluidLocalized)
             .font(self.font)
             .foregroundStyle(self.color.opacity(0.35))
             .overlay {
                 CompositorShimmerSweep(duration: 0.72, peakOpacity: 0.9)
                     .mask {
-                        Text(self.text)
+                        Text(self.text.fluidLocalized)
                             .font(self.font)
                     }
             }
@@ -788,7 +788,7 @@ struct NotchExpandedView: View {
             guard isEnabled else { return }
             action()
         }) {
-            Text(title)
+            Text(title.fluidLocalized)
                 .font(.fluidSystem(size: 9, weight: isSelected ? .semibold : .medium))
                 .foregroundStyle(.white.opacity(isSelected ? 0.96 : 0.84))
                 .lineLimit(1)
@@ -912,9 +912,9 @@ struct NotchExpandedView: View {
     private var promptSelectorControl: some View {
         if self.presentationPolicy.showsPromptSelector {
             HStack(spacing: 3) {
-                Text(self.compactPromptLabel)
-                    .help(self.selectedPromptLabel)
-                    .accessibilityLabel(self.selectedPromptLabel)
+                Text(self.compactPromptLabel.fluidLocalized)
+                    .help(self.selectedPromptLabel.fluidLocalized)
+                    .accessibilityLabel(self.selectedPromptLabel.fluidLocalized)
                     .font(.fluidSystem(size: 9, weight: .medium))
                     .foregroundStyle(self.isHoveringPromptChip ? .white.opacity(0.94) : .white.opacity(0.86))
                     .lineLimit(1)
@@ -1037,7 +1037,7 @@ struct NotchExpandedView: View {
 
             if self.contentState.isTextDeliveryFailureVisible && !self.contentState.isProcessing {
                 HStack(spacing: 6) {
-                    Text(self.contentState.textDeliveryFailureMessage)
+                    Text(self.contentState.textDeliveryFailureMessage.fluidLocalized)
                         .font(.fluidSystem(size: 10, weight: .semibold))
                         .foregroundStyle(Color.orange.opacity(0.9))
                         .lineLimit(1)
@@ -1083,7 +1083,7 @@ struct NotchExpandedView: View {
                 .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else if self.contentState.isAIProcessingFailureVisible && !self.contentState.isProcessing {
                 HStack(spacing: 6) {
-                    Text(self.contentState.aiProcessingFailureMessage)
+                    Text(self.contentState.aiProcessingFailureMessage.fluidLocalized)
                         .font(.fluidSystem(size: 10, weight: .semibold))
                         .foregroundStyle(
                             self.contentState.canRetryAIProcessingFailure
@@ -1127,7 +1127,7 @@ struct NotchExpandedView: View {
                 if !previewText.isEmpty {
                     ScrollViewReader { proxy in
                         ScrollView(.vertical, showsIndicators: false) {
-                            Text(previewText)
+                            Text(previewText.fluidLocalized)
                                 .font(.fluidSystem(size: 10, weight: .medium))
                                 .foregroundStyle(.white.opacity(0.75))
                                 .multilineTextAlignment(.leading)
@@ -1392,7 +1392,7 @@ struct NotchCompactBottomView: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            Text(self.compactPreviewText)
+            Text(self.compactPreviewText.fluidLocalized)
                 .font(.fluidSystem(size: 9, weight: .medium))
                 .foregroundStyle(.white.opacity(0.82))
                 .lineLimit(1)
@@ -1561,10 +1561,10 @@ struct NotchCommandOutputExpandedView: View {
                                         Image(systemName: "checkmark")
                                             .font(.fluidSystem(.caption))
                                     }
-                                    Text(chat.title)
+                                    Text(chat.title.fluidLocalized)
                                         .lineLimit(1)
                                     Spacer()
-                                    Text(chat.relativeTimeString)
+                                    Text(chat.relativeTimeString.fluidLocalized)
                                         .font(.fluidSystem(.caption))
                                         .foregroundStyle(.secondary)
                                 }
@@ -1645,7 +1645,7 @@ struct NotchCommandOutputExpandedView: View {
                 if !previewText.isEmpty {
                     ScrollViewReader { proxy in
                         ScrollView(.vertical, showsIndicators: false) {
-                            Text(previewText)
+                            Text(previewText.fluidLocalized)
                                 .font(.fluidSystem(size: 11, weight: .medium))
                                 .foregroundStyle(.white.opacity(0.75))
                                 .multilineTextAlignment(.leading)
@@ -1744,7 +1744,7 @@ struct NotchCommandOutputExpandedView: View {
             switch message.role {
             case .user:
                 Spacer()
-                Text(message.content)
+                Text(message.content.fluidLocalized)
                     .font(.fluidSystem(size: 11))
                     .foregroundStyle(.white.opacity(0.9))
                     .padding(.horizontal, 10)
@@ -1755,7 +1755,7 @@ struct NotchCommandOutputExpandedView: View {
                     .textSelection(.enabled)
 
             case .assistant:
-                Text(message.content)
+                Text(message.content.fluidLocalized)
                     .font(.fluidSystem(size: 11))
                     .foregroundStyle(.white.opacity(0.85))
                     .padding(.horizontal, 10)
@@ -1771,7 +1771,7 @@ struct NotchCommandOutputExpandedView: View {
                     Circle()
                         .fill(self.commandRed.opacity(0.6))
                         .frame(width: 4, height: 4)
-                    Text(message.content)
+                    Text(message.content.fluidLocalized)
                         .font(.fluidSystem(size: 10, weight: .medium))
                         .foregroundStyle(.white.opacity(0.5))
                 }
@@ -1783,7 +1783,7 @@ struct NotchCommandOutputExpandedView: View {
 
     private var streamingMessageView: some View {
         HStack(alignment: .top) {
-            Text(self.contentState.commandStreamingText)
+            Text(self.contentState.commandStreamingText.fluidLocalized)
                 .font(.fluidSystem(size: 11))
                 .foregroundStyle(.white.opacity(0.85))
                 .padding(.horizontal, 10)

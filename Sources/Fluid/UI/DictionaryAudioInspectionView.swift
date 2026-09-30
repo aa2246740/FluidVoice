@@ -83,7 +83,7 @@ struct DictionaryAudioInspectionView: View {
                 ForEach(self.enrollments.indices, id: \.self) { index in
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Recording \(index + 1)").font(self.theme.typography.caption)
-                        Text(self.comparing ? "…" : self.scoreText(index))
+                        Text((self.comparing ? "…" : self.scoreText(index)).fluidLocalized)
                             .font(self.theme.typography.bodyStrong).monospacedDigit()
                             .foregroundStyle(self.theme.palette.accent)
                     }
@@ -134,7 +134,7 @@ struct DictionaryAudioInspectionView: View {
                 .font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
             if let error = self.playback.error {
-                Text(error).font(self.theme.typography.caption).foregroundStyle(.red)
+                Text(error.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.red)
             }
         }
         .disabled(self.recordingBusy)
@@ -187,11 +187,11 @@ struct DictionaryAudioInspectionView: View {
             HStack {
                 Text("Recording \(index + 1)").font(self.theme.typography.bodyStrong)
                 Spacer()
-                Text(self.comparing ? "…" : self.scoreText(index)).monospacedDigit()
+                Text((self.comparing ? "…" : self.scoreText(index)).fluidLocalized).monospacedDigit()
                     .font(self.theme.typography.bodyStrong).foregroundStyle(self.theme.palette.accent)
             }
             if let audio = self.references[index] {
-                Text(String(format: "Full %.2f s · trained section %.2f–%.2f s", audio.duration, audio.selectedStart, audio.selectedEnd))
+                Text(String(format: "Full %.2f s · trained section %.2f–%.2f s", audio.duration, audio.selectedStart, audio.selectedEnd).fluidLocalized)
                     .font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText)
                 FluidGlassControlGroup {
                     HStack(spacing: self.theme.metrics.spacing.sm) {
@@ -206,7 +206,7 @@ struct DictionaryAudioInspectionView: View {
                 }
                 DisclosureGroup("Inspect this training cut") {
                     DictionaryAudioCutView(
-                        title: "Training recording \(index + 1)",
+                        title: String.fluidLocalizedFormat("Training recording %@", String(describing: index + 1)),
                         audio: audio,
                         cut: Binding(
                             get: { self.referenceCuts[index] ?? .init(start: audio.selectedStart, end: min(audio.duration, audio.selectedEnd)) },
@@ -224,9 +224,9 @@ struct DictionaryAudioInspectionView: View {
                     .padding(.top, self.theme.metrics.spacing.sm)
                 }
             } else {
-                Text(self.loadingReferences && self.enrollments[index].inspectionID != nil ? "Loading audio…" : self.loadErrors.contains(index)
+                Text((self.loadingReferences && self.enrollments[index].inspectionID != nil ? "Loading audio…" : self.loadErrors.contains(index)
                     ? "Saved audio couldn't be loaded. Its stored embedding is still compared."
-                    : "Audio wasn't saved for this older example. Record a new example to hear it; its stored embedding is still compared.")
+                    : "Audio wasn't saved for this older example. Record a new example to hear it; its stored embedding is still compared.").fluidLocalized)
                     .font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -254,9 +254,9 @@ private struct DictionaryAudioCutView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: self.theme.metrics.spacing.sm) {
             HStack {
-                Text(self.title).font(self.theme.typography.bodyStrong)
+                Text(self.title.fluidLocalized).font(self.theme.typography.bodyStrong)
                 Spacer()
-                Text(String(format: "%.2f s", self.audio.duration)).font(self.theme.typography.caption).monospacedDigit()
+                Text(String(format: "%.2f s", self.audio.duration).fluidLocalized).font(self.theme.typography.caption).monospacedDigit()
             }
             Canvas { context, size in
                 let duration = max(0.08, self.audio.duration)
@@ -276,17 +276,17 @@ private struct DictionaryAudioCutView: View {
             self.boundarySlider("End", value: Binding(get: { self.cut.end }, set: { self.cut.end = max($0, self.cut.start + 0.08) }))
             FluidGlassControlGroup {
                 HStack(spacing: self.theme.metrics.spacing.sm) {
-                    Button(self.playback.playing == self.playbackID + "full" ? "Stop" : "Play full") {
+                    Button((self.playback.playing == self.playbackID + "full" ? "Stop" : "Play full").fluidLocalized) {
                         self.playback.play(self.audio, cut: nil, id: self.playbackID + "full")
                     }.fluidGlassAction()
-                    Button(self.playback.playing == self.playbackID + "cut" ? "Stop" : "Play cut") {
+                    Button((self.playback.playing == self.playbackID + "cut" ? "Stop" : "Play cut").fluidLocalized) {
                         self.playback.play(self.audio, cut: self.cut, id: self.playbackID + "cut")
                     }.fluidGlassAction()
                     Button("Reset") { self.cut = self.initialCut }.fluidGlassAction()
                 }
             }
             if let metrics = self.metrics {
-                Text(String(format: "Quiet in cut: %.2f s at start · %.2f s at end", metrics.leadingQuiet, metrics.trailingQuiet))
+                Text(String(format: "Quiet in cut: %.2f s at start · %.2f s at end", metrics.leadingQuiet, metrics.trailingQuiet).fluidLocalized)
                     .font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).fixedSize(horizontal: false, vertical: true)
                 Button("Try quiet-edge trim") {
                     if let suggested = metrics.suggested { self.cut = suggested }
@@ -297,7 +297,7 @@ private struct DictionaryAudioCutView: View {
             Text("Quiet means below −45 dBFS; faint speech can also be quiet. No noise removal is applied.")
                 .font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).fixedSize(horizontal: false, vertical: true)
             if self.audio.paddedDuration > self.audio.duration + 0.001 {
-                Text(String(format: "Model input added %.2f s of trailing padding. Playback uses captured audio only.", self.audio.paddedDuration - self.audio.duration))
+                Text(String(format: "Model input added %.2f s of trailing padding. Playback uses captured audio only.", self.audio.paddedDuration - self.audio.duration).fluidLocalized)
                     .font(self.theme.typography.caption).foregroundStyle(self.theme.palette.secondaryText).fixedSize(horizontal: false, vertical: true)
             }
             let heard = self.audio.words.filter { $0.start < self.cut.end && $0.end > self.cut.start }.map(\.text).joined(separator: " ")
@@ -320,10 +320,10 @@ private struct DictionaryAudioCutView: View {
 
     private func boundarySlider(_ title: String, value: Binding<Double>) -> some View {
         HStack(spacing: self.theme.metrics.spacing.sm) {
-            Text(title).frame(width: 34, alignment: .leading)
+            Text(title.fluidLocalized).frame(width: 34, alignment: .leading)
             Slider(value: value, in: 0...max(0.08, self.audio.duration), step: 0.08)
                 .accessibilityLabel("\(self.title) \(title.lowercased())")
-            Text(String(format: "%.2f s", value.wrappedValue)).monospacedDigit().frame(width: 56, alignment: .trailing)
+            Text(String(format: "%.2f s", value.wrappedValue).fluidLocalized).monospacedDigit().frame(width: 56, alignment: .trailing)
         }
         .font(self.theme.typography.caption)
     }

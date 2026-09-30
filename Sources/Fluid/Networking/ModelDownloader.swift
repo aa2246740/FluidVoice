@@ -200,7 +200,7 @@ final class HuggingFaceModelDownloader {
                     throw NSError(
                         domain: "HF",
                         code: -5,
-                        userInfo: [NSLocalizedDescriptionKey: "Downloaded file size mismatch for \(rel). Please try again."]
+                        userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("Downloaded file size mismatch for %@. Please try again.", String(describing: rel))]
                     )
                 }
             }
@@ -425,7 +425,7 @@ final class HuggingFaceModelDownloader {
                     code: -5,
                     userInfo: [
                         NSLocalizedDescriptionKey:
-                            "Could not download \(relativePath): the received file size did not match the server response.",
+                            String.fluidLocalizedFormat("Could not download %@: the received file size did not match the server response.", String(describing: relativePath)),
                     ]
                 )
             }
@@ -438,7 +438,7 @@ final class HuggingFaceModelDownloader {
             if lowered.contains("text/html") || lowered.contains("text/xml") || lowered.contains("application/xml") {
                 throw Self.invalidContentError(
                     relativePath: relativePath,
-                    detail: "the server returned a markup page (Content-Type: \(contentType))"
+                    detail: String.fluidLocalizedFormat("the server returned a markup page (Content-Type: %@)", String(describing: contentType))
                 )
             }
         }
@@ -557,7 +557,7 @@ final class HuggingFaceModelDownloader {
     private static func invalidContentError(relativePath: String, detail: String) -> NSError {
         NSError(domain: "HF", code: -3, userInfo: [
             NSLocalizedDescriptionKey:
-                "Could not download \(relativePath): \(detail). A network proxy or firewall may be blocking model downloads.",
+                String.fluidLocalizedFormat("Could not download %@: %@. A network proxy or firewall may be blocking model downloads.", String(describing: relativePath), String(describing: detail)),
         ])
     }
 
@@ -614,7 +614,7 @@ final class HuggingFaceModelDownloader {
         if b >= gb { return String(format: "%.2f GB", b / gb) }
         if b >= mb { return String(format: "%.2f MB", b / mb) }
         if b >= kb { return String(format: "%.2f KB", b / kb) }
-        return "\(bytes) B"
+        return String.fluidLocalizedFormat("%@ B", String(describing: bytes))
     }
 }
 
@@ -816,7 +816,7 @@ extension HuggingFaceModelDownloader {
             throw NSError(
                 domain: "ModelDL",
                 code: -2,
-                userInfo: [NSLocalizedDescriptionKey: "Vocabulary file not found at \(vocabPath.path)"]
+                userInfo: [NSLocalizedDescriptionKey: String.fluidLocalizedFormat("Vocabulary file not found at %@", String(describing: vocabPath.path))]
             )
         }
         let vocabData = try Data(contentsOf: vocabPath)

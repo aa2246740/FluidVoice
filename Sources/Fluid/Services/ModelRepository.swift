@@ -314,7 +314,7 @@ final class ModelRepository {
                 "fetchModels: Failed to parse JSON for '\(providerID)'. Response preview: \(bodyPreview)",
                 source: "ModelRepository"
             )
-            throw FetchError.invalidResponse(details: "Response is not valid JSON. Check if the base URL '\(baseURL)' is correct.")
+            throw FetchError.invalidResponse(details: String.fluidLocalizedFormat("Response is not valid JSON. Check if the base URL '%@' is correct.", String(describing: baseURL)))
         }
 
         // Try OpenAI/Groq/Cerebras format first
@@ -349,7 +349,7 @@ final class ModelRepository {
             "fetchModels: Unknown response format for '\(providerID)'. Top-level keys: [\(topLevelKeys)]. Expected 'data' or 'models' array.",
             source: "ModelRepository"
         )
-        throw FetchError.invalidResponse(details: "Unknown response format. Top-level keys: [\(topLevelKeys)]. Expected 'data' or 'models'.")
+        throw FetchError.invalidResponse(details: String.fluidLocalizedFormat("Unknown response format. Top-level keys: [%@]. Expected 'data' or 'models'.", String(describing: topLevelKeys)))
     }
 
     private func rawHTTPErrorDetails(responseBody: String) -> String {
@@ -387,13 +387,13 @@ final class ModelRepository {
         var errorDescription: String? {
             switch self {
             case let .invalidURL(details):
-                return "Invalid API URL: \(details)"
+                return String.fluidLocalizedFormat("Invalid API URL: %@", String(describing: details))
             case let .httpError(code, details):
-                return "API error (HTTP \(code)): \(details)"
+                return String.fluidLocalizedFormat("API error (HTTP %@): %@", String(describing: code), String(describing: details))
             case let .invalidResponse(details):
-                return "Invalid response: \(details)"
+                return String.fluidLocalizedFormat("Invalid response: %@", String(describing: details))
             case let .networkError(details):
-                return "Network error: \(details)"
+                return String.fluidLocalizedFormat("Network error: %@", String(describing: details))
             }
         }
     }

@@ -316,7 +316,7 @@ nonisolated enum MeetingBackendEvidenceError: LocalizedError, Equatable {
         case let .backendMismatch(expected, actual):
             return "Evidence came from backend \"\(actual)\" but the plan selected \"\(expected)\"."
         case let .attemptMismatch(expected, actual):
-            return "Evidence carries attempt \(actual) but the plan is attempt \(expected)."
+            return String.fluidLocalizedFormat("Evidence carries attempt %@ but the plan is attempt %@.", String(describing: actual), String(describing: expected))
         case .emptyUnitID:
             return "A final text unit has an empty identifier."
         case let .duplicateUnitID(id):
@@ -349,19 +349,19 @@ nonisolated enum MeetingBackendEvidenceError: LocalizedError, Equatable {
         case let .invalidAmbiguity(unitID):
             return "Final text unit \"\(unitID)\" reports ambiguity without two distinct candidates."
         case let .invalidActivityTiming(index):
-            return "Speaker activity interval \(index) has non-finite or non-positive timing."
+            return String.fluidLocalizedFormat("Speaker activity interval %@ has non-finite or non-positive timing.", String(describing: index))
         case let .activityTokenOutOfScope(index):
             return "Speaker activity interval \(index) uses a token from an unplanned track."
         case let .activityEpochUnknown(index):
-            return "Speaker activity interval \(index) uses an epoch the manifest does not record."
+            return String.fluidLocalizedFormat("Speaker activity interval %@ uses an epoch the manifest does not record.", String(describing: index))
         case let .invalidActivityEpochOrdinal(index):
-            return "Speaker activity interval \(index) uses a negative analysis epoch ordinal."
+            return String.fluidLocalizedFormat("Speaker activity interval %@ uses a negative analysis epoch ordinal.", String(describing: index))
         case let .invalidActivityEpochGeneration(index):
-            return "Speaker activity interval \(index) uses a negative analysis epoch generation."
+            return String.fluidLocalizedFormat("Speaker activity interval %@ uses a negative analysis epoch generation.", String(describing: index))
         case let .emptyActivityTokenLabel(index):
-            return "Speaker activity interval \(index) uses an empty speaker-token label."
+            return String.fluidLocalizedFormat("Speaker activity interval %@ uses an empty speaker-token label.", String(describing: index))
         case let .activityOutsideEpoch(index):
-            return "Speaker activity interval \(index) lies outside its analysis epoch."
+            return String.fluidLocalizedFormat("Speaker activity interval %@ lies outside its analysis epoch.", String(describing: index))
         }
     }
 }

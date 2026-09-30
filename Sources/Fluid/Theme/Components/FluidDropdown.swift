@@ -131,7 +131,7 @@ struct FluidDropdown<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        Menu(content: self.content) { Text(self.title) }
+        Menu(content: self.content) { Text(self.title.fluidLocalized) }
             .fluidDropdownStyle()
             .frame(width: self.width)
     }

@@ -734,7 +734,7 @@ final class CommandModeService: ObservableObject {
                 return json
             }
             return """
-            {"success": \(self.success), "output": "\(self.output)", "exitCode": \(self.exitCode)}
+            {"successString.fluidLocalizedFormat(": %@, ", String(describing: self.success))output": "\(self.output)", "exitCode": \(self.exitCode)}
             """
         }
     }

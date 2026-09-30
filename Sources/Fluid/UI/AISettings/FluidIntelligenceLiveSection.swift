@@ -98,7 +98,7 @@ struct FluidIntelligenceLiveSection<Management: View>: View {
         .alert(self.verificationError == nil ? "Model verified" : "Verification failed", isPresented: self.$showsVerificationResult) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(self.verificationError ?? "\(self.verifiedModelName) is ready to use on your Mac.")
+            Text(self.verificationError ?? String.fluidLocalizedFormat("%@ is ready to use on your Mac.", self.verifiedModelName))
         }
         .sheet(isPresented: self.$showsManagement) {
             FluidManagementSheet(
@@ -129,14 +129,14 @@ struct FluidIntelligenceLiveSection<Management: View>: View {
         return VStack(alignment: .leading, spacing: 8) {
             Divider().overlay(self.theme.palette.cardBorder)
             if self.controller.privateAILoadState.isDownloading(model.id) {
-                Text(PrivateAIModelDownloadProgressText.detailText(for: self.controller.privateAILoadState.downloadProgress(for: model.id)))
+                Text(PrivateAIModelDownloadProgressText.detailText(for: self.controller.privateAILoadState.downloadProgress(for: model.id)).fluidLocalized)
                     .font(self.theme.typography.caption).lineLimit(2)
             } else if self.controller.privateAILoadState.isLoading(model.id) {
                 Text("Preparing model…").font(self.theme.typography.caption)
             } else if let failure = self.controller.privateAILoadState.failureMessage(for: model.id) {
-                Text(failure).font(self.theme.typography.caption).foregroundStyle(.red).lineLimit(2).help(failure)
+                Text(failure.fluidLocalized).font(self.theme.typography.caption).foregroundStyle(.red).lineLimit(2).help(failure.fluidLocalized)
             } else if active {
-                Text(inMemory ? "In memory" : "Not in memory · loads when you dictate")
+                Text((inMemory ? "In memory" : "Not in memory · loads when you dictate").fluidLocalized)
                     .font(self.theme.typography.caption)
                     .foregroundStyle(self.theme.palette.secondaryText)
             }
@@ -154,14 +154,14 @@ struct FluidIntelligenceLiveSection<Management: View>: View {
                             self.controller.previewModel(model.id)
                             self.controller.usePreviewModel(isInstalled: files.installed, onReady: {})
                         } label: {
-                            Text(files?.installed == false ? "Download" : "Activate")
+                            Text((files?.installed == false ? "Download" : "Activate").fluidLocalized)
                                 .font(self.theme.typography.bodyStrong)
                                 .frame(minWidth: 76, minHeight: 24)
                         }
                         .fluidGlassAction(prominent: true)
                         .disabled(self.controller.isBusy || files == nil || (files?.installed == false && !model.canDownload))
                         if files?.installed == false, let bytes = model.artifact.byteCount, bytes > 0 {
-                            Text(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file))
+                            Text(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file).fluidLocalized)
                                 .font(self.theme.typography.caption)
                                 .foregroundStyle(self.theme.palette.secondaryText)
                                 .accessibilityLabel("Download size: \(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file))")
