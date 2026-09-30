@@ -2575,6 +2575,26 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    /// App display language. `.system` follows macOS; explicit choices are written to the
+    /// `AppleLanguages` defaults key and take effect on the next launch.
+    enum AppLanguage: String, CaseIterable, Identifiable, Codable {
+        case system
+        case en
+        case zhHans = "zh-Hans"
+
+        var id: String {
+            self.rawValue
+        }
+
+        var displayName: String {
+            switch self {
+            case .system: return "System Default"
+            case .en: return "English"
+            case .zhHans: return "简体中文"
+            }
+        }
+    }
+
     enum TranscriptionStartSound: String, CaseIterable, Identifiable, Codable {
         case none
         case fluidSfx0 = "fluid_sfx_0"
@@ -2687,6 +2707,33 @@ final class SettingsStore: ObservableObject {
         set {
             objectWillChange.send()
             self.defaults.set(newValue.rawValue, forKey: Keys.transcriptionStartSound)
+        }
+    }
+
+    var appLanguage: AppLanguage {
+        get {
+            guard let raw = self.defaults.string(forKey: Keys.appLanguage),
+                  let option = AppLanguage(rawValue: raw)
+            else {
+                return .system
+            }
+            return option
+        }
+        set {
+            objectWillChange.send()
+            self.defaults.set(newValue.rawValue, forKey: Keys.appLanguage)
+            Self.applyAppleLanguages(newValue)
+        }
+    }
+
+    private static func applyAppleLanguages(_ language: AppLanguage) {
+        switch language {
+        case .system:
+            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+        case .en:
+            UserDefaults.standard.set(["en"], forKey: "AppleLanguages")
+        case .zhHans:
+            UserDefaults.standard.set(["zh-Hans"], forKey: "AppleLanguages")
         }
     }
 
@@ -5865,6 +5912,7 @@ private extension SettingsStore {
         static let accentColorOption = "AccentColorOption"
         static let themePreference = "ThemePreference"
         static let enableTranscriptionSounds = "EnableTranscriptionSounds"
+        static let appLanguage = "AppLanguage"
         static let transcriptionStartSound = "TranscriptionStartSound"
         static let transcriptionSoundVolume = "TranscriptionSoundVolume"
         static let pressAndHoldMode = "PressAndHoldMode"

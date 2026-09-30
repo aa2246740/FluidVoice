@@ -7461,6 +7461,16 @@
         }
       }
     },
+    "Choose the app display language. Restart FluidVoice to apply.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择应用显示语言，重启 FluidVoice 后生效。"
+          }
+        }
+      }
+    },
     "Choose the best local engine for your language.": {
       "localizations": {
         "zh-Hans": {
@@ -29781,6 +29791,16 @@
         }
       }
     },
+    "System Default": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随系统"
+          }
+        }
+      }
+    },
     "System Events": {
       "localizations": {
         "zh-Hans": {
@@ -37417,6 +37437,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "⚠️ 需要 8GB 以上内存，部分系统上可能不稳定。"
+          }
+        }
+      }
+    },
+    "简体中文": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "简体中文"
           }
         }
       }
