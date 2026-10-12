@@ -283,7 +283,15 @@ nonisolated struct MeetingEpochAudioMaterializer: MeetingEpochAudioMaterializing
               Int(format.channelCount) == observed.channelCount,
               Int64(file.length) == observed.frameCount
         else {
-            let detail = String.fluidLocalizedFormat("rate %@ vs %@; channels %@ vs %@; frames %@ vs %@", String(describing: format.sampleRate), String(describing: observed.sampleRate), String(describing: format.channelCount), String(describing: observed.channelCount), String(describing: file.length), String(describing: observed.frameCount))
+            let detail = String.fluidLocalizedFormat(
+                "rate %@ vs %@; channels %@ vs %@; frames %@ vs %@",
+                String(describing: format.sampleRate),
+                String(describing: observed.sampleRate),
+                String(describing: format.channelCount),
+                String(describing: observed.channelCount),
+                String(describing: file.length),
+                String(describing: observed.frameCount)
+            )
             throw MeetingEpochMaterializationError.decodedFactsChanged(spanID: span.id, detail: detail)
         }
 

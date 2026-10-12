@@ -1,0 +1,23 @@
+{
+  "core_files": [
+    "Sources/Fluid/Services/OnboardingAISetupController.swift",
+    "Sources/Fluid/Services/OnboardingPolishPractice.swift",
+    "Sources/Fluid/Services/OnboardingDictationOutputPolicy.swift",
+    "Sources/Fluid/Services/PrivateAIHardwareRecommendation.swift",
+    "Sources/Fluid/Services/CloudASR/CloudASRClient.swift",
+    "Sources/Fluid/Services/LogSanitizer.swift"
+  ],
+  "forbidden_core_imports": ["SwiftUI", "AppKit"],
+  "forbidden_core_types": ["AppDelegate", "AppServices", "SettingsStore", "FluidApp", "NotchOverlayManager"],
+  "temporary_flags": [
+    {
+      "key": "FLUIDVOICE_DISABLE_AEC3",
+      "symbol": "disableEnvironmentKey",
+      "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+      "owner": "@aa2246740",
+      "review_by": "2027-01-10",
+      "removal_condition": "Remove after direct AEC3 real-meeting validation confirms no fallback is needed; retain the audio recovery runbook."
+    }
+  ],
+  "minimum_dependency_release_age_days": 7
+}

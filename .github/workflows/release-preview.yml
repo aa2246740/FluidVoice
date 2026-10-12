@@ -1,0 +1,69 @@
+name: Release unsigned preview
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "New preview-v* tag; unsigned prerelease, never a notarized stable release"
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: release-preview
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    environment: preview
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Validate the release tag without shell interpolation
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          python3 - <<'PY'
+          import os,re,subprocess
+          if not re.fullmatch(r"preview-v[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?",os.environ["TAG"]):
+              raise SystemExit("Expected a preview-vMAJOR.MINOR.PATCH tag")
+          if subprocess.check_output(["git","ls-remote","--tags","origin","refs/tags/"+os.environ["TAG"]]):
+              raise SystemExit("Tag already exists; never attach a new build to an old tag")
+          PY
+      - name: Validate repository contracts and tool tests
+        run: |
+          python3 -m unittest discover -s Tests/Readiness -p 'test_*.py' -v
+          python3 tools/readiness/check.py
+          python3 tools/readiness/duplicates.py
+          python3 tools/readiness/standalone.py
+          sh Tests/run_history_persistence_tests.sh
+          sh Tests/run_log_privacy_tests.sh
+      - name: Strict lint
+        run: |
+          curl -fL https://github.com/realm/SwiftLint/releases/download/0.63.2/portable_swiftlint.zip -o "$RUNNER_TEMP/swiftlint.zip"
+          unzip -q "$RUNNER_TEMP/swiftlint.zip" -d "$RUNNER_TEMP/swiftlint"
+          "$RUNNER_TEMP/swiftlint/swiftlint" lint --strict --config .swiftlint.yml
+      - name: Build and test the exact preview commit
+        run: bash tools/readiness/native_ci.sh
+      - name: Create a draft prerelease with generated release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/git/refs" --method POST \
+            -f "ref=refs/tags/$TAG" -f "sha=$GITHUB_SHA" >/dev/null
+          gh release create "$TAG" --verify-tag --target "$GITHUB_SHA" --draft --prerelease --generate-notes \
+            --title "Unsigned preview $TAG" \
+            quality-artifacts/FluidVoice-unsigned.zip \
+            quality-artifacts/build-metadata.json \
+            quality-artifacts/bundle-size.json \
+            quality-artifacts/core-coverage.json
+      - name: Preserve release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-validation
+          path: quality-artifacts/
+          retention-days: 14

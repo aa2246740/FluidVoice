@@ -2689,11 +2689,15 @@ struct CustomDictionaryView: View {
     private func confirmDictionaryImport(_ document: DictionaryTransferDocument) -> DictionaryTransferImportMode? {
         let confirm = NSAlert()
         confirm.messageText = "Import this dictionary?".fluidLocalized
-        confirm.informativeText = String.fluidLocalizedFormat("""
-        Found %@ replacement rules and %@ custom words.
+        confirm.informativeText = String.fluidLocalizedFormat(
+            """
+            Found %@ replacement rules and %@ custom words.
 
-        Merge adds them to your current dictionary. Replace clears the current dictionary first.
-        """, String(describing: document.replacements.count), String(describing: document.customWords.count))
+            Merge adds them to your current dictionary. Replace clears the current dictionary first.
+            """,
+            String(describing: document.replacements.count),
+            String(describing: document.customWords.count)
+        )
         confirm.alertStyle = .warning
         confirm.addButton(withTitle: "Merge".fluidLocalized)
         confirm.addButton(withTitle: "Replace".fluidLocalized)

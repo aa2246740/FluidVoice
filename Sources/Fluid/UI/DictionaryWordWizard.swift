@@ -797,7 +797,12 @@ struct DictionaryWordPlayground: View {
                     .padding(10)
                     .accessibilityLabel("Dictionary test text")
                 if self.test.text.isEmpty {
-                    Text((self.test.phase == .recording ? "Listening…" : (self.test.phase == .processing ? "Checking…" : String.fluidLocalizedFormat("Use %@ and say something with “%@”.", String(describing: self.shortcut), String(describing: self.word)))).fluidLocalized)
+                    Text((
+                        self.test.phase == .recording ? "Listening…" : (
+                            self.test.phase == .processing ? "Checking…"
+                                : String.fluidLocalizedFormat("Use %@ and say something with “%@”.", String(describing: self.shortcut), String(describing: self.word))
+                        )
+                    ).fluidLocalized)
                         .font(self.theme.typography.body)
                         .foregroundStyle(self.theme.palette.secondaryText)
                         .padding(15)

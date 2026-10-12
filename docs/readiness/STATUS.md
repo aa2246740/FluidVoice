@@ -1,0 +1,86 @@
+# Agent Readiness remediation evidence
+
+Baseline: `main@9f2ab4a9`, official report 53.85%, Level 3.
+Date: 2026-10-12. This is an implementation tracker, **not a new official score**.
+No GitHub setting, commit, push, PR, cloud task or release has been performed during
+the local implementation phase. Configuration does not prove remote operation.
+
+## Authorized GitHub follow-up
+
+- Issues enabled; two real, assigned work items created:
+  [native acceptance #6](https://github.com/aa2246740/FluidVoice/issues/6) and
+  [dependency/duplication debt #7](https://github.com/aa2246740/FluidVoice/issues/7).
+- 17 priority/type/area labels created.
+- Active `main-pull-request-guard` ruleset requires a PR, resolved review threads
+  and protects against force pushes/deletion, with no bypass actors. The approved
+  personal-repository policy requires zero human approvals. A required
+  `Quality gate` check is deferred until that workflow is active on `main`.
+- Dependency graph, Dependabot alerts and security updates enabled using the
+  existing browser login; CLI authentication scopes were not expanded.
+- One validation-branch App CI run is authorized, not a merge or release.
+- Third-party production tracking is optional for Missions. No paid service or
+  runtime data upload is enabled; production-only signals remain unverified.
+
+## Local evidence
+
+- 23 Python tooling regression tests.
+- Seven instrumented Swift regression programs, critical production line coverage
+  89.61% with an enforced 75% floor. Whole-app coverage is not yet measured.
+- History persistence tests: 8,400 rows, migration/rollback/recovery/statistics and
+  one SELECT per history read.
+- Real log sinks tested in a temporary baseline directory with Swift 6 complete
+  concurrency and warnings-as-errors. Secrets/content/paths are scrubbed; errors
+  retain bounded breadcrumbs and caller stack frames. Existing support log and
+  directory permissions are repaired to 0600/0700. Signal byte storage is
+  initialized before registering handlers. The logger also type-checks with the
+  app's Swift 5/MainActor/macOS 15 settings and warnings-as-errors.
+- Strict SwiftLint 0.63.2 passed after fixing eight existing violations.
+- Root pins aligned to the supported Xcode graph and successfully re-resolved.
+  Xcode app pins and personal development-team IDs remain unchanged.
+- Repository contracts validate test names, core boundaries, temporary flags,
+  API operations/DTO fields, generated docs, AGENTS references and version drift.
+- 248 legacy duplicate windows inventoried; new/expanded duplication is rejected.
+  Existing duplication is not falsely described as eliminated.
+- Workflow YAML and shell syntax checked. Native Xcode build, CI duration,
+  CodeQL execution, container boot and preview release are not yet verified.
+
+## All 36 signals
+
+| Signal | Implemented change | Remaining evidence or authorization |
+|---|---|---|
+| strict_typing | Complete concurrency checks in app/baseline Debug and Release; logger tests compile as Swift 6 with warnings-as-errors | Full app compilation |
+| duplicate_code_detection | Actual Swift block detector, legacy inventory and new-clone gate | CI execution; legacy refactoring is future debt |
+| code_modularization | Enforced core imports/singleton boundaries | Local contract tests pass |
+| tech_debt_tracking | TODO/FIXME/HACK inventory with file/line/work-reference status | Existing unlinked markers remain tracked debt |
+| n_plus_one_detection | Production SQLite read-statement counter plus 8,400-row query-budget regression | Local tests pass |
+| automated_pr_review | Privileged-safe consumer generates reviews from real lint findings, with stale-head checks | Enable workflow on default branch; observe real review content |
+| fast_ci_feedback | PR-API-independent diff, parallel quick checks and stable required gate | Measure successful native PR checks; do not count quick failures |
+| build_performance_tracking | Toolchain/pin-partitioned package and incremental caches; wall-time records | Native build timing |
+| deployment_frequency | Safe preview release path prepared | Real approved shipping history; cannot manufacture multiple weekly releases |
+| release_notes_automation | GitHub generated release notes in draft preview pipeline | Execute an approved preview release |
+| heavy_dependency_detection | 250 MiB app budget and largest-resource/dependency report | Analyze a real app bundle |
+| unused_dependencies_detection | Package product/import inventory identifies AppUpdater for linkage review | Verify transitive PromiseKit usage before any removal |
+| version_drift_detection | All checked-in resolved graphs compared; six shared pin forks repaired without changing app pins | Local resolver and checks pass; out-of-tree evaluation SDK is separately user-managed |
+| release_automation | Tested-source build, provenance/hash, draft unsigned prerelease pipeline | Activate and run workflow; no stable signing/notarization claimed |
+| dead_feature_flag_detection | Source-use checks, ownership, review deadline, removal condition for AEC3 escape hatch | Local lifecycle checks pass; real-meeting stability controls removal |
+| test_performance_tracking | Per-program/native timers; retained xcresult/log/coverage artifacts | Native XCTest durations |
+| test_coverage_thresholds | Actual standalone production coverage enforced at 75% | 89.61% locally; no whole-app threshold claim |
+| test_naming_conventions | Explicit Swift/Python test/helper roles, docs and rejecting checks | Local tests pass |
+| automated_doc_generation | API reference generation plus stale-output gate | Local generation and checks pass |
+| api_schema_docs | OpenAPI 3.1 for all eight methods with requests/responses/errors/privacy, route/DTO drift checks | Local checks pass; live API behavior still needs app acceptance |
+| agents_md_validation | References and required commands checked; documented commands executed in validation | Local checks pass |
+| devcontainer | Usable Python repository-automation container configuration | Boot not tested; cannot substitute for macOS/Xcode |
+| code_quality_metrics | Persisted coverage, debt, duplication, dependency, timing and bundle evidence; offline HTML view | Real native size/whole-app coverage measurements |
+| error_tracking_contextualized | Real on-device redacted stacks, breadcrumbs, per-run context and stable crash sink | No production tracking service enabled; requires privacy/service approval |
+| alerting_configured | Default-branch CI/release failure alerts create actionable assigned issues; Issues now enabled | Activate default-branch workflow; not production-runtime paging |
+| runbooks_documented | Concrete build/release/audio/credential incident procedures and links | Locally documented |
+| deployment_observability | Release/build provenance and artifact metric inspection documented | No verified real-time deployed-user dashboard |
+| branch_protection | Active main PR/force-push/deletion ruleset, no bypass actors, zero required human approvals | Required quality-gate check awaits default-branch activation |
+| codeowners | Valid maintainer ownership and path routing | Commit/publish shared file |
+| automated_security_review | Swift CodeQL cold instrumented build and retained readable SARIF | Activate/run and verify findings |
+| dependency_update_automation | Weekly Swift/Actions Dependabot configuration with cooldown and labeled groups; repository security updates enabled | Activate version-update configuration on default branch and observe real PRs |
+| log_scrubbing | Real sinks, broad auth/cookie/content/path redaction, private file permissions and regressions | Local sink and privacy tests pass |
+| min_release_age | Explicit seven-day merge policy and seven-day bot cooldown | Apply policy to actual updates |
+| issue_labeling_system | 17 priority/type/area GitHub labels created, matching bot configuration | Labels applied to the two actual work items |
+| backlog_health | Issues enabled; acceptance #6 and dependency/debt #7 assigned and prioritized | Maintain these real work items as validation progresses |
+| error_to_insight_pipeline | CI incident-to-issue automation prepared | Production errors are not uploaded; production tracking/issue integration requires service and consent |

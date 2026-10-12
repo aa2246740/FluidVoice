@@ -1,0 +1,55 @@
+name: Swift security assessment
+on:
+  pull_request:
+    branches: [main]
+    paths: ["Sources/**", "Vendor/**", "Fluid.xcodeproj/**", "**/Package.resolved", ".github/workflows/security-review.yml"]
+  push:
+    branches: [main]
+    paths: ["Sources/**", "Vendor/**", "Fluid.xcodeproj/**", "**/Package.resolved", ".github/workflows/security-review.yml"]
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  security-events: write
+concurrency:
+  group: security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  swift:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: actions/cache@v4
+        with:
+          path: .build/xcode-packages
+          key: codeql-packages-${{ runner.arch }}-${{ hashFiles('**/Package.resolved') }}
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: swift
+          build-mode: manual
+      # A cold product build is intentional: reusing DerivedData can hide source
+      # from CodeQL's compiler tracing. Dependency downloads are still cached.
+      - name: Trace the public application build
+        run: |
+          xcodebuild build -project Fluid.xcodeproj -scheme Fluid \
+            -destination "platform=macOS,arch=$(uname -m)" \
+            -derivedDataPath DerivedData-Security \
+            -clonedSourcePackagesDirPath .build/xcode-packages \
+            -onlyUsePackageVersionsFromResolvedFile \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      - uses: github/codeql-action/analyze@v3
+        with:
+          output: quality-artifacts/security
+          upload: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+      - name: Preserve readable SARIF assessments
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-assessment
+          path: quality-artifacts/security/
+          retention-days: 14

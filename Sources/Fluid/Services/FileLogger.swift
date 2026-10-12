@@ -1,5 +1,6 @@
 import Darwin
 import Foundation
+import Synchronization
 
 /// A lightweight file-backed logger that mirrors in-app debug logs to disk for diagnostics.
 final nonisolated class FileLogger: @unchecked Sendable {
@@ -14,8 +15,8 @@ final nonisolated class FileLogger: @unchecked Sendable {
     private let legacyBackupLogURL: URL
     private let maxLogFileSize: UInt64 = 1 * 1024 * 1024 // 1 MB limit per log file
     private let maxLogFileAge: TimeInterval = 72 * 60 * 60 // Rotate every 72 hours
-    private static var crashFileDescriptor: Int32 = -1
-    private static var crashHandlersInstalled = false
+    private static let crashFileDescriptor = Atomic<Int32>(-1)
+    private static let crashHandlersInstalled = Atomic<Bool>(false)
     private static let sigAbrtLine = Array("[CRASH] Fatal signal SIGABRT\n".utf8)
     private static let sigIllLine = Array("[CRASH] Fatal signal SIGILL\n".utf8)
     private static let sigSegvLine = Array("[CRASH] Fatal signal SIGSEGV\n".utf8)
@@ -64,14 +65,21 @@ final nonisolated class FileLogger: @unchecked Sendable {
         return self.logFileURL
     }
 
+    func flush() {
+        self.queue.sync {}
+    }
+
     // MARK: - Private helpers
 
     private func createLogDirectoryIfNeeded() {
-        guard !self.fileManager.fileExists(atPath: self.logDirectory.path) else { return }
+        if self.fileManager.fileExists(atPath: self.logDirectory.path) {
+            try? self.fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: self.logDirectory.path)
+            return
+        }
         do {
-            try self.fileManager.createDirectory(at: self.logDirectory, withIntermediateDirectories: true)
+            try self.fileManager.createDirectory(at: self.logDirectory, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
         } catch {
-            // If the directory cannot be created, fall back to /tmp
+            // Diagnostic write failures remain non-fatal.
         }
     }
 
@@ -87,17 +95,21 @@ final nonisolated class FileLogger: @unchecked Sendable {
         {
             try? self.fileManager.moveItem(at: self.legacyBackupLogURL, to: self.backupLogURL)
         }
+        for url in [self.logFileURL, self.backupLogURL] {
+            try? self.fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+        }
     }
 
     private func appendUnlocked(line: String) {
         self.createLogDirectoryIfNeeded()
         self.rotateIfNeeded(force: false)
-        let data = (line + "\n").data(using: .utf8) ?? Data()
+        let data = (LogSanitizer.sanitize(line) + "\n").data(using: .utf8) ?? Data()
         if !self.fileManager.fileExists(atPath: self.logFileURL.path) {
-            self.fileManager.createFile(atPath: self.logFileURL.path, contents: data)
+            self.fileManager.createFile(atPath: self.logFileURL.path, contents: data, attributes: [.posixPermissions: 0o600])
             self.prepareCrashLogging()
             return
         }
+        try? self.fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: self.logFileURL.path)
         guard let handle = try? FileHandle(forWritingTo: self.logFileURL) else {
             self.prepareCrashLogging()
             return
@@ -145,21 +157,23 @@ final nonisolated class FileLogger: @unchecked Sendable {
 
         // Move current log to backup and create a fresh file
         try? self.fileManager.moveItem(at: self.logFileURL, to: self.backupLogURL)
-        self.fileManager.createFile(atPath: self.logFileURL.path, contents: nil)
+        self.fileManager.createFile(atPath: self.logFileURL.path, contents: nil, attributes: [.posixPermissions: 0o600])
         self.prepareCrashLogging()
     }
 
     private func prepareCrashLogging() {
-        if Self.crashFileDescriptor >= 0 {
-            close(Self.crashFileDescriptor)
-            Self.crashFileDescriptor = -1
-        }
-        Self.crashFileDescriptor = open(self.logFileURL.path, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR)
+        // A stable descriptor avoids a signal racing log rotation/descriptor reuse.
+        // This process-lifetime sink is separate from the rotating support log.
+        guard Self.crashFileDescriptor.load(ordering: .acquiring) < 0 else { return }
+        let crashURL = self.logDirectory.appendingPathComponent("Fluid.crash.log")
+        let descriptor = open(crashURL.path, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR)
+        guard descriptor >= 0 else { return }
+        _ = fchmod(descriptor, S_IRUSR | S_IWUSR)
+        Self.crashFileDescriptor.store(descriptor, ordering: .releasing)
     }
 
     private func installCrashHandlersIfNeeded() {
-        guard !Self.crashHandlersInstalled else { return }
-        Self.crashHandlersInstalled = true
+        guard !Self.crashHandlersInstalled.exchange(true, ordering: .acquiringAndReleasing) else { return }
 
         NSSetUncaughtExceptionHandler { exception in
             let line = "[CRASH] Uncaught exception \(exception.name.rawValue): \(exception.reason ?? "Unknown reason")"
@@ -169,15 +183,20 @@ final nonisolated class FileLogger: @unchecked Sendable {
             }
         }
 
-        signal(SIGABRT, fileLoggerSignalHandler)
-        signal(SIGILL, fileLoggerSignalHandler)
-        signal(SIGSEGV, fileLoggerSignalHandler)
-        signal(SIGBUS, fileLoggerSignalHandler)
-        signal(SIGTRAP, fileLoggerSignalHandler)
+        // Initialize lazy Swift storage before a handler can run during a crash.
+        let signalLines = [Self.sigAbrtLine, Self.sigIllLine, Self.sigSegvLine, Self.sigBusLine, Self.sigTrapLine, Self.sigUnknownLine]
+        withExtendedLifetime(signalLines) {
+            signal(SIGABRT, fileLoggerSignalHandler)
+            signal(SIGILL, fileLoggerSignalHandler)
+            signal(SIGSEGV, fileLoggerSignalHandler)
+            signal(SIGBUS, fileLoggerSignalHandler)
+            signal(SIGTRAP, fileLoggerSignalHandler)
+        }
     }
 
     static func writeCrashSignalLine(_ signalNumber: Int32) {
-        guard self.crashFileDescriptor >= 0 else { return }
+        let descriptor = self.crashFileDescriptor.load(ordering: .acquiring)
+        guard descriptor >= 0 else { return }
         let bytes: [UInt8]
         switch signalNumber {
         case SIGABRT: bytes = Self.sigAbrtLine
@@ -189,15 +208,17 @@ final nonisolated class FileLogger: @unchecked Sendable {
         }
         bytes.withUnsafeBytes { rawBuffer in
             guard let baseAddress = rawBuffer.baseAddress else { return }
-            _ = write(Self.crashFileDescriptor, baseAddress, rawBuffer.count)
+            _ = write(descriptor, baseAddress, rawBuffer.count)
         }
     }
 
     static func writeCrashLineDirect(_ line: String) {
-        guard self.crashFileDescriptor >= 0 else { return }
-        let message = line.hasSuffix("\n") ? line : "\(line)\n"
+        let descriptor = self.crashFileDescriptor.load(ordering: .acquiring)
+        guard descriptor >= 0 else { return }
+        let sanitized = LogSanitizer.sanitize(line)
+        let message = sanitized.hasSuffix("\n") ? sanitized : "\(sanitized)\n"
         message.withCString { ptr in
-            _ = write(Self.crashFileDescriptor, ptr, strlen(ptr))
+            _ = write(descriptor, ptr, strlen(ptr))
         }
     }
 }
