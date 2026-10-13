@@ -48,8 +48,9 @@ While native tests run, a watchdog samples only application executables under
 the current checkout's DerivedData path after a case lasts 90 seconds. The
 `native-diagnostics/` stack samples and JSON status precede XCTest termination;
 sampling failures are retained rather than claimed as successful diagnostics.
-Temporary `[DEBUG-asr-scope]` test markers distinguish scoped transcription,
-scope drain and the unclaimed legacy path. Remove them after the hang is fixed.
+Temporary `[DEBUG-asr-scope]` test markers distinguished scoped transcription,
+scope drain and the unclaimed legacy path in two passing runs, then were removed
+to avoid timing effects. The original hang's root cause remains unproven.
 Debug validation uses DWARF without an embedded test dSYM. A size-budget failure
 still allows XCTest and stack diagnostics to run, then fails the final native
 gate; the 250 MiB budget is unchanged.

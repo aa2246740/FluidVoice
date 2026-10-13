@@ -1555,33 +1555,25 @@ final class ASRServiceMeetingASRScopeTests: XCTestCase {
     }
 
     func testMeetingTranscriptionEntryPointsRunWithinScopeAndUnclaimedLegacyPath() async throws {
-        DebugLogger.shared.info("[DEBUG-asr-scope] creating_harness", source: "ASRScopeTests")
         let harness = self.makeHarness()
         _ = try harness.acquireMeetingLease()
         let samples = [Float](repeating: 0, count: 16_000)
 
-        DebugLogger.shared.info("[DEBUG-asr-scope] entering_scope", source: "ASRScopeTests")
         let scopedText = try await harness.service.withPreparedMeetingASR(
             attemptID: UUID(), configuration: MeetingFinalProcessingConfiguration()
         ) { provider in
-            DebugLogger.shared.info("[DEBUG-asr-scope] scoped_transcription_started", source: "ASRScopeTests")
-            let text = try await harness.service.transcribeMeetingSamples(
+            try await harness.service.transcribeMeetingSamples(
                 samples, provider: provider, languageCode: "en"
             ).text
-            DebugLogger.shared.info("[DEBUG-asr-scope] scoped_transcription_returned", source: "ASRScopeTests")
-            return text
         }
-        DebugLogger.shared.info("[DEBUG-asr-scope] scope_drained", source: "ASRScopeTests")
         XCTAssertEqual(scopedText, "")
         XCTAssertEqual(harness.recorder.count(of: "drain"), 1)
 
         // Unclaimed legacy meeting transcription still runs without any scope.
-        DebugLogger.shared.info("[DEBUG-asr-scope] legacy_transcription_started", source: "ASRScopeTests")
         let legacy = try await harness.service.transcribeMeetingSamples(
             samples, provider: harness.provider, languageCode: "en"
         )
         XCTAssertEqual(legacy.text, "")
-        DebugLogger.shared.info("[DEBUG-asr-scope] legacy_transcription_returned", source: "ASRScopeTests")
     }
 
     func testRetireDictationResourcesRequiresExactLeaseAndDropsCachedProviders() async throws {
