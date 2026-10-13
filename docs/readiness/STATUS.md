@@ -47,12 +47,22 @@ the local implementation phase. Configuration does not prove remote operation.
   rounds if needed. Paid runners/services, releases, deletion and merges remain
   prohibited. Omarchy stays read-only research. Full XCTest, whole-app coverage and
   local App acceptance remain unverified until actual results exist.
+- Follow-up commit `c23b9afe` is published as [PR #8](https://github.com/aa2246740/FluidVoice/pull/8).
+  The third [CI run](https://github.com/aa2246740/FluidVoice/actions/runs/38348120086)
+  passed quality/lint/regressions and built for testing successfully. Its App
+  archive was retained with `not_run` status, but the 250 MiB budget blocked XCTest:
+  278,932,018 bytes included a 42,693,784-byte embedded test dSYM. No ASR hang
+  diagnostic was produced because tests had not started.
+- The next diagnostic revision uses Debug DWARF without generating the embedded
+  test dSYM and runs XCTest even when the size report fails; the original 250 MiB
+  budget still fails the final gate. A red-to-green tooling regression verifies
+  this separation. No tests are removed, no data is deleted and no budget is raised.
 - Third-party production tracking is optional for Missions. No paid service or
   runtime data upload is enabled; production-only signals remain unverified.
 
 ## Local evidence
 
-- 35 Python tooling regression tests.
+- 36 Python tooling regression tests.
 - Seven instrumented Swift regression programs, critical production line coverage
   89.61% with an enforced 75% floor. Whole-app coverage is not yet measured.
 - History persistence tests: 8,400 rows, migration/rollback/recovery/statistics and

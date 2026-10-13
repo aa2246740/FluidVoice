@@ -38,7 +38,7 @@ common=(
   -onlyUsePackageVersionsFromResolvedFile
   -enableCodeCoverage YES
   CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-  DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
+  DEBUG_INFORMATION_FORMAT=dwarf
 )
 python3 tools/readiness/measure.py --name xcode-build-for-testing --output quality-artifacts/timings.json -- \
   xcodebuild build-for-testing "${common[@]}" -resultBundlePath quality-artifacts/FluidBuild.xcresult \
@@ -46,7 +46,8 @@ python3 tools/readiness/measure.py --name xcode-build-for-testing --output quali
 app="DerivedData/Build/Products/Debug/FluidVoice Debug.app"
 ditto -c -k --sequesterRsrc --keepParent "$app" "$archive"
 metadata not_run
-python3 tools/readiness/bundle_size.py "$app"
+bundle_status=0
+python3 tools/readiness/bundle_size.py "$app" || bundle_status=$?
 python3 tools/readiness/native_diagnostics.py \
   --log quality-artifacts/xcodebuild.log \
   --output quality-artifacts/native-diagnostics \
@@ -74,3 +75,4 @@ metadata passed --exit-code 0
 if [ "${statuses[1]}" -ne 0 ]; then exit "${statuses[1]}"; fi
 xcrun xccov view --report --json quality-artifacts/FluidTests.xcresult > quality-artifacts/app-coverage.json
 python3 tools/readiness/check.py
+exit "$bundle_status"

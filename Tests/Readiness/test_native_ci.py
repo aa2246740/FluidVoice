@@ -49,7 +49,7 @@ class MetadataTests(unittest.TestCase):
 class NativeCIFlowTests(unittest.TestCase):
     script_under_test = (ROOT / "tools/readiness/native_ci.sh").read_text()
 
-    def run_fixture(self, build_code=0, test_code=0, tee_code=0, interrupt=False, stale=False):
+    def run_fixture(self, build_code=0, test_code=0, tee_code=0, interrupt=False, stale=False, oversize=False):
         with tempfile.TemporaryDirectory(prefix="fluidvoice-native-fixture-") as directory:
             root = Path(directory)
             tools = root / "tools/readiness"
@@ -78,6 +78,9 @@ class NativeCIFlowTests(unittest.TestCase):
                             app=root/"DerivedData/Build/Products/Debug/FluidVoice Debug.app"
                             app.mkdir(parents=True)
                             (app/"fake-executable").write_bytes(b"not a real executable")
+                            if os.environ["OVERSIZE_BUNDLE"] == "1":
+                                with (app/"fixture-large-resource").open("wb") as resource:
+                                    resource.truncate(251*1024*1024)
                         sys.exit(code)
                     elif sys.argv[1] == "test-without-building":
                         metadata=json.loads((root/"quality-artifacts/build-metadata.json").read_text())
@@ -85,6 +88,7 @@ class NativeCIFlowTests(unittest.TestCase):
                         assert (root/"quality-artifacts/FluidVoice-unsigned.zip").is_file()
                         assert "-test-timeouts-enabled" in sys.argv
                         assert sys.argv[sys.argv.index("-maximum-test-execution-time-allowance")+1] == "180"
+                        assert "DEBUG_INFORMATION_FORMAT=dwarf" in sys.argv
                         skips=[item for item in sys.argv if item.startswith("-skip-testing:")]
                         assert skips == ["-skip-testing:FluidDictationIntegrationTests/DictationE2ETests/testDictationEndToEnd_whisperTiny_transcribesFixture"]
                         (root/"test-started").touch()
@@ -128,7 +132,8 @@ class NativeCIFlowTests(unittest.TestCase):
                 path.chmod(0o755)
             environment = dict(os.environ, PATH=str(binaries) + os.pathsep + os.environ["PATH"],
                                BUILD_EXIT_CODE=str(build_code), TEST_EXIT_CODE=str(test_code),
-                               TEE_EXIT_CODE=str(tee_code), INTERRUPT_TEST="1" if interrupt else "0")
+                               TEE_EXIT_CODE=str(tee_code), INTERRUPT_TEST="1" if interrupt else "0",
+                               OVERSIZE_BUNDLE="1" if oversize else "0")
             environment.pop("GITHUB_STEP_SUMMARY", None)
             with subprocess.Popen(["/bin/bash", str(script)], env=environment, start_new_session=True,
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
@@ -200,6 +205,14 @@ class NativeCIFlowTests(unittest.TestCase):
         self.assertIn("Native evidence already exists", result["output"])
         self.assertFalse(result["tests_started"])
         self.assertEqual(result["metadata"], {"test_status": "passed", "commit": "old"})
+
+    def test_oversize_bundle_still_runs_tests_but_cannot_pass_gate(self):
+        result = self.run_fixture(oversize=True)
+        self.assertEqual(result["code"], 1, result["output"])
+        self.assertTrue(result["tests_started"])
+        self.assertTrue(result["archive"])
+        self.assertEqual(result["metadata"]["test_status"], "passed")
+        self.assertTrue(result["coverage"])
 
 
 if __name__ == "__main__":

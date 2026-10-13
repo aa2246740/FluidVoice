@@ -50,6 +50,9 @@ the current checkout's DerivedData path after a case lasts 90 seconds. The
 sampling failures are retained rather than claimed as successful diagnostics.
 Temporary `[DEBUG-asr-scope]` test markers distinguish scoped transcription,
 scope drain and the unclaimed legacy path. Remove them after the hang is fixed.
+Debug validation uses DWARF without an embedded test dSYM. A size-budget failure
+still allows XCTest and stack diagnostics to run, then fails the final native
+gate; the 250 MiB budget is unchanged.
 
 ## Dependency governance
 
