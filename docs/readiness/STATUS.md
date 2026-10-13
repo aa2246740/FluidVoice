@@ -17,7 +17,15 @@ the local implementation phase. Configuration does not prove remote operation.
   `Quality gate` check is deferred until that workflow is active on `main`.
 - Dependency graph, Dependabot alerts and security updates enabled using the
   existing browser login; CLI authentication scopes were not expanded.
-- One validation-branch App CI run is authorized, not a merge or release.
+- First validation-branch [App CI run](https://github.com/aa2246740/FluidVoice/actions/runs/38286323674)
+  tested `0fb6b337`. Repository checks, strict lint and every standalone/persistence/
+  privacy regression passed; cloud critical-source coverage was 89.06%.
+  Xcode 26.6 compilation failed at the clamshell C callback/actor boundary after
+  147.222 seconds; XCTest was cancelled and no App was produced.
+- A production-callback/real-IOKit-ABI regression reproduces that error with the
+  app's actor settings. The callback fix keeps strict checking and synchronously
+  enters MainActor because IOKit is explicitly configured to deliver on the main
+  queue. One further validation run is authorized, not a merge or release.
 - Third-party production tracking is optional for Missions. No paid service or
   runtime data upload is enabled; production-only signals remain unverified.
 
@@ -48,7 +56,7 @@ the local implementation phase. Configuration does not prove remote operation.
 
 | Signal | Implemented change | Remaining evidence or authorization |
 |---|---|---|
-| strict_typing | Complete concurrency checks in app/baseline Debug and Release; logger tests compile as Swift 6 with warnings-as-errors | Full app compilation |
+| strict_typing | Complete concurrency checks in app/baseline Debug and Release; logger tests compile as Swift 6 with warnings-as-errors; real IOKit ABI/actor regression | Full app compilation after fixing the discovered C callback boundary |
 | duplicate_code_detection | Actual Swift block detector, legacy inventory and new-clone gate | CI execution; legacy refactoring is future debt |
 | code_modularization | Enforced core imports/singleton boundaries | Local contract tests pass |
 | tech_debt_tracking | TODO/FIXME/HACK inventory with file/line/work-reference status | Existing unlinked markers remain tracked debt |
@@ -64,7 +72,7 @@ the local implementation phase. Configuration does not prove remote operation.
 | release_automation | Tested-source build, provenance/hash, draft unsigned prerelease pipeline | Activate and run workflow; no stable signing/notarization claimed |
 | dead_feature_flag_detection | Source-use checks, ownership, review deadline, removal condition for AEC3 escape hatch | Local lifecycle checks pass; real-meeting stability controls removal |
 | test_performance_tracking | Per-program/native timers; retained xcresult/log/coverage artifacts | Native XCTest durations |
-| test_coverage_thresholds | Actual standalone production coverage enforced at 75% | 89.61% locally; no whole-app threshold claim |
+| test_coverage_thresholds | Actual standalone production coverage enforced at 75% | 89.61% locally, 89.06% on Xcode runner; no whole-app threshold claim |
 | test_naming_conventions | Explicit Swift/Python test/helper roles, docs and rejecting checks | Local tests pass |
 | automated_doc_generation | API reference generation plus stale-output gate | Local generation and checks pass |
 | api_schema_docs | OpenAPI 3.1 for all eight methods with requests/responses/errors/privacy, route/DTO drift checks | Local checks pass; live API behavior still needs app acceptance |

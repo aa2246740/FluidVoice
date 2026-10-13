@@ -134,6 +134,8 @@ jobs:
       run: python3 tools/readiness/measure.py --name history-persistence --output quality-artifacts/timings.json -- sh Tests/run_history_persistence_tests.sh
     - name: Verify private log sinks and strict Swift concurrency
       run: python3 tools/readiness/measure.py --name log-privacy --output quality-artifacts/timings.json -- sh Tests/run_log_privacy_tests.sh
+    - name: Verify production IOKit callback ABI and actor boundary
+      run: python3 tools/readiness/measure.py --name clamshell-callback --output quality-artifacts/timings.json -- sh Tests/run_clamshell_callback_tests.sh
 
     # Tiny Whisper GGUF output is nondeterministic on hosted macOS runners.
     # Keep this E2E assertion in the suite for local validation, but skip it in CI.

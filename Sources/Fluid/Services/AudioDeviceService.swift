@@ -1623,15 +1623,18 @@ final class AudioHardwareObserver: ObservableObject {
     }
 }
 
-private func clamshellStateInterestCallback(
+private nonisolated func clamshellStateInterestCallback(
     refcon: UnsafeMutableRawPointer?,
     _: io_service_t,
     _: natural_t,
     _: UnsafeMutableRawPointer?
 ) {
     guard let refcon else { return }
-    Unmanaged<AudioHardwareObserver>
+    let observer = Unmanaged<AudioHardwareObserver>
         .fromOpaque(refcon)
         .takeUnretainedValue()
-        .handleClamshellInterestMessage()
+    // The notification port explicitly dispatches this C callback on the main queue.
+    MainActor.assumeIsolated {
+        observer.handleClamshellInterestMessage()
+    }
 }
