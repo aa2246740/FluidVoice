@@ -35,6 +35,21 @@ production dashboard or app acceptance URL. App coverage is reported separately.
 The enforceable 75% line threshold covers the named standalone production sources;
 it is not a claim of 75% coverage across the whole application.
 Unsigned app bundles have a 250 MiB budget and a largest-file report.
+Native validation builds for testing first, then saves the unsigned archive and
+commit/hash metadata before running XCTest without rebuilding. `test_status` is
+explicitly `not_run`, `passed`, `failed` or `interrupted`; an archive alone does not
+prove acceptance. Failed/interrupted tests still fail CI and retain the archive.
+Each test has a 120-second default allowance and 180-second maximum; the existing
+Tiny Whisper exclusion is unchanged. Build and test timings are separate.
+Use a fresh checkout/evidence directory for a new run; existing native artifacts
+are rejected, not deleted or reused. This control flow is locally fixture-tested,
+but its next real Xcode run still requires explicit approval.
+While native tests run, a watchdog samples only application executables under
+the current checkout's DerivedData path after a case lasts 90 seconds. The
+`native-diagnostics/` stack samples and JSON status precede XCTest termination;
+sampling failures are retained rather than claimed as successful diagnostics.
+Temporary `[DEBUG-asr-scope]` test markers distinguish scoped transcription,
+scope drain and the unclaimed legacy path. Remove them after the hang is fixed.
 
 ## Dependency governance
 

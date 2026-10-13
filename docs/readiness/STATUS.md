@@ -25,13 +25,34 @@ the local implementation phase. Configuration does not prove remote operation.
 - A production-callback/real-IOKit-ABI regression reproduces that error with the
   app's actor settings. The callback fix keeps strict checking and synchronously
   enters MainActor because IOKit is explicitly configured to deliver on the main
-  queue. One further validation run is authorized, not a merge or release.
+  queue.
+- The second authorized [App CI run](https://github.com/aa2246740/FluidVoice/actions/runs/38330797552)
+  tested `c11c890e`. Repository checks, strict lint and all standalone/persistence/
+  privacy regressions passed, including the real callback regression. Critical-source
+  coverage remained 89.06%. The App compiled, linked and launched on the runner.
+  Three meeting-scope XCTest cases passed; then
+  `testMeetingTranscriptionEntryPointsRunWithinScopeAndUnclaimedLegacyPath` started
+  at 01:17:47 UTC and never completed before the 25-minute job cap cancelled the run.
+  The quality gate failed. The exact hang cause is not proven.
+- No App archive was produced by that run because the old combined build/test
+  script packaged only after successful tests. A local script revision now preserves
+  archives before tests, records explicit test state and applies bounded per-test
+  timeouts without adding exclusions. Tooling tests validate metadata,
+  build/test/log failures, interruption and stale evidence. A watchdog samples
+  only this checkout's test-app processes after a case runs for 90 seconds, before
+  the default 120-second timeout, and retains stack files and diagnostic status.
+  Temporary tagged test-boundary logs narrow the meeting ASR wait.
+- On 2026-10-13, the user authorized publication of this follow-up, a PR to `main`
+  without merging, a third standard/free macOS CI round and evidence-led follow-up
+  rounds if needed. Paid runners/services, releases, deletion and merges remain
+  prohibited. Omarchy stays read-only research. Full XCTest, whole-app coverage and
+  local App acceptance remain unverified until actual results exist.
 - Third-party production tracking is optional for Missions. No paid service or
   runtime data upload is enabled; production-only signals remain unverified.
 
 ## Local evidence
 
-- 23 Python tooling regression tests.
+- 35 Python tooling regression tests.
 - Seven instrumented Swift regression programs, critical production line coverage
   89.61% with an enforced 75% floor. Whole-app coverage is not yet measured.
 - History persistence tests: 8,400 rows, migration/rollback/recovery/statistics and
@@ -49,21 +70,26 @@ the local implementation phase. Configuration does not prove remote operation.
   API operations/DTO fields, generated docs, AGENTS references and version drift.
 - 248 legacy duplicate windows inventoried; new/expanded duplication is rejected.
   Existing duplication is not falsely described as eliminated.
-- Workflow YAML and shell syntax checked. Native Xcode build, CI duration,
-  CodeQL execution, container boot and preview release are not yet verified.
+- Workflow YAML and shell syntax checked. Native compilation and runner launch are
+  now evidenced, but full XCTest and successful native CI duration are not.
+  CodeQL execution, container boot and preview release remain unverified.
+- A temporary no-network probe extracted the actual `TranscriptionExecutor`,
+  used a MainActor-bound fake provider, drained it and reused it under the app's
+  compiler settings. It passed within a 10-second limit. This does not reproduce
+  the complete ASRService scope hang; no speculative ASR logic change was made.
 
 ## All 36 signals
 
 | Signal | Implemented change | Remaining evidence or authorization |
 |---|---|---|
-| strict_typing | Complete concurrency checks in app/baseline Debug and Release; logger tests compile as Swift 6 with warnings-as-errors; real IOKit ABI/actor regression | Full app compilation after fixing the discovered C callback boundary |
-| duplicate_code_detection | Actual Swift block detector, legacy inventory and new-clone gate | CI execution; legacy refactoring is future debt |
+| strict_typing | Complete concurrency checks in app/baseline Debug and Release; logger tests compile as Swift 6 with warnings-as-errors; real IOKit ABI/actor regression | App compiled in the second run; existing Swift 5 concurrency warnings remain, not a whole-app Swift 6 warning-free claim |
+| duplicate_code_detection | Actual Swift block detector, legacy inventory and new-clone gate | Both cloud checks passed; legacy refactoring remains debt |
 | code_modularization | Enforced core imports/singleton boundaries | Local contract tests pass |
 | tech_debt_tracking | TODO/FIXME/HACK inventory with file/line/work-reference status | Existing unlinked markers remain tracked debt |
 | n_plus_one_detection | Production SQLite read-statement counter plus 8,400-row query-budget regression | Local tests pass |
 | automated_pr_review | Privileged-safe consumer generates reviews from real lint findings, with stale-head checks | Enable workflow on default branch; observe real review content |
 | fast_ci_feedback | PR-API-independent diff, parallel quick checks and stable required gate | Measure successful native PR checks; do not count quick failures |
-| build_performance_tracking | Toolchain/pin-partitioned package and incremental caches; wall-time records | Native build timing |
+| build_performance_tracking | Toolchain/pin-partitioned package and incremental caches; wall-time records; separate build/test timing locally configured | First failed build measured; second run timed out; successful native timing remains unverified |
 | deployment_frequency | Safe preview release path prepared | Real approved shipping history; cannot manufacture multiple weekly releases |
 | release_notes_automation | GitHub generated release notes in draft preview pipeline | Execute an approved preview release |
 | heavy_dependency_detection | 250 MiB app budget and largest-resource/dependency report | Analyze a real app bundle |
@@ -71,7 +97,7 @@ the local implementation phase. Configuration does not prove remote operation.
 | version_drift_detection | All checked-in resolved graphs compared; six shared pin forks repaired without changing app pins | Local resolver and checks pass; out-of-tree evaluation SDK is separately user-managed |
 | release_automation | Tested-source build, provenance/hash, draft unsigned prerelease pipeline | Activate and run workflow; no stable signing/notarization claimed |
 | dead_feature_flag_detection | Source-use checks, ownership, review deadline, removal condition for AEC3 escape hatch | Local lifecycle checks pass; real-meeting stability controls removal |
-| test_performance_tracking | Per-program/native timers; retained xcresult/log/coverage artifacts | Native XCTest durations |
+| test_performance_tracking | Per-program/native timers; retained xcresult/log/coverage artifacts; bounded per-test execution locally configured | Three native test durations and the hang boundary observed; complete suite timing remains unverified |
 | test_coverage_thresholds | Actual standalone production coverage enforced at 75% | 89.61% locally, 89.06% on Xcode runner; no whole-app threshold claim |
 | test_naming_conventions | Explicit Swift/Python test/helper roles, docs and rejecting checks | Local tests pass |
 | automated_doc_generation | API reference generation plus stale-output gate | Local generation and checks pass |
@@ -84,7 +110,7 @@ the local implementation phase. Configuration does not prove remote operation.
 | runbooks_documented | Concrete build/release/audio/credential incident procedures and links | Locally documented |
 | deployment_observability | Release/build provenance and artifact metric inspection documented | No verified real-time deployed-user dashboard |
 | branch_protection | Active main PR/force-push/deletion ruleset, no bypass actors, zero required human approvals | Required quality-gate check awaits default-branch activation |
-| codeowners | Valid maintainer ownership and path routing | Commit/publish shared file |
+| codeowners | Valid maintainer ownership and path routing, published on the validation branch | Default-branch activation awaits an authorized merge |
 | automated_security_review | Swift CodeQL cold instrumented build and retained readable SARIF | Activate/run and verify findings |
 | dependency_update_automation | Weekly Swift/Actions Dependabot configuration with cooldown and labeled groups; repository security updates enabled | Activate version-update configuration on default branch and observe real PRs |
 | log_scrubbing | Real sinks, broad auth/cookie/content/path redaction, private file permissions and regressions | Local sink and privacy tests pass |
