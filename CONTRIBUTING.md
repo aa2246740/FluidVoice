@@ -46,6 +46,20 @@ PRs that do not follow the template will be blocked by the `PR Policy` check. If
 
 ## Repository Settings
 
+## Validation and maintenance
+
+Read [the development workflow](docs/readiness/WORKFLOW.md) before changing
+dependencies, temporary flags, core boundaries or local API contracts.
+Test sources use `*Tests.swift`; helpers use `*Fixtures.swift`, `*Doubles.swift`,
+`*Helper.swift` or `*Harness.swift`. Python tooling tests use `test_*.py`.
+Run `python3 tools/readiness/check.py` and the relevant documented tests.
+Wait at least **7 days after release before merging a dependency version bump**.
+Review duplicate-code and TODO inventories instead of regenerating baselines
+to hide findings. Follow [incident runbooks](docs/readiness/RUNBOOKS.md) for
+crashes, release failures or credential exposure.
+
+### Maintainer settings
+
 Maintainers should enable GitHub Discussions with these categories:
 
 - Ideas

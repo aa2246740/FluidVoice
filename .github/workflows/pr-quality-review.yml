@@ -1,0 +1,56 @@
+name: Review quality findings
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    types: [completed]
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+jobs:
+  review:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Privileged consumer: never check out or execute PR code.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: swiftlint-findings
+          path: review-input
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Generate a review of actual findings
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const event = context.payload.workflow_run;
+            const pr = event.pull_requests?.[0];
+            if (!pr || !fs.existsSync('review-input/swiftlint.json')) return;
+            const {data: current} = await github.rest.pulls.get({...context.repo, pull_number: pr.number});
+            if (current.state !== 'open' || current.head.sha !== event.head_sha) return;
+            const file = fs.readFileSync('review-input/swiftlint.json', 'utf8');
+            if (file.length > 2_000_000) throw new Error('Oversized review input');
+            const findings = JSON.parse(file);
+            if (!Array.isArray(findings) || !findings.length) return;
+            const rows = findings.slice(0, 30).map(item => {
+              const path = String(item.file || '').replace(/^.*?\/Sources\//, 'Sources/');
+              const safePath = path.startsWith('Sources/') && !path.includes('..')
+                ? path.replace(/[`<>\[\]()@\\\r\n]/g, ' ') : '[invalid path]';
+              const rule = String(item.rule_id || 'lint').replace(/[^\w-]/g, '');
+              const reason = String(item.reason || '').replace(/[`<>\[\]()!#@\\\r\n]/g, ' ').slice(0, 500);
+              const line = Number.isInteger(item.line) ? item.line : '?';
+              return `- \`${safePath}:${line}\` **${rule}**: ${reason}`;
+            });
+            const marker = `<!-- quality-review:${event.head_sha} -->`;
+            const {data: reviews} = await github.rest.pulls.listReviews({...context.repo, pull_number: pr.number});
+            if (reviews.some(item => item.body?.includes(marker))) return;
+            await github.rest.pulls.createReview({
+              ...context.repo, pull_number: pr.number, commit_id: current.head.sha, event: 'COMMENT',
+              body: `${marker}\n### Code quality review\n${rows.join('\n')}\n\nAddress these concrete findings and rerun the quality gate. This review does not approve behavior or security.`
+            });

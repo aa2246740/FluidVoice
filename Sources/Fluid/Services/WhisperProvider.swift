@@ -212,13 +212,18 @@ final class WhisperProvider: TranscriptionProvider {
         )
 
         if availableMemoryGB < requiredMemoryGB {
-            let errorMessage = String.fluidLocalizedFormat("""
-            Insufficient memory for %@.
-            Required: %@ GB
-            Available: %@ GB
+            let errorMessage = String.fluidLocalizedFormat(
+                """
+                Insufficient memory for %@.
+                Required: %@ GB
+                Available: %@ GB
 
-            Please try a smaller model or close other applications to free up memory.
-            """, targetModel.displayName, String(format: "%.1f", requiredMemoryGB), String(format: "%.1f", availableMemoryGB))
+                Please try a smaller model or close other applications to free up memory.
+                """,
+                targetModel.displayName,
+                String(format: "%.1f", requiredMemoryGB),
+                String(format: "%.1f", availableMemoryGB)
+            )
             DebugLogger.shared.error("WhisperProvider: \(errorMessage)", source: "WhisperProvider")
             throw NSError(
                 domain: "WhisperProvider",

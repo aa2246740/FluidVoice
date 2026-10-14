@@ -1,0 +1,107 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FluidVoice local API",
+    "version": "1.0.0",
+    "description": "Disabled by default. Loopback clients only; no HTTP authentication. Enabling grants local processes access to history and provider execution. Do not log request/response bodies. Maximum request size: 500 MiB."
+  },
+  "servers": [{"url": "http://127.0.0.1:47733"}],
+  "paths": {
+    "/v1/health": {"get": {
+      "operationId": "health", "summary": "Read app health and version",
+      "responses": {"200": {"description": "Healthy", "content": {"application/json": {"schema": {"type": "object", "required": ["status", "version"], "properties": {"status": {"const": "ok"}, "version": {"type": "string"}}}}}}}
+    }},
+    "/v1/history": {"get": {
+      "operationId": "history", "summary": "Read newest loaded dictation history",
+      "parameters": [{"name": "limit", "in": "query", "description": "Default 100; integer values clamp to 1–1000.", "schema": {"type": "integer", "default": 100}}],
+      "responses": {
+        "200": {"description": "History loaded", "content": {"application/json": {"schema": {"type": "object", "required": ["count", "items"], "properties": {"count": {"type": "integer"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/HistoryItem"}}}}}}},
+        "503": {"$ref": "#/components/responses/Error"}
+      }
+    }},
+    "/v1/dictionary/replacements": {
+      "get": {
+        "operationId": "listReplacements", "summary": "Read replacement rules",
+        "responses": {"200": {"description": "Replacement list", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReplacementList"}}}}}
+      },
+      "post": {
+        "operationId": "writeReplacements", "summary": "Append or replace dictionary rules",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {
+          "type": "object", "properties": {
+            "mode": {"$ref": "#/components/schemas/WriteMode"},
+            "entries": {"type": "array", "items": {"$ref": "#/components/schemas/Replacement"}},
+            "triggers": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+            "replacement": {"type": "string"}
+          },
+          "anyOf": [{"required": ["entries"]}, {"required": ["triggers", "replacement"]}]
+        }}}},
+        "responses": {"200": {"description": "Updated rules; invalid/empty entries are filtered", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReplacementList"}}}}, "400": {"$ref": "#/components/responses/Error"}}
+      }
+    },
+    "/v1/dictionary/custom-words": {
+      "get": {
+        "operationId": "listCustomWords", "summary": "Read boosted words and aliases",
+        "responses": {"200": {"description": "Custom words", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CustomWordsList"}}}}, "500": {"$ref": "#/components/responses/Error"}}
+      },
+      "post": {
+        "operationId": "writeCustomWords", "summary": "Append or replace boosted words",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {
+          "type": "object", "properties": {
+            "mode": {"$ref": "#/components/schemas/WriteMode"},
+            "entries": {"type": "array", "items": {"$ref": "#/components/schemas/CustomWord"}},
+            "text": {"type": "string"}, "weight": {"type": ["number", "null"]},
+            "aliases": {"type": "array", "items": {"type": "string"}}
+          },
+          "anyOf": [{"required": ["entries"]}, {"required": ["text"]}]
+        }}}},
+        "responses": {"200": {"description": "Updated words; empty entries are filtered", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CustomWordsList"}}}}, "400": {"$ref": "#/components/responses/Error"}}
+      }
+    },
+    "/v1/transcribe": {"post": {
+      "operationId": "transcribe", "summary": "Transcribe a local file, base64 audio or raw uploaded audio",
+      "description": "If both path and audioBase64 are provided, a nonempty path wins. Provider errors and unsupported audio return 400. Files are read with the app user's permissions.",
+      "parameters": [{"name": "X-Filename", "in": "header", "description": "Raw upload extension hint; default audio.wav.", "schema": {"type": "string"}}],
+      "requestBody": {"required": true, "content": {
+        "application/json": {"schema": {"type": "object", "properties": {"path": {"type": "string"}, "audioBase64": {"type": "string", "contentEncoding": "base64"}, "filename": {"type": "string"}}, "anyOf": [{"required": ["path"]}, {"required": ["audioBase64"]}]}},
+        "application/octet-stream": {"schema": {"type": "string", "format": "binary"}},
+        "audio/wav": {"schema": {"type": "string", "format": "binary"}}
+      }},
+      "responses": {
+        "200": {"description": "Transcript", "content": {"application/json": {"schema": {"type": "object", "required": ["text", "confidence", "sampleCount", "provider"], "properties": {"text": {"type": "string"}, "confidence": {"type": "number"}, "sampleCount": {"type": "integer"}, "provider": {"type": "string"}}}}}},
+        "400": {"$ref": "#/components/responses/Error"}, "413": {"$ref": "#/components/responses/Error"}
+      }
+    }},
+    "/v1/postprocess": {"post": {
+      "operationId": "postprocess", "summary": "Process text with the currently configured AI provider",
+      "requestBody": {"required": true, "content": {
+        "application/json": {"schema": {"type": "object", "required": ["text"], "properties": {"text": {"type": "string"}}}},
+        "text/plain": {"schema": {"type": "string", "description": "UTF-8"}}
+      }},
+      "responses": {
+        "200": {"description": "Processed text", "content": {"application/json": {"schema": {"type": "object", "required": ["text", "provider", "model"], "properties": {"text": {"type": "string"}, "provider": {"type": "string"}, "model": {"type": "string"}}}}}},
+        "400": {"$ref": "#/components/responses/Error"}, "413": {"$ref": "#/components/responses/Error"}
+      }
+    }}
+  },
+  "components": {
+    "responses": {"Error": {"description": "JSON error; unsupported methods return 405 and unknown paths 404.", "content": {"application/json": {"schema": {"type": "object", "required": ["error"], "properties": {"error": {"type": "string"}}}}}}},
+    "schemas": {
+      "WriteMode": {"type": "string", "enum": ["append", "replace"], "default": "append", "description": "replace with an empty entries array clears the corresponding dictionary."},
+      "Replacement": {"type": "object", "required": ["triggers", "replacement"], "properties": {"id": {"type": ["string", "null"], "format": "uuid"}, "triggers": {"type": "array", "items": {"type": "string"}}, "replacement": {"type": "string"}}},
+      "ReplacementList": {"type": "object", "required": ["count", "items"], "properties": {"count": {"type": "integer"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/Replacement"}}}},
+      "CustomWord": {"type": "object", "required": ["text"], "properties": {"text": {"type": "string"}, "weight": {"type": ["number", "null"]}, "aliases": {"type": "array", "items": {"type": "string"}, "default": []}}},
+      "CustomWordsList": {"type": "object", "required": ["count", "items"], "properties": {"count": {"type": "integer"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/CustomWord"}}}},
+      "HistoryItem": {
+        "type": "object",
+        "required": ["id", "timestamp", "originalText", "finalText", "rawText", "processedText", "appName", "windowTitle", "characterCount", "wasAIProcessed"],
+        "properties": {
+          "id": {"type": "string", "format": "uuid"}, "timestamp": {"type": "string", "format": "date-time"},
+          "originalText": {"type": "string"}, "finalText": {"type": "string"}, "rawText": {"type": "string"}, "processedText": {"type": "string"},
+          "appName": {"type": "string"}, "windowTitle": {"type": "string"}, "characterCount": {"type": "integer"}, "wasAIProcessed": {"type": "boolean"},
+          "transcriptionDurationMilliseconds": {"type": ["integer", "null"]}, "parakeetProcessingDurationMilliseconds": {"type": ["integer", "null"]},
+          "aiProcessingDurationMilliseconds": {"type": ["integer", "null"]}, "aiTokensPerSecond": {"type": ["number", "null"]}, "aiProcessingError": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

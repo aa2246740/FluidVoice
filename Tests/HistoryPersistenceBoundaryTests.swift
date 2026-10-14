@@ -86,6 +86,14 @@ final class DebugLogger {
         let reloaded = try await TranscriptionHistoryWriter(defaults: defaults, url: url).load()
         precondition(reloaded == store.entries, "Migration, metadata and concurrent startup edits must round-trip")
         print("PASS: 8,400-entry migration, exact round-trip, startup insert/audio/delete")
+        let queryDatabase = try TranscriptionHistoryDatabase(url: url)
+        let beforeQueries = queryDatabase.preparedReadStatementCount
+        let queried = try queryDatabase.read()
+        precondition(queried.count == 8400)
+        precondition(queryDatabase.preparedReadStatementCount - beforeQueries == 1, "History loading must use one read query, not one per row")
+        _ = try queryDatabase.read()
+        precondition(queryDatabase.preparedReadStatementCount - beforeQueries == 2, "Query counts must reflect each actual read")
+        print("PASS: N+1 guard, 8,400 rows loaded with one SELECT per read")
 
         // Reject a write touching any old entry. A new dictation and its audio must only update their row.
         try self.sql(url, "CREATE TRIGGER reject_old BEFORE INSERT ON history WHEN NEW.id != '\(newID.uuidString)' BEGIN SELECT RAISE(FAIL, 'unrelated row rewritten'); END")

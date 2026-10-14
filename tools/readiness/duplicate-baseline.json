@@ -1,0 +1,3431 @@
+{
+  "owner": "@aa2246740",
+  "clones": {
+    "c6e789af146ab1e03b6a4038e69600138f6ed22c4a5e8c30f85cda9f7faa5c34": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 4136,
+        "end": 4153
+      },
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 4265,
+        "end": 4283
+      }
+    ],
+    "2847374fcf85dcbec093c9186f6c64dabe59f5548c45f4d5873e0ff8bf4f3734": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5787,
+        "end": 5802
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 192,
+        "end": 207
+      }
+    ],
+    "a4bcddd47a04c599f3560e59df4b0b8a4e3ec3eb8d629f93b0901cbd42f5ea7f": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5788,
+        "end": 5803
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 193,
+        "end": 208
+      }
+    ],
+    "2dc93b18338ffb36c5a0b507a45216f94304327d49bc2d4a44bce4af6ba0647d": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5790,
+        "end": 5804
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 195,
+        "end": 209
+      }
+    ],
+    "262ea958e10eef0a7d3a911a7bbd598e69a7893e0fe9f0e69316ee7a60e33f00": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5791,
+        "end": 5805
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 196,
+        "end": 210
+      }
+    ],
+    "dbdb0a8ea00c4fd9a3624bcc5f9679f34348f8d3acb0b08fc7f2deb518e144ce": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5792,
+        "end": 5806
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 197,
+        "end": 211
+      }
+    ],
+    "1aa6752e3f672e2e321e1d6002b63aa39e1e84a389fd1a56d366956a76e80042": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5794,
+        "end": 5807
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 199,
+        "end": 212
+      }
+    ],
+    "86113280292d17ddb979e5f277e70e5d95b1b060ec12e99e4b5c5b3481bc3113": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5811,
+        "end": 5825
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 216,
+        "end": 230
+      }
+    ],
+    "23727a0b5c4ec6afdbf9b12b76bd61917713ac117948f3a0161f78bf490c887c": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5812,
+        "end": 5827
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 217,
+        "end": 232
+      }
+    ],
+    "5f433097f36d320e75aaa0619be732464d881bc1d5d6bdaf63a48f88e46b43e7": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5813,
+        "end": 5828
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 218,
+        "end": 233
+      }
+    ],
+    "38da26b67222aa7616d524be625978c85703af75ad4d3698f247339d235d88e9": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5815,
+        "end": 5829
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 220,
+        "end": 234
+      }
+    ],
+    "0b35f3be5f958f4fb16750992bc936ede1eb6bbed319099a52b0b128a2d55a01": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5818,
+        "end": 5832
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 223,
+        "end": 237
+      }
+    ],
+    "c494e6488d52218ce46c42e9270b8052dccf67dacc8b09c5515e7407c6083a08": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5819,
+        "end": 5834
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 224,
+        "end": 239
+      }
+    ],
+    "9e7df78d36ed492c047e3719a142dfa4838a2e570b2119e0f62e26a967c7a61c": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5820,
+        "end": 5835
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 225,
+        "end": 240
+      }
+    ],
+    "7c20a54e0eab56692e82a79ef65282f5be98646af65ceb78b667d27e73f73f37": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5821,
+        "end": 5836
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 226,
+        "end": 241
+      }
+    ],
+    "3089db606a3d7d2e8c62a7efc6259eb2e7d97ee725957dd918db441f73785896": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5822,
+        "end": 5837
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 227,
+        "end": 242
+      }
+    ],
+    "f1b529bca03a60352be0e7003b568de21e295c697d04e82ed16dda6130a4daaf": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5823,
+        "end": 5838
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 228,
+        "end": 243
+      }
+    ],
+    "9944c9307f9768b02303faab53f96f9f2c1d38c10a158ebc31b9556aa2a78d00": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5824,
+        "end": 5839
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 229,
+        "end": 244
+      }
+    ],
+    "e602cf736741c4d5e01fa9fed33e472a1d169c9b27d01979729c1069deb68fcf": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5825,
+        "end": 5840
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 230,
+        "end": 245
+      }
+    ],
+    "d313244e9702da94600b6a62d229f4ac2536860199aa2ca97cbba7f4b3c0abc0": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5827,
+        "end": 5841
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 232,
+        "end": 246
+      }
+    ],
+    "26c80df629485e9576f16143acd0da1590ff7ee877b320039623d496a63e0047": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5828,
+        "end": 5843
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 233,
+        "end": 248
+      }
+    ],
+    "702427b4ba68d873a22a715919fab2b3f660b31f514b62e6f3b3dd2b5e3688fb": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5829,
+        "end": 5844
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 234,
+        "end": 249
+      }
+    ],
+    "2bb90e4f93c6ab991e0a12d9f8679dc718c8e9eea6cfafac556afae70645fba8": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5847,
+        "end": 5862
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 252,
+        "end": 267
+      }
+    ],
+    "8016ef9d9937a9cf3ba7aea4eda9dc39346965fa4d1d4accc3159bf3e4526924": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5848,
+        "end": 5863
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 253,
+        "end": 268
+      }
+    ],
+    "6c96435a0bd72f9ccf9cab521087006d25ca135e1fd2facab9a29a345e31a5e4": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5849,
+        "end": 5864
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 254,
+        "end": 269
+      }
+    ],
+    "a0c2b865428f490760747afe4fd57aab58ff5c22b50efefb37a4a86be390f3bb": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5850,
+        "end": 5865
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 255,
+        "end": 270
+      }
+    ],
+    "2a474feec333baa2a4f9a68891b49542616def54e206356c6a73df571116fd1b": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5852,
+        "end": 5866
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 257,
+        "end": 271
+      }
+    ],
+    "9733ac86cb78208f65de5b12368276f0bd6a53814f228390f49d8ad738a8e32d": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5853,
+        "end": 5867
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 258,
+        "end": 272
+      }
+    ],
+    "d32cd113d594fd55912065f53a0d3e28c6df4037f4baabd634afe015523155eb": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5854,
+        "end": 5868
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 259,
+        "end": 273
+      }
+    ],
+    "0f243c8298355701cbe2ae6f7f33a10d3cc41d69621a58e8fb0cbee6d34eb756": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5856,
+        "end": 5869
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 261,
+        "end": 274
+      }
+    ],
+    "f8dfc837585ad26569b63b54f276a0590cbf6658675292a53b25386fc5d91203": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5858,
+        "end": 5870
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 263,
+        "end": 275
+      }
+    ],
+    "5cef489888efede1d262b659a135b5e3be41c0c00981ace3a386cd0a55d32e0c": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5859,
+        "end": 5873
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 264,
+        "end": 278
+      }
+    ],
+    "60b94698c0005157594049f730248a1e935891828e23a88a803e0f682e512bc7": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5860,
+        "end": 5874
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 265,
+        "end": 279
+      }
+    ],
+    "21c15508044072258f634c765d0a33fa667e94c442496aad488ad4802b92b552": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5862,
+        "end": 5875
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 267,
+        "end": 280
+      }
+    ],
+    "e76272a89f6d8c75dfb9860c609143515b7b348c8dc34361bf67f1d54d7f487b": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5863,
+        "end": 5876
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 268,
+        "end": 281
+      }
+    ],
+    "5220c31c616a4f93ddfaba01b708e95fd76ab07f44f825103152dc4c5cb52ae2": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5864,
+        "end": 5877
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 269,
+        "end": 282
+      }
+    ],
+    "402c4b6b7afd9b62934f6932cc6195d07e9dfb0eccff9ae10bed9764cb6d086a": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5865,
+        "end": 5878
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 270,
+        "end": 283
+      }
+    ],
+    "e78b7ea7b9ce077fe07a7ee56a9ffdf3ddb1ddeaa74687a026533428bbded076": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5866,
+        "end": 5879
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 271,
+        "end": 284
+      }
+    ],
+    "3ed0e7fac5f726569d1566274a6c9c4c746897313a9a75952058688ef93ff57f": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5867,
+        "end": 5883
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 272,
+        "end": 288
+      }
+    ],
+    "8ec0c1cb7acfbc6bce101fe8cbda68642b53d0a93daa468edd18f6acb79da544": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5868,
+        "end": 5884
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 273,
+        "end": 289
+      }
+    ],
+    "c4f4a721f4efe7781bf66eda7384069712a44ca18d09541c0ee356866a9ba89a": [
+      {
+        "file": "Sources/Fluid/ContentView.swift",
+        "start": 5888,
+        "end": 5901
+      },
+      {
+        "file": "Sources/Fluid/UI/PermissionDragGuide.swift",
+        "start": 293,
+        "end": 306
+      }
+    ],
+    "9b5468ec6f624bfcd7166d70f88035cbe7310abe8634d0adb7cbcddfaa18699a": [
+      {
+        "file": "Sources/Fluid/Networking/AIProvider.swift",
+        "start": 26,
+        "end": 54
+      },
+      {
+        "file": "Sources/Fluid/Services/LLMClient.swift",
+        "start": 1028,
+        "end": 1058
+      }
+    ],
+    "4940c47481a91ddccbd801981f4ce39ad4b32665db166f3c655c51b2dd9da035": [
+      {
+        "file": "Sources/Fluid/Networking/AIProvider.swift",
+        "start": 27,
+        "end": 55
+      },
+      {
+        "file": "Sources/Fluid/Services/LLMClient.swift",
+        "start": 1029,
+        "end": 1059
+      }
+    ],
+    "8a68dd205952a4d0525db0b804d0655554fc5ad15a4474f59e06e44c78aef68d": [
+      {
+        "file": "Sources/Fluid/Networking/FunctionCallingProvider.swift",
+        "start": 186,
+        "end": 202
+      },
+      {
+        "file": "Sources/Fluid/Networking/FunctionCallingProvider.swift",
+        "start": 327,
+        "end": 342
+      }
+    ],
+    "74e8489742115363ba6e3b7f3451356c00a895651e5bbc725bd41b3239fbf302": [
+      {
+        "file": "Sources/Fluid/Networking/FunctionCallingProvider.swift",
+        "start": 187,
+        "end": 203
+      },
+      {
+        "file": "Sources/Fluid/Networking/FunctionCallingProvider.swift",
+        "start": 328,
+        "end": 343
+      }
+    ],
+    "921c32a9eba1b66cc108f18cfcfe117514c7c85d64ce6aea3587ce3bf0a56bf5": [
+      {
+        "file": "Sources/Fluid/Networking/FunctionCallingProvider.swift",
+        "start": 188,
+        "end": 206
+      },
+      {
+        "file": "Sources/Fluid/Networking/FunctionCallingProvider.swift",
+        "start": 329,
+        "end": 346
+      }
+    ],
+    "1dae4348c9d73d62cabcd0f6f80e47c33c1d2e1285327f1c2620d0a714adbfbd": [
+      {
+        "file": "Sources/Fluid/Persistence/TranscriptionHistoryStore.swift",
+        "start": 737,
+        "end": 756
+      },
+      {
+        "file": "Sources/Fluid/Persistence/TranscriptionHistoryStore.swift",
+        "start": 808,
+        "end": 828
+      }
+    ],
+    "bc02f0a46761edf6c02d35db99a5fb6110d4bf0472787aaca45ee4f1ea3f83f8": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 1929,
+        "end": 1943
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 2178,
+        "end": 2192
+      }
+    ],
+    "c30e5b71485efc9ab5a5c8102656b5d1f06ec19e9cd616a69b5b84f3b64673d0": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 1930,
+        "end": 1944
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 2179,
+        "end": 2193
+      }
+    ],
+    "a8feb951e48a8e1c7db3cf3ea1c5a91f2f80f4cc4b712b0bc6358951d4388de4": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4788,
+        "end": 4805
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5154,
+        "end": 5171
+      }
+    ],
+    "af767e65e2ccffd663460fcb1cf9196d5c0105fc3e23a0ac0000c73da23110c7": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4789,
+        "end": 4806
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5155,
+        "end": 5172
+      }
+    ],
+    "7a0ea65a0440580e072bad725c5102fbacc7ff8c94607917bdc9223ce60768d3": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4790,
+        "end": 4807
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5156,
+        "end": 5173
+      }
+    ],
+    "41275aa373e79a320b512d81bf3f48d1212e184101e41eefa07f97db10eb0c26": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4791,
+        "end": 4808
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5157,
+        "end": 5174
+      }
+    ],
+    "21c42e7e22db4e8997bf29ff009dc6b18ca6a6cea8b0a3aa857953a21e85650b": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4793,
+        "end": 4812
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5159,
+        "end": 5176
+      }
+    ],
+    "5371d27ea6fdb12d7cc90d99302124649a8fb2db4f7206926a235150b3032768": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4848,
+        "end": 4862
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5224,
+        "end": 5238
+      }
+    ],
+    "e575bce134764417902707d48118325d799c48ec4584bce5f957f8d921376fe0": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4850,
+        "end": 4864
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5226,
+        "end": 5240
+      }
+    ],
+    "6c4943c61937ee5477e11300e45e26d07289e14e09ffd75e02c33fb5e2a92eab": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4851,
+        "end": 4867
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5227,
+        "end": 5243
+      }
+    ],
+    "b4fa650849726ac9bddd4bbb051b3fa059aa070c2773b18de27b9ac4e7c99e95": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4852,
+        "end": 4868
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5228,
+        "end": 5244
+      }
+    ],
+    "7ef0383be6b4ea43ad6ebd5a440ad6bacc64290735d8aca0cf29373844b3d5ce": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4853,
+        "end": 4869
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5229,
+        "end": 5245
+      }
+    ],
+    "cfe47b1644c6f88983d3bf9b2284de38c3f940be8083afb28888abdea26afbe6": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4856,
+        "end": 4870
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5232,
+        "end": 5246
+      }
+    ],
+    "5d09253562c1087e2162837a02daff82e68cc6ea1e855ddf7e17d220e6b84723": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 4857,
+        "end": 4872
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5233,
+        "end": 5248
+      }
+    ],
+    "daecd440a9461b53969270e043903c957b09d61af1c79ee7a4170c4798f0b27c": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5176,
+        "end": 5189
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5997,
+        "end": 6010
+      }
+    ],
+    "d10118bef69aaaeb92e82fad795ad7a2e79bee5987f4dc785a23448394cca3ad": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5178,
+        "end": 5191
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5999,
+        "end": 6012
+      }
+    ],
+    "41c93a4743fb22ffa6cdf013a094e1d19a1da77e0cb53deb405d529722decb6f": [
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 5179,
+        "end": 5192
+      },
+      {
+        "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+        "start": 6000,
+        "end": 6013
+      }
+    ],
+    "318c5c9d491000c7cf0471bf254e38b4790e39fc81447bfbded959a6903ad3f0": [
+      {
+        "file": "Sources/Fluid/Services/MenuBarManager.swift",
+        "start": 1371,
+        "end": 1388
+      },
+      {
+        "file": "Sources/Fluid/UI/SettingsView.swift",
+        "start": 1894,
+        "end": 1911
+      }
+    ],
+    "8f3250cb85e7ed16962cf6d7e16e8cb015cf724890427171818eedd816aca4b6": [
+      {
+        "file": "Sources/Fluid/Services/MenuBarManager.swift",
+        "start": 1373,
+        "end": 1392
+      },
+      {
+        "file": "Sources/Fluid/UI/SettingsView.swift",
+        "start": 1896,
+        "end": 1915
+      }
+    ],
+    "91ae736c22a48ed18dafe3b2e2d165652d0d4700ee15d4087f390832970fd17f": [
+      {
+        "file": "Sources/Fluid/Services/MenuBarManager.swift",
+        "start": 1374,
+        "end": 1393
+      },
+      {
+        "file": "Sources/Fluid/UI/SettingsView.swift",
+        "start": 1897,
+        "end": 1916
+      }
+    ],
+    "95914ddd387deb122452a7c580c737a404db065acd3551e89aa10286ba506c91": [
+      {
+        "file": "Sources/Fluid/Services/MenuBarManager.swift",
+        "start": 1376,
+        "end": 1394
+      },
+      {
+        "file": "Sources/Fluid/UI/SettingsView.swift",
+        "start": 1899,
+        "end": 1917
+      }
+    ],
+    "2420cbb5b21a0542837b4534d34ad1c9ea63b6cb51bfb468d90a79ec69b45ad7": [
+      {
+        "file": "Sources/Fluid/Services/NotchOverlayManager.swift",
+        "start": 458,
+        "end": 471
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 390,
+        "end": 403
+      }
+    ],
+    "bb7bf617ca7f13c976cb284c2a7c5faee0853c3482f745539b80cc625662c871": [
+      {
+        "file": "Sources/Fluid/Services/NotchOverlayManager.swift",
+        "start": 459,
+        "end": 472
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 391,
+        "end": 404
+      }
+    ],
+    "470365519b694803acc3f672b2a389c5441918a5de0ebffa587df50db328ee82": [
+      {
+        "file": "Sources/Fluid/Services/NotchOverlayManager.swift",
+        "start": 460,
+        "end": 473
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 392,
+        "end": 405
+      }
+    ],
+    "74f87a7923db25a4dad4ecf80c98e36fb97cc35b83a860bcc4e8a697e1331a2a": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 456,
+        "end": 467
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 490,
+        "end": 501
+      }
+    ],
+    "242c61e3735ca01917fff4cd4c8732c0bdf0fb5ee04d94cc9bb769fa43b39c52": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 457,
+        "end": 468
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 491,
+        "end": 502
+      }
+    ],
+    "da6b5d79dc1bfc39228598a448aef702c323da88531b2f7f27aa4b50258c430c": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 458,
+        "end": 471
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 492,
+        "end": 505
+      }
+    ],
+    "339ac362e85a27be9e102b9d546c7600ebb1a64460e8828ed92cc4edbb4c4a54": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 459,
+        "end": 473
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 493,
+        "end": 507
+      }
+    ],
+    "f7a6d504b6bd0bf59df329845a95270cf94ff8148417db08a1ec43d30ee91deb": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 460,
+        "end": 474
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 494,
+        "end": 508
+      }
+    ],
+    "264a9a9eb11e685f3af4de8d0ec0d563a095e5ec384aecd2f8f8c7f96c1c00a1": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 461,
+        "end": 477
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 495,
+        "end": 511
+      }
+    ],
+    "ceccc6b6363cdcfa0bab2460df227fe7633a728690d64e10be6b5da0fd53827d": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 462,
+        "end": 478
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 496,
+        "end": 512
+      }
+    ],
+    "9f1fc03de69cb58a2e426d63b7f4e70d4df9181fd0d86bd48b9d56574fb4a22e": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 463,
+        "end": 480
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 497,
+        "end": 514
+      }
+    ],
+    "a61b0e45e0e157ed3c9b486d3b63e45ee38da92bfbb5df950bbf06dd0b1fe01c": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 464,
+        "end": 481
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 498,
+        "end": 515
+      }
+    ],
+    "f3f8bd6a9cd7f582e6718914d664c686e3b6bb9a68bf3a58dc3cceb77755794c": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 465,
+        "end": 482
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 499,
+        "end": 516
+      }
+    ],
+    "ee3c25e1a505a52eac9aac1a12b50f48d1df5fc1656e758573873852c2182ab0": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 466,
+        "end": 483
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 500,
+        "end": 517
+      }
+    ],
+    "230af97cdc8e94b0aa1b3dde5bcfc0621da7523bf5d4942a6b27b1d712649983": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 467,
+        "end": 484
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 501,
+        "end": 518
+      }
+    ],
+    "b67d70dc59caf94b76189572c67fd5d165eee3c4dcac56f3113616958dd09ab5": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 468,
+        "end": 487
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 502,
+        "end": 521
+      }
+    ],
+    "39daabc41cbf808a7cb1c5c1e5783b1812dd01a42f446f19fa8c23be449e2460": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 471,
+        "end": 489
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 505,
+        "end": 523
+      }
+    ],
+    "702db6a4a416b00325dc9304a0aa15448691c8644319b42d9f5ba9398383bb59": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 473,
+        "end": 491
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 507,
+        "end": 525
+      }
+    ],
+    "a74e54748605dc7cc996d9c02bb9a0093bf5e019abaf7ce2d933c0c8534a9b7a": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 474,
+        "end": 492
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 508,
+        "end": 526
+      }
+    ],
+    "1ec87460be72f4c4a0d9c8756192076c06229dbdaad201ffb41a5fd31b808ca2": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 477,
+        "end": 496
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 511,
+        "end": 530
+      }
+    ],
+    "942fc7c05b501380a7924f8d17819a030e6f931da975feacedf674e9d332fecd": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 478,
+        "end": 498
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 512,
+        "end": 532
+      }
+    ],
+    "65e5698127364d121186d70c6f1d462e3102051c491dce83185ffec6b5655580": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 480,
+        "end": 499
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 514,
+        "end": 533
+      }
+    ],
+    "e47e63646c4d0ab753ed0970bd5af74259b23d94ff26189bd15015f3f8d2bb1c": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 481,
+        "end": 502
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 515,
+        "end": 536
+      }
+    ],
+    "3f14b78056e1b0cf36d31bb14d31be99896817c045a060aea98128b52d4cf198": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 482,
+        "end": 504
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 516,
+        "end": 538
+      }
+    ],
+    "b0bbc85e3ad07a2c2dabd6c9a7da18eeb522fdef9e4aebc36352268097edafea": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 483,
+        "end": 505
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 517,
+        "end": 539
+      }
+    ],
+    "2ec5bc19a64e66483c52f7eb468f48da1ed9cf558c71b0e52b47aeaa1484abfa": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 484,
+        "end": 506
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 518,
+        "end": 540
+      }
+    ],
+    "bba54b1cd1dad2246481b597e64da5fb283e940a1f8ac1b36a680a661cff420d": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 487,
+        "end": 507
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 521,
+        "end": 541
+      }
+    ],
+    "9ea09e6daba758b59f81d82b9de84a791ebcdec0717ef4ac789eee43a7c0154c": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 489,
+        "end": 508
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 523,
+        "end": 542
+      }
+    ],
+    "d870dc6d3011223a2d2688e19f36b692324590289c13ee1ce93706412430cba9": [
+      {
+        "file": "Sources/Fluid/Services/PrivateAIIntegrationService.swift",
+        "start": 491,
+        "end": 509
+      },
+      {
+        "file": "Sources/Fluid/Services/PrivateAIProvider.swift",
+        "start": 525,
+        "end": 543
+      }
+    ],
+    "6d6e9b05788b5d6833c70c8004846e84625a9279d1054580d311e3a5e516c3be": [
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 1170,
+        "end": 1183
+      },
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 2164,
+        "end": 2177
+      }
+    ],
+    "9d8fdde6c48146cd0a64e06676e45e0b7036538665a184f944a70e595bde3343": [
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 1171,
+        "end": 1185
+      },
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 2165,
+        "end": 2179
+      }
+    ],
+    "9a18ce6ab3aa50cc7a89fbae2405f5399a95b8f70f908e5d10bc42fea0774565": [
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 2236,
+        "end": 2248
+      },
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 2685,
+        "end": 2697
+      }
+    ],
+    "545bd7efe996cbeb63cf1e3bf04fb6a84b0644c5d3281c1eccc13d8144a119aa": [
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 2237,
+        "end": 2249
+      },
+      {
+        "file": "Sources/Fluid/UI/AISettingsView+AIConfiguration.swift",
+        "start": 2686,
+        "end": 2698
+      }
+    ],
+    "195bc4ca116b7da7e27390f5879456cac75a8a07706de7a7d0f05675a84eab83": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3773,
+        "end": 3789
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3953,
+        "end": 3969
+      }
+    ],
+    "04f31bfe3b1b240b56201fe28f80863fead59a1a412a730c9227520a39351e7f": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3774,
+        "end": 3790
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3954,
+        "end": 3970
+      }
+    ],
+    "1021e388872019f696783b619ad84a3807537a9680b50e55ab8083698901cdb4": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3775,
+        "end": 3791
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3955,
+        "end": 3971
+      }
+    ],
+    "c3629830d7c1c2b328a74a1e9e44cc39b3ef425fe6ed9d303bb1f6b03e5eb54d": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3776,
+        "end": 3792
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3956,
+        "end": 3972
+      }
+    ],
+    "6b177ef22fe37dd4011bb0f408be1d0e64467a146f71cce88a420de31e6880fe": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3777,
+        "end": 3793
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3957,
+        "end": 3973
+      }
+    ],
+    "8d8fff440d7801962f6fd63e75ca2c793baafda394116734f82c4e82fac7738e": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3780,
+        "end": 3794
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3960,
+        "end": 3974
+      }
+    ],
+    "8801ba84f4321075b7de37f0832bbdb90be3ba485088b8efb4f54dde48635991": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3783,
+        "end": 3795
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3963,
+        "end": 3975
+      }
+    ],
+    "f2c7124734919d7171bc2af0ffb54a0e822b1bc95093a136eb5f0c055b90a586": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3785,
+        "end": 3798
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3965,
+        "end": 3978
+      }
+    ],
+    "115e3017da5197090abbd44055ac5d54733aad3b56a0c85bed652426afc6553e": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3786,
+        "end": 3799
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3966,
+        "end": 3979
+      }
+    ],
+    "38ef25f980bd3b86101c7fe1b23ea074754bbe2fe53ce0a9a5a76b5f04130e06": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3787,
+        "end": 3800
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3967,
+        "end": 3980
+      }
+    ],
+    "4408e0f72b4f0f5264e3712ef5e58f5859e8e62f71a3dbb459422e4ae08c9444": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3788,
+        "end": 3801
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3968,
+        "end": 3981
+      }
+    ],
+    "45ff3fb6093771c2b07c529d25bd52a5ddaf9f0af32628f0c2b6e8edb669917b": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3789,
+        "end": 3802
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3969,
+        "end": 3982
+      }
+    ],
+    "0b0369cc74c8d5144cff53047ba53e7b509e5d9217ce01f2e7e9d16b7cad5e88": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3791,
+        "end": 3805
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3971,
+        "end": 3985
+      }
+    ],
+    "b78aa323f3d933499dc66b97e416eb12c7900d6b91180949d4179507789af064": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3792,
+        "end": 3810
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3972,
+        "end": 3990
+      }
+    ],
+    "b7cffee87decdbd10464b93171da5641a2d9948c710b02f5e46c663e820e061a": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3794,
+        "end": 3812
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3974,
+        "end": 3992
+      }
+    ],
+    "799ecefae5cf29128f380a2e32126efd5aa2662169cc95d44adb5b6fba8d717c": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3795,
+        "end": 3813
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3975,
+        "end": 3993
+      }
+    ],
+    "d716e9329a8d8abf6caea50940b382b2dcf29235006858f3fc81aed7a9411892": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3798,
+        "end": 3814
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3978,
+        "end": 3994
+      }
+    ],
+    "bbb78cde5ca92623e9160be6c1776038c869b68ec1d6b85baf8c5784e9de45a4": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3799,
+        "end": 3815
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3979,
+        "end": 3995
+      }
+    ],
+    "03fe6c88187ea5b6c71850c93d1c0762c217b517ac3d575c6a4d371dedd6c27b": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3800,
+        "end": 3816
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3980,
+        "end": 3996
+      }
+    ],
+    "9d2008c2300f62fa4892ed732ee25044d885d140ad26156b7e8ffc98cd56ae63": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3801,
+        "end": 3817
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3981,
+        "end": 3997
+      }
+    ],
+    "9443fa3887bc843179244aba95df0811e818d1372791bc83d07db983c44bb47d": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3802,
+        "end": 3818
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3982,
+        "end": 3998
+      }
+    ],
+    "46ec34b31e85d359c9171e53565e11795b33fe33cc2da42fdbbecb1a8ea378cc": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3803,
+        "end": 3821
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3983,
+        "end": 4001
+      }
+    ],
+    "32dbed121436b9d8150cd0a84e50e122a557c5d627e47bbcac5cb6b0e21294f9": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3805,
+        "end": 3823
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3985,
+        "end": 4003
+      }
+    ],
+    "cf6f3a2704d300ea4bd477aafda1a55892ea37419f45cf87bcf8f7bed5823248": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3810,
+        "end": 3824
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3990,
+        "end": 4004
+      }
+    ],
+    "fcb43d2861a034b8529b53b13f4df53ace359c63b30d3e0ffa203bd4f9712fca": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3811,
+        "end": 3825
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3991,
+        "end": 4005
+      }
+    ],
+    "0760189a38e7cf6963505aafdd5a9316dc82a0147180c2a56ffc797ecf58b71e": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3812,
+        "end": 3829
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3992,
+        "end": 4009
+      }
+    ],
+    "554d0a404a1f9369a80d773fe65528d784cc3fa35f038c11f52d3ab032a1b498": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3813,
+        "end": 3831
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3993,
+        "end": 4011
+      }
+    ],
+    "75aeeb0ba8c3b544ea2e99491d71000d94de45d2cf867b84ed84b4515df337bf": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3814,
+        "end": 3833
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3994,
+        "end": 4013
+      }
+    ],
+    "3b24f58745fe2161cd3112db7466fdeaa503a91d66eb450f5b7dbd5f0118d719": [
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3815,
+        "end": 3836
+      },
+      {
+        "file": "Sources/Fluid/UI/CustomDictionaryView.swift",
+        "start": 3995,
+        "end": 4016
+      }
+    ],
+    "b4c0c29038562246080f3a6d7e14111113bc63c4dbbe1cfe6f0c66298bc0e992": [
+      {
+        "file": "Sources/Fluid/Views/AutomaticDictionaryCorrectionOverlay.swift",
+        "start": 374,
+        "end": 387
+      },
+      {
+        "file": "Sources/Fluid/Views/DeliveryFailureOverlay.swift",
+        "start": 125,
+        "end": 138
+      }
+    ],
+    "c6ba1e4f5b275a4a8a4cd153b33afd046e70fccb1da33184909ddd83d4d8eef8": [
+      {
+        "file": "Sources/Fluid/Views/AutomaticDictionaryCorrectionOverlay.swift",
+        "start": 375,
+        "end": 388
+      },
+      {
+        "file": "Sources/Fluid/Views/DeliveryFailureOverlay.swift",
+        "start": 126,
+        "end": 139
+      }
+    ],
+    "946cf460a62a5612fb8603eb39f744d85808e5c38988e80234d45e50b10cfebd": [
+      {
+        "file": "Sources/Fluid/Views/AutomaticDictionaryCorrectionOverlay.swift",
+        "start": 376,
+        "end": 389
+      },
+      {
+        "file": "Sources/Fluid/Views/DeliveryFailureOverlay.swift",
+        "start": 127,
+        "end": 140
+      }
+    ],
+    "1d45aa304a115f769076739261d591fdcfddff3dd12d354f82778b68e20f8f31": [
+      {
+        "file": "Sources/Fluid/Views/AutomaticDictionaryCorrectionOverlay.swift",
+        "start": 377,
+        "end": 390
+      },
+      {
+        "file": "Sources/Fluid/Views/DeliveryFailureOverlay.swift",
+        "start": 128,
+        "end": 141
+      }
+    ],
+    "2bb275fa3001b1266286124bbcedfdef6c89031ee990b41ec91af7b3b5687f5a": [
+      {
+        "file": "Sources/Fluid/Views/AutomaticDictionaryCorrectionOverlay.swift",
+        "start": 442,
+        "end": 456
+      },
+      {
+        "file": "Sources/Fluid/Views/DeliveryFailureOverlay.swift",
+        "start": 189,
+        "end": 203
+      }
+    ],
+    "05291ffeae15dc70c552b213df985ed069b05e3d063334a492d8272ff5648478": [
+      {
+        "file": "Sources/Fluid/Views/AutomaticDictionaryCorrectionOverlay.swift",
+        "start": 443,
+        "end": 457
+      },
+      {
+        "file": "Sources/Fluid/Views/DeliveryFailureOverlay.swift",
+        "start": 190,
+        "end": 204
+      }
+    ],
+    "1065fde27fc036cdfbc5ec00b00afba405b0d5d55ae04a782949d41d7d46ade2": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 802,
+        "end": 816
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1079,
+        "end": 1093
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1343,
+        "end": 1357
+      }
+    ],
+    "eb4dc66e5122d3b5aa5b0551e49bf82de8afeb83caec5f62f0751c86d944c946": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 803,
+        "end": 818
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1080,
+        "end": 1095
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1344,
+        "end": 1359
+      }
+    ],
+    "c525a888ba08bbce27b1b8d27c136aca2b7d8e81b15bf1f11b5999789bd3c7b7": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 804,
+        "end": 819
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1081,
+        "end": 1096
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1345,
+        "end": 1360
+      }
+    ],
+    "cdf1e2cc728428b8b390a9bf706663654699ea3246cc060bcd6bc4290cdf5683": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 805,
+        "end": 821
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1082,
+        "end": 1098
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1346,
+        "end": 1362
+      }
+    ],
+    "ac591691a0abd762dc8b847aa783481fc59581e8445d09720227641c204f5642": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 807,
+        "end": 822
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1084,
+        "end": 1099
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1348,
+        "end": 1363
+      }
+    ],
+    "14b5bc2cd23c4b24dc304b02d7fdc52574b01ffb6a1f7853a724f582e8d455f2": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 808,
+        "end": 823
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1085,
+        "end": 1100
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1349,
+        "end": 1364
+      }
+    ],
+    "0f73fe0857c29cf602d90dd10343af5be7558dcab43eca4716b60938b48674ec": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 809,
+        "end": 824
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1086,
+        "end": 1101
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1350,
+        "end": 1365
+      }
+    ],
+    "590cbf218180585d27b9949d6369eeb6f69c2cb63971159eb53b26f09bb83376": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 810,
+        "end": 826
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1087,
+        "end": 1103
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1351,
+        "end": 1367
+      }
+    ],
+    "f667b05bc786bdec43e5a3cc430f8beb009966ee368d415155e48840b885326c": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 811,
+        "end": 827
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1088,
+        "end": 1104
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1352,
+        "end": 1368
+      }
+    ],
+    "859a00ab7b8151f37c42af05bff4b71cc3b602a5ce382d49263dc36d62bcebe8": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 813,
+        "end": 828
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1090,
+        "end": 1105
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1354,
+        "end": 1369
+      }
+    ],
+    "645b6f4054d529262190558e56aeb9582527eed8570068ad26b6062ed01e53e7": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 815,
+        "end": 830
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1092,
+        "end": 1107
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1356,
+        "end": 1371
+      }
+    ],
+    "0f6f38e4378a85a2f4cd4d7d13f1667f52ff3226bf965f2b1f88a34e9e913217": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 816,
+        "end": 831
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1093,
+        "end": 1108
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1357,
+        "end": 1372
+      }
+    ],
+    "8e1b1bfa6a35d4be2f2e98677cef982c82cb41914f5a32f5740e343b2068edc3": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 853,
+        "end": 869
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1130,
+        "end": 1146
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1394,
+        "end": 1410
+      }
+    ],
+    "0d20f3a8aea5f34a2e9d1336b852ec67c6317a82e41dcf603724a8e33261a7ee": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 854,
+        "end": 870
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1131,
+        "end": 1147
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1395,
+        "end": 1411
+      }
+    ],
+    "b5356f8601a3877ff8fc1f1232a75c9096fa2bd50b07266e87b8652e21aacaae": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 855,
+        "end": 871
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1132,
+        "end": 1148
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1396,
+        "end": 1412
+      }
+    ],
+    "9e9080e1ec9245b64ddb3ec84d8a98fd83caf0734959fc7214b94e99244474ab": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 856,
+        "end": 872
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1133,
+        "end": 1149
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1397,
+        "end": 1413
+      }
+    ],
+    "fd4a782745d7c0cf4656ea283a2eb152db5797d160595981c62ac983510662e6": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 857,
+        "end": 873
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1134,
+        "end": 1150
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1398,
+        "end": 1414
+      }
+    ],
+    "de69209f6ad587d7e2f61575cc4b41a3158db54302b2db8ce945f2863bede13d": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 859,
+        "end": 877
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1136,
+        "end": 1154
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1400,
+        "end": 1418
+      }
+    ],
+    "1cc6c0f361cb5981d757e8232263127da844424c06332d7907df465bf6aa7335": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 860,
+        "end": 878
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1137,
+        "end": 1155
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1401,
+        "end": 1419
+      }
+    ],
+    "ad958f2ac2bbe706b87674d310707e0c313cc7748aacc70920a5baf25530ba9a": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 862,
+        "end": 880
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1139,
+        "end": 1157
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1403,
+        "end": 1421
+      }
+    ],
+    "cbebb64863bebf4a0e358a3d7cd5c73fbe3d30d00d2008f10510897f7580ffb6": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 863,
+        "end": 881
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1140,
+        "end": 1158
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1404,
+        "end": 1422
+      }
+    ],
+    "a050ee8bfae55de1c92bc07287cd211ede7f0af10b5cb4e0915349144598916a": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 865,
+        "end": 882
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1142,
+        "end": 1159
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1406,
+        "end": 1423
+      }
+    ],
+    "dbbaa35fde9766122aca1299053272c6a5c2109a3f60bce48046c8c47c11ca76": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 868,
+        "end": 884
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1145,
+        "end": 1161
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1409,
+        "end": 1425
+      }
+    ],
+    "2e9b3675327541a56223564c82593c04883cf89d5bfe5218a7101e4a147f3b5b": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 869,
+        "end": 885
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1146,
+        "end": 1162
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1410,
+        "end": 1426
+      }
+    ],
+    "991bf54a4eede44de05858edd4f28277fdfa1a0b2a999dd92f0acf7f91dbc8e2": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 870,
+        "end": 889
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1147,
+        "end": 1166
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1411,
+        "end": 1430
+      }
+    ],
+    "ee7edc45b10f9e8d220f0a0334e7d8152fcff7c15e46cb17d40ba9a95fd3336e": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 871,
+        "end": 890
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1148,
+        "end": 1167
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1412,
+        "end": 1431
+      }
+    ],
+    "d1af1f18b7d1c25ea4cf7d1fc967e1ecaab0560deb00dc6b197e22e5d7ce8543": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 877,
+        "end": 894
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1154,
+        "end": 1171
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1418,
+        "end": 1435
+      }
+    ],
+    "70b3424684014b87be40dbbb2c89ccddace0bab1c0e9443a24c0645989a8ea11": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 878,
+        "end": 898
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1155,
+        "end": 1175
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1419,
+        "end": 1439
+      }
+    ],
+    "37d810b55e1acbc9658d1fa9aabb3c975e38b975ecd68888df1899201b616979": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 880,
+        "end": 899
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1157,
+        "end": 1176
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1421,
+        "end": 1440
+      }
+    ],
+    "254670763094a7990828f78a1cc8769baa8b5e12504ce7bc64b542b460896d76": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 881,
+        "end": 901
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1158,
+        "end": 1178
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1422,
+        "end": 1442
+      }
+    ],
+    "0e7f47d99d57b7a438e8e8c639f6d3293e2858f1ff2beeb1d90865b2bbf0b578": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 882,
+        "end": 902
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1159,
+        "end": 1179
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1423,
+        "end": 1443
+      }
+    ],
+    "7ad3d2dd85392e01081c4a482435652fbf501d8781ccc69dc9ff40ec07651992": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 884,
+        "end": 903
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1161,
+        "end": 1180
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1425,
+        "end": 1444
+      }
+    ],
+    "539796ac92624d2d11bb9d10b4d06ad946f9936f051919803097732730fc3126": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 885,
+        "end": 905
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1162,
+        "end": 1182
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1426,
+        "end": 1446
+      }
+    ],
+    "e02f8bc078df8cc127e20a30fa0f19942303d665bfe12e35236aec741d309544": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 889,
+        "end": 906
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1166,
+        "end": 1183
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1430,
+        "end": 1447
+      }
+    ],
+    "1079dac7f662b04bb1a8417b46fe4b4a424fd67370e65adf4761b8a5fa40a0b3": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 890,
+        "end": 909
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1167,
+        "end": 1186
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1431,
+        "end": 1450
+      }
+    ],
+    "395937b2fd4e8684c0facca01a4f16ea5277f1ff30f28994c77f498c7220275a": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 891,
+        "end": 910
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1168,
+        "end": 1187
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1432,
+        "end": 1451
+      }
+    ],
+    "ba6253e7415df46eb3a15ccea80f4d823e59bebecc99f78bd6a085ea60c3c6d2": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 893,
+        "end": 911
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1170,
+        "end": 1188
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1434,
+        "end": 1452
+      }
+    ],
+    "4b8a015744ef83cb5b86d6169a9ff3d3f7cf5655c4edfaf139859537b644ce54": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 894,
+        "end": 912
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1171,
+        "end": 1189
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1435,
+        "end": 1453
+      }
+    ],
+    "ec43c47f6c10b41c08448124441b8ad6aac286506ad83bdbd8ad270d1dc86c0e": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 898,
+        "end": 913
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1175,
+        "end": 1190
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1439,
+        "end": 1454
+      }
+    ],
+    "09ccb5d59098574400443c3c44a071168765a096642a7b020982b46f6c2d55cb": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 899,
+        "end": 914
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1176,
+        "end": 1191
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1440,
+        "end": 1455
+      }
+    ],
+    "dccc7c7101487d431d51022d2c54266ba657ac95b41fa16d09b4c97dba32a683": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 901,
+        "end": 916
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1178,
+        "end": 1193
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1442,
+        "end": 1457
+      }
+    ],
+    "7f81ea6bd88dc7a518cce34cdc6542f6a85f36ba48fade4c9f1e210c29d737c3": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 902,
+        "end": 919
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1179,
+        "end": 1196
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1443,
+        "end": 1460
+      }
+    ],
+    "8f6fa78bf29fc15b0049ffdb76dfb440b4329ed606b61593bd5d19c556efe892": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 903,
+        "end": 920
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1180,
+        "end": 1197
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1444,
+        "end": 1461
+      }
+    ],
+    "de75a1839baeecc9580acdd5bf10253dd8ecbcd90b5fca2a588ddc4f58b655bc": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 905,
+        "end": 922
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1182,
+        "end": 1199
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1446,
+        "end": 1463
+      }
+    ],
+    "e91d9578255ac573c70eb8e7ac056197366be65167ebd190ac16923fef27c57e": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 906,
+        "end": 923
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1183,
+        "end": 1200
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1447,
+        "end": 1464
+      }
+    ],
+    "8e9e85bd73059b5bdcd2cfd80716ea7036086a366397f3761173de2962069ad3": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 909,
+        "end": 924
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1186,
+        "end": 1201
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1450,
+        "end": 1465
+      }
+    ],
+    "53ab9a4b993e4bf21a81997d3a0b8e7e8b0ce9928ff398addc5c2e0b1f9a583d": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 910,
+        "end": 925
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1187,
+        "end": 1202
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1451,
+        "end": 1466
+      }
+    ],
+    "7dbadb5843935f7d1ac775668ea445296631b2b1b6c61b2f10efe3c432786b60": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 911,
+        "end": 928
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1188,
+        "end": 1205
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1452,
+        "end": 1469
+      }
+    ],
+    "bf516f3a636bcc0309ba73461649bbb24614d4774bfbb2a65c84b12ba3e63426": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 912,
+        "end": 929
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1189,
+        "end": 1206
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1453,
+        "end": 1470
+      }
+    ],
+    "3e4d36062ca7d8ca5c64e40766c36516608a3caa590ed14530237265cbf111fd": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 913,
+        "end": 932
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1190,
+        "end": 1209
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1454,
+        "end": 1473
+      }
+    ],
+    "2dd7b4f6c4050416c4bd7fa60e332bb983b75c9cae1919f83c5f2b53cb64fb54": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 914,
+        "end": 933
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1191,
+        "end": 1210
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1455,
+        "end": 1474
+      }
+    ],
+    "8468820997e39d707f4ec581e9cb730c7d7c082af194bb31c2c51dd5aad89969": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 916,
+        "end": 935
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1193,
+        "end": 1212
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1457,
+        "end": 1476
+      }
+    ],
+    "1b420e623e63a9adb7ff29c3b8040642ae3aee72808b74ce3af9434f7211c3d1": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 919,
+        "end": 936
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1196,
+        "end": 1213
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1460,
+        "end": 1477
+      }
+    ],
+    "bd836a9a230c734ce4a15e4b7ade9425f454c380abe213857e1de604774fa204": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 920,
+        "end": 937
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1197,
+        "end": 1214
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1461,
+        "end": 1478
+      }
+    ],
+    "41e6444fdd2b10baa01a6970ab465d985edbeb1ac291f60cbce68e05899bbdc5": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 925,
+        "end": 943
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1202,
+        "end": 1220
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1466,
+        "end": 1484
+      }
+    ],
+    "36dcad67cf40a4e3b906aceeee88d2bf6d1dc1ba262ffce949a1b5b6dd0d5289": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 928,
+        "end": 945
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1205,
+        "end": 1222
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1469,
+        "end": 1486
+      }
+    ],
+    "8096558079be99120aca81d326a8dac1aa1b7a6ae4cd6fe410676a5e8331a976": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 929,
+        "end": 946
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1206,
+        "end": 1223
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1470,
+        "end": 1487
+      }
+    ],
+    "6480730fa0c01a2cabe70c8e510dc37fe323a342d55e30e8e0ed9e7410b67a2e": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 932,
+        "end": 947
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1209,
+        "end": 1224
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1473,
+        "end": 1488
+      }
+    ],
+    "27c6096f3ba5a229cffae396bbd8dc2ec0b883c131886fcac9fce9f48bc059c4": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 933,
+        "end": 948
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1210,
+        "end": 1225
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1474,
+        "end": 1489
+      }
+    ],
+    "0794736a1382a83910993df2bb4a2486ed242fa899dbaa17d3babefe1143e69e": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 964,
+        "end": 980
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1240,
+        "end": 1256
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1504,
+        "end": 1520
+      }
+    ],
+    "bb89d9b95cd298c83abe2566c754c2c951789032ddd49f92b87d699c71f22518": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 965,
+        "end": 982
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1241,
+        "end": 1258
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1505,
+        "end": 1522
+      }
+    ],
+    "17f9ecdf1844b69512e977576415167885fa859ea6f4e462943d2c4a8d56d210": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1011,
+        "end": 1030
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1275,
+        "end": 1294
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1539,
+        "end": 1558
+      }
+    ],
+    "4023abd309c2d4f8bee87705fd30b18731490834849f4a359192b14b03f299e7": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1012,
+        "end": 1031
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1276,
+        "end": 1295
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1540,
+        "end": 1559
+      }
+    ],
+    "9e78b3c5b7254fa3f356384778b3a841588b6fc45b9e025a07da2b11bb961a05": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1014,
+        "end": 1033
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1278,
+        "end": 1297
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1542,
+        "end": 1561
+      }
+    ],
+    "5eefd0bc18ee1be2470ff6f31cbe370263853c9f359326d04241eddd685c6aa5": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1015,
+        "end": 1034
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1279,
+        "end": 1298
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1543,
+        "end": 1562
+      }
+    ],
+    "2696b9ae87f2ae334062d496c91ccdd65da0dbbe716b46c39f8158588fbad1fb": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1018,
+        "end": 1035
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1282,
+        "end": 1299
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1546,
+        "end": 1563
+      }
+    ],
+    "e98e29505d148345db0e0dbd7fb8a71d585498045c3eaf4117c4f630f23aca82": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1019,
+        "end": 1037
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1283,
+        "end": 1301
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1547,
+        "end": 1565
+      }
+    ],
+    "ca5ada697dee210e671bf81f35997625ae0b4bbcf01228aacf0147417ed7c922": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1023,
+        "end": 1038
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1287,
+        "end": 1302
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1551,
+        "end": 1566
+      }
+    ],
+    "ac1f5dd3bf7eb31ba22c4461934e65ab789f1de19fc0dcdbb5b708a80e612e98": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1024,
+        "end": 1040
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1288,
+        "end": 1304
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1552,
+        "end": 1568
+      }
+    ],
+    "30a45fa4db7d010de7604a124d50187e7c4f76b1ae6a834d8adafd883856da1a": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1025,
+        "end": 1041
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1289,
+        "end": 1305
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1553,
+        "end": 1569
+      }
+    ],
+    "b416ed8aec46068f7e404afe2cef08bdf3bf6d230e5357e77d8c673245a7f77f": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1027,
+        "end": 1042
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1291,
+        "end": 1306
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1555,
+        "end": 1570
+      }
+    ],
+    "3c5eec26930ad867e0bad79137c073d4190afa009c10ef76d00e5a3519212310": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1028,
+        "end": 1043
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1292,
+        "end": 1307
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1556,
+        "end": 1571
+      }
+    ],
+    "6ea912aca21161166d0433c2415a2cb55e4f5e140815de8561d6ba1177584fe1": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1030,
+        "end": 1045
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1294,
+        "end": 1309
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1558,
+        "end": 1573
+      }
+    ],
+    "487c6af09b1f15f88433a1a0bb052630e70890e789f27f0f523dcae63b286e1a": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1031,
+        "end": 1046
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1295,
+        "end": 1310
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1559,
+        "end": 1574
+      }
+    ],
+    "228342abd5f77ca2e4d1d31ad78438146ad2481501fecf205138b2767357e659": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1033,
+        "end": 1047
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1297,
+        "end": 1311
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1561,
+        "end": 1575
+      }
+    ],
+    "2e638110bb1cad75ede17bae754b243571ce5ec963a14be511dff7f81e170314": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1034,
+        "end": 1048
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1298,
+        "end": 1312
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1562,
+        "end": 1576
+      }
+    ],
+    "60bc43ac57013554df3540e9ff8b9d1ea4d96a185cf21fb9449e4a177dc1ce4f": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1035,
+        "end": 1051
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1299,
+        "end": 1315
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1563,
+        "end": 1579
+      }
+    ],
+    "ac8dd36f494860e9810fa84f001fa0e33952e174f19545f70b8d6942ddb23849": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1037,
+        "end": 1052
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1301,
+        "end": 1316
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1565,
+        "end": 1580
+      }
+    ],
+    "644fa5ec6f5eea406a28db1fc0cfa7f2eccad95aa777b3ebe8b1a93207d470ee": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1038,
+        "end": 1053
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1302,
+        "end": 1317
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1566,
+        "end": 1581
+      }
+    ],
+    "8ab59eb7a52fa8d5d2e0e13fe2b0e0f313901241c37ffe269534f1e1b1c5a586": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1040,
+        "end": 1054
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1304,
+        "end": 1318
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1568,
+        "end": 1582
+      }
+    ],
+    "c48bab0c4f62938e8989f23302ed7667c090b3ce707883a0f815366f73bf101f": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1041,
+        "end": 1058
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1305,
+        "end": 1322
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1569,
+        "end": 1586
+      }
+    ],
+    "07b161e5d779f1ca69ec9255b25622a954ff51959fd9e0bade811d720e3e1c1a": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1042,
+        "end": 1059
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1306,
+        "end": 1323
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1570,
+        "end": 1587
+      }
+    ],
+    "a18f73c19ad80779154fd4b7fa95fa712fa17df88a29fc18188ccafc2255035c": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1043,
+        "end": 1060
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1307,
+        "end": 1324
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1571,
+        "end": 1588
+      }
+    ],
+    "22a730710b18137f7d5fda5b9e22975f35feaee68a44a250a8e524cc8897d373": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1045,
+        "end": 1061
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1309,
+        "end": 1325
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1573,
+        "end": 1589
+      }
+    ],
+    "80d49fce9c69bd274e9a22d024f537f02bee22d6e44eedaa7e4a5773a4149e1b": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1046,
+        "end": 1062
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1310,
+        "end": 1326
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1574,
+        "end": 1590
+      }
+    ],
+    "162f09c9ca67a2990c71bcb9ae9f02eb776c0bbbe41a24c5790f25fb71d6c46e": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1047,
+        "end": 1063
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1311,
+        "end": 1327
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1575,
+        "end": 1591
+      }
+    ],
+    "43f55a2fae6109eadb7327f024041db7c422103eacdb85a8e4192e5f22acbe13": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1048,
+        "end": 1064
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1312,
+        "end": 1328
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1576,
+        "end": 1592
+      }
+    ],
+    "e147edd2898c61b7fbe2501b6eb24817ad694e6473015427d114b6829590ca7d": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1051,
+        "end": 1065
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1315,
+        "end": 1329
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1579,
+        "end": 1593
+      }
+    ],
+    "1e4495546689f2cf13c435efb8bf9e7a4d04d29b0ff7de9a8041b329a6d78919": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1052,
+        "end": 1067
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1316,
+        "end": 1331
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1580,
+        "end": 1595
+      }
+    ],
+    "cbd7760c40c5313f5fadaf1a1d3b22ab8b25a02cf37266fd031201853a962446": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1053,
+        "end": 1068
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1317,
+        "end": 1332
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1581,
+        "end": 1596
+      }
+    ],
+    "efe573e4d1be7b48e16e5886ea1b2ae317f125d167e8fe1ab16dddcc03859ed5": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1264,
+        "end": 1283
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1528,
+        "end": 1547
+      }
+    ],
+    "27a1b12a1fc4dd48156a387b8185e211849dd69bde52e67133d481013429e8ab": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1265,
+        "end": 1287
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1529,
+        "end": 1551
+      }
+    ],
+    "8fe7fa00930d197e6e459d4292e6778ddfffa7b39d3f52945968fae725ed1a47": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1266,
+        "end": 1288
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1530,
+        "end": 1552
+      }
+    ],
+    "100659ef9747b11e161e0dd0b4d5cd32eed9d361dac7c3312fe07029f16f4b02": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1268,
+        "end": 1289
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1532,
+        "end": 1553
+      }
+    ],
+    "5904a69aead413fee19131116fe3219331e131bcf6814d9a624a4fcc09adba39": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1269,
+        "end": 1291
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1533,
+        "end": 1555
+      }
+    ],
+    "da263fa723cbfccbad765409a892256f63bc7a036adcfec775d30849c9734b31": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1272,
+        "end": 1292
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 1536,
+        "end": 1556
+      }
+    ],
+    "fcedffdd2d38494becc05ee792038945f66cd3c0e5135e01ffae96fce7a8de6b": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 2644,
+        "end": 2661
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 634,
+        "end": 651
+      }
+    ],
+    "870f235ba2ddab0248196fa93c83a962b9fc1bedb0e306ad3493660a075609e2": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 2648,
+        "end": 2662
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 638,
+        "end": 652
+      }
+    ],
+    "a4019ed9718f5cf8b3ec9e40133599a3577ef9c3fc1ab83734b420d4536381e3": [
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 3173,
+        "end": 3185
+      },
+      {
+        "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+        "start": 3243,
+        "end": 3255
+      }
+    ],
+    "6f59ac281cb0d053ab52718eb20592e7e4e1b61bfa850bda40a952c8d7970282": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1200,
+        "end": 1220
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1939,
+        "end": 1959
+      }
+    ],
+    "67d52dac26ad0f8928265e6e8d1d364697a4201fb32479fa348b9b321855c4e9": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1203,
+        "end": 1221
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1942,
+        "end": 1960
+      }
+    ],
+    "fa30d8fd9b4a1e02b72b872c479af63fdc5397e304758dae9135729453bc4ae8": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1205,
+        "end": 1222
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1944,
+        "end": 1961
+      }
+    ],
+    "3daf8b954eb774ae2960e381770677611aa09da23145140453693c2171f96274": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1206,
+        "end": 1225
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1945,
+        "end": 1964
+      }
+    ],
+    "a0608980c76ec41f53a3ee84d99725510e56c09558407da83e2a7700f4700c33": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1208,
+        "end": 1226
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1947,
+        "end": 1965
+      }
+    ],
+    "821a71bc55d3e4e0f07045691ac01b354638a849f1430aeea3ea8706c83cce98": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1210,
+        "end": 1227
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1949,
+        "end": 1966
+      }
+    ],
+    "bbc75d7db539b1386a1ec4627cad013e3dd013f673f06e42fd7ad73fc1c717cf": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1211,
+        "end": 1228
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1950,
+        "end": 1967
+      }
+    ],
+    "40d070be8716aa6df9da4b2aa37420904f6a39440ff5241b1342a95f715d8ddc": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1212,
+        "end": 1229
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1951,
+        "end": 1968
+      }
+    ],
+    "82df2511e23f000b206ab222ce3c1fa70a1fc0e28c3712dc9984edf706c57656": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1213,
+        "end": 1232
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1952,
+        "end": 1971
+      }
+    ],
+    "f50f12a69098bc5f10acebc9e7c4e7920157739ce288b32c3c2b2e53b8f4f134": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1214,
+        "end": 1233
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1953,
+        "end": 1972
+      }
+    ],
+    "bbd88e72e919979a12d9071a84ef1bb32c1cb46a776baf07e6fe1cbfe6f44fb8": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1217,
+        "end": 1234
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1956,
+        "end": 1973
+      }
+    ],
+    "dd3551974a2c566a7cdad7fddf682f9cb5bac8d25218b5b7138742757c1cd9b6": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1220,
+        "end": 1235
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1959,
+        "end": 1974
+      }
+    ],
+    "33127d51b157693122b0dfdfa6da8f79880cd649a2b4cc78db6f86cdf12a4f22": [
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1221,
+        "end": 1236
+      },
+      {
+        "file": "Sources/Fluid/Views/NotchContentViews.swift",
+        "start": 1960,
+        "end": 1975
+      }
+    ]
+  }
+}

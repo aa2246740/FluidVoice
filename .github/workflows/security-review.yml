@@ -1,0 +1,93 @@
+name: Swift security assessment
+on:
+  pull_request:
+    branches: [main]
+    paths: ["Sources/**", "Vendor/**", "Fluid.xcodeproj/**", "**/Package.resolved", ".github/workflows/security-review.yml", "tools/readiness/measure.py", "Tests/Readiness/test_security_workflow.py", "Tests/Readiness/test_timing_boundaries.py"]
+  push:
+    branches: [main]
+    paths: ["Sources/**", "Vendor/**", "Fluid.xcodeproj/**", "**/Package.resolved", ".github/workflows/security-review.yml", "tools/readiness/measure.py", "Tests/Readiness/test_security_workflow.py", "Tests/Readiness/test_timing_boundaries.py"]
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  security-events: write
+concurrency:
+  group: security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  swift:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Record security toolchain and source provenance
+        id: toolchain
+        run: |
+          mkdir -p quality-artifacts/security
+          xcodebuild -version | tee quality-artifacts/security/toolchain.log
+          echo "version=$(xcodebuild -version | shasum -a 256 | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          {
+            git rev-parse HEAD
+            uname -m
+            printf 'github_run_id=%s\n' "$GITHUB_RUN_ID"
+          } > quality-artifacts/security/provenance.txt
+      - uses: actions/cache/restore@v4
+        id: packages
+        with:
+          path: .build/xcode-packages
+          key: codeql-packages-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.version }}-${{ hashFiles('**/Package.resolved') }}
+      - name: Resolve pinned packages
+        timeout-minutes: 7
+        run: |
+          python3 tools/readiness/measure.py --name security-package-resolution \
+            --output quality-artifacts/security/timings.json \
+            --timeout-seconds 300 --log quality-artifacts/security/package-resolution.log -- \
+            xcodebuild -resolvePackageDependencies -project Fluid.xcodeproj -scheme Fluid \
+              -clonedSourcePackagesDirPath .build/xcode-packages \
+              -onlyUsePackageVersionsFromResolvedFile
+      # Save downloads now: a later cancelled trace cannot run the cache post-step.
+      - uses: actions/cache/save@v4
+        if: steps.packages.outputs.cache-hit != 'true'
+        with:
+          path: .build/xcode-packages
+          key: ${{ steps.packages.outputs.cache-primary-key }}
+      - name: Initialize Swift compiler tracing
+        timeout-minutes: 5
+        uses: github/codeql-action/init@v3
+        with:
+          languages: swift
+          build-mode: manual
+      # A cold product build is intentional: reusing DerivedData can hide source
+      # from CodeQL's compiler tracing. Dependency downloads are still cached.
+      - name: Trace the public application build
+        timeout-minutes: 32
+        run: |
+          python3 tools/readiness/measure.py --name security-native-build \
+            --output quality-artifacts/security/timings.json \
+            --timeout-seconds 1800 --log quality-artifacts/security/xcodebuild.log -- \
+            xcodebuild build -project Fluid.xcodeproj -scheme Fluid \
+              -destination "platform=macOS,arch=$(uname -m)" \
+              -derivedDataPath DerivedData-Security \
+              -clonedSourcePackagesDirPath .build/xcode-packages \
+              -onlyUsePackageVersionsFromResolvedFile \
+              CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      - name: Analyze traced Swift sources
+        timeout-minutes: 10
+        uses: github/codeql-action/analyze@v3
+        with:
+          # CodeQL resets this directory; keep earlier diagnostics in its parent.
+          output: quality-artifacts/security/sarif
+          upload: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+      - name: Preserve security diagnostics and assessments
+        if: always()
+        timeout-minutes: 2
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-assessment
+          path: quality-artifacts/security/
+          retention-days: 14
+          if-no-files-found: error

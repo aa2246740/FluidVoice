@@ -1,11 +1,15 @@
 name: Build and Test
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -25,25 +29,34 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Detect build-related changes
+    - name: Detect build-related changes without PR API permissions
       id: filter
-      uses: dorny/paths-filter@v3
+      run: python3 tools/readiness/changes.py
+
+  quality:
+    name: Repository quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v4
+    - name: Validate quality tooling
+      run: python3 tools/readiness/measure.py --name quality-tools --output quality-artifacts/timings.json -- python3 -m unittest discover -s Tests/Readiness -p 'test_*.py' -v
+    - name: Check repository contracts
+      run: python3 tools/readiness/check.py
+    - name: Detect newly duplicated Swift behavior
+      run: python3 tools/readiness/duplicates.py
+    - name: Retain quality reports even after failure
+      if: always()
+      uses: actions/upload-artifact@v4
       with:
-        filters: |
-          relevant:
-            - 'Sources/**'
-            - 'Tests/**'
-            - 'Fluid.xcodeproj/**'
-            - 'Package.swift'
-            - 'Package.resolved'
-            - 'Info.plist'
-            - 'Fluid.entitlements'
-            - '.swiftlint.yml'
-            - '.github/workflows/build.yml'
+        name: repository-quality
+        path: quality-artifacts/
+        retention-days: 14
+        if-no-files-found: error
 
   lint:
     name: SwiftLint
-    if: needs.changes.outputs.relevant == 'true' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    if: needs.changes.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -58,21 +71,25 @@ jobs:
           --volume "$PWD:$PWD" \
           --workdir "$PWD" \
           ghcr.io/realm/swiftlint:0.63.2 \
-          lint --strict --config .swiftlint.yml
+          lint --strict --config .swiftlint.yml --reporter json > swiftlint.json
+    - name: Retain lint findings
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: swiftlint-findings
+        path: swiftlint.json
+        retention-days: 14
 
   build:
     name: Build FluidVoice
-    if: needs.changes.outputs.relevant == 'true' && needs.lint.result == 'success'
-    needs: [changes, lint]
+    if: needs.changes.outputs.relevant == 'true' && needs.lint.result == 'success' && needs.quality.result == 'success'
+    needs: [changes, lint, quality]
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Install xcpretty
-      run: sudo gem install xcpretty
 
     - name: Cache Whisper models
       uses: actions/cache@v4
@@ -86,28 +103,88 @@ jobs:
         xcode-version: latest-stable
     
     - name: Show Xcode version
-      run: xcodebuild -version
+      id: toolchain
+      run: |
+        xcodebuild -version
+        echo "version=$(xcodebuild -version | shasum -a 256 | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache resolved packages and incremental build products
+      uses: actions/cache@v4
+      with:
+        path: |
+          .build/xcode-packages
+          DerivedData
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.version }}-${{ hashFiles('**/Package.resolved') }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.version }}-${{ hashFiles('**/Package.resolved') }}-
       
     - name: Run standalone onboarding regressions
-      run: sh Tests/run_onboarding_tests.sh
+      run: python3 tools/readiness/measure.py --name onboarding --output quality-artifacts/timings.json -- sh Tests/run_onboarding_tests.sh
 
     - name: Run release highlights regressions
-      run: sh Tests/run_release_highlights_tests.sh
+      run: python3 tools/readiness/measure.py --name release-highlights --output quality-artifacts/timings.json -- sh Tests/run_release_highlights_tests.sh
 
     - name: Run cloud ASR client regressions
-      run: sh Tests/run_cloud_asr_client_tests.sh
+      run: python3 tools/readiness/measure.py --name cloud-asr --output quality-artifacts/timings.json -- sh Tests/run_cloud_asr_client_tests.sh
+
+    - name: Enforce critical standalone coverage
+      run: python3 tools/readiness/measure.py --name critical-coverage --output quality-artifacts/timings.json -- python3 tools/readiness/standalone.py
+
+    - name: Check history query counts and persistence
+      run: python3 tools/readiness/measure.py --name history-persistence --output quality-artifacts/timings.json -- sh Tests/run_history_persistence_tests.sh
+    - name: Verify private log sinks and strict Swift concurrency
+      run: python3 tools/readiness/measure.py --name log-privacy --output quality-artifacts/timings.json -- sh Tests/run_log_privacy_tests.sh
+    - name: Verify production IOKit callback ABI and actor boundary
+      run: python3 tools/readiness/measure.py --name clamshell-callback --output quality-artifacts/timings.json -- sh Tests/run_clamshell_callback_tests.sh
 
     # Tiny Whisper GGUF output is nondeterministic on hosted macOS runners.
     # Keep this E2E assertion in the suite for local validation, but skip it in CI.
     - name: Build and test (excluding flaky Tiny Whisper E2E)
+      run: bash tools/readiness/native_ci.sh
+
+    - name: Retain compact native diagnostics
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: native-macos-diagnostics
+        path: |
+          quality-artifacts/native-diagnostics/
+          quality-artifacts/native-diagnostics.log
+          quality-artifacts/build-metadata.json
+          quality-artifacts/timings.json
+          quality-artifacts/bundle-size.json
+          quality-artifacts/xcodebuild.log
+        retention-days: 14
+        if-no-files-found: error
+
+    - name: Retain build, coverage, timing and XCTest evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: native-macos-validation
+        path: quality-artifacts/
+        retention-days: 14
+        if-no-files-found: error
+
+  gate:
+    name: Quality gate
+    if: always()
+    needs: [changes, quality, lint, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      CHANGES: ${{ needs.changes.result }}
+      QUALITY: ${{ needs.quality.result }}
+      LINT: ${{ needs.lint.result }}
+      BUILD: ${{ needs.build.result }}
+      RELEVANT: ${{ needs.changes.outputs.relevant }}
+      DRAFT: ${{ github.event.pull_request.draft || false }}
+    steps:
+    - name: Reject failed or unexpectedly skipped required checks
       run: |
-        set -o pipefail
-        xcodebuild test \
-          -project Fluid.xcodeproj \
-          -scheme Fluid \
-          -destination 'platform=macOS,arch=arm64' \
-          -skip-testing:FluidDictationIntegrationTests/DictationE2ETests/testDictationEndToEnd_whisperTiny_transcribesFixture \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO \
-          | xcpretty
+        test "$CHANGES" = success
+        test "$QUALITY" = success
+        if [ "$RELEVANT" = true ] && [ "$DRAFT" != true ]; then
+          test "$LINT" = success
+          test "$BUILD" = success
+        fi

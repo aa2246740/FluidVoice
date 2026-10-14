@@ -1,0 +1,8 @@
+# Default maintainer and review routing for the personal fork.
+* @aa2246740
+/.github/ @aa2246740
+/Sources/Fluid/Services/ @aa2246740
+/Sources/Fluid/Persistence/ @aa2246740
+/Tests/ @aa2246740
+/tools/readiness/ @aa2246740
+/docs/readiness/ @aa2246740

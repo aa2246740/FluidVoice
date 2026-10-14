@@ -18,6 +18,8 @@ final nonisolated class DebugLogger: @unchecked Sendable {
     @TaskLocal static var pipelineID: String?
 
     private let queue = DispatchQueue(label: "debug.logger", qos: .utility)
+    private var breadcrumbs: [String] = []
+    private let diagnosticSessionID = UUID().uuidString
 
     private static let logFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -36,12 +38,18 @@ final nonisolated class DebugLogger: @unchecked Sendable {
 
     private init() {}
 
+    /// A support-export/test barrier; ordinary logging stays asynchronous.
+    func flush() {
+        self.queue.sync { FileLogger.shared.flush() }
+    }
+
     func log(_ message: @autoclosure () -> String, level: LogLevel = .info, source: String = "App") {
         guard level != .debug || Self.diagnosticsEnabled else { return }
         let message = message()
         let pipelineID = Self.pipelineID
+        let stack = level == .error ? Thread.callStackSymbols : []
         self.queue.async {
-            self.write(message, level: level, source: source, pipelineID: pipelineID)
+            self.write(message, level: level, source: source, pipelineID: pipelineID, stack: stack)
         }
     }
 
@@ -54,12 +62,13 @@ final nonisolated class DebugLogger: @unchecked Sendable {
     ) {
         guard level != .debug || Self.diagnosticsEnabled else { return }
         let pipelineID = Self.pipelineID
+        let stack = level == .error ? Thread.callStackSymbols : []
         self.queue.async {
-            self.write(message(), level: level, source: source, pipelineID: pipelineID)
+            self.write(message(), level: level, source: source, pipelineID: pipelineID, stack: stack)
         }
     }
 
-    private func write(_ message: String, level: LogLevel, source: String, pipelineID: String?) {
+    private func write(_ message: String, level: LogLevel, source: String, pipelineID: String?, stack: [String]) {
         let timestampString = Self.logFormatter.string(from: Date())
         let formattedLine = self.formatLogLine(
             timestamp: timestampString,
@@ -68,6 +77,20 @@ final nonisolated class DebugLogger: @unchecked Sendable {
             message: message,
             pipelineID: pipelineID
         )
+
+        // Context stays on-device and uses a per-run identifier, not user identity.
+        if level == .error {
+            let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+            FileLogger.shared.append(line: "[CONTEXT] session=\(self.diagnosticSessionID) version=\(version) OS=\(ProcessInfo.processInfo.operatingSystemVersionString)")
+            for breadcrumb in self.breadcrumbs {
+                FileLogger.shared.append(line: "[BREADCRUMB] \(breadcrumb)")
+            }
+            for frame in stack.prefix(30) {
+                FileLogger.shared.append(line: "[STACK] \(frame)")
+            }
+        }
+        self.breadcrumbs.append(formattedLine)
+        if self.breadcrumbs.count > 20 { self.breadcrumbs.removeFirst(self.breadcrumbs.count - 20) }
 
         // Retain ordinary support logs in production; verbose diagnostics are gated before enqueueing.
         FileLogger.shared.append(line: formattedLine)
@@ -78,7 +101,7 @@ final nonisolated class DebugLogger: @unchecked Sendable {
 
     private func formatLogLine(timestamp: String, level: LogLevel, source: String, message: String, pipelineID: String?) -> String {
         let correlation = pipelineID.map { "pipelineID=\($0) " } ?? ""
-        return "[\(timestamp)] [\(level.rawValue)] [\(source)] \(correlation)\(message)"
+        return LogSanitizer.sanitize("[\(timestamp)] [\(level.rawValue)] [\(source)] \(correlation)\(message)")
     }
 }
 

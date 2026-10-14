@@ -9,6 +9,8 @@ final class TranscriptionHistoryDatabase {
     }
 
     private let connection: OpaquePointer
+    /// Statement counts are inspected by regression tests; no SQL or payload is logged.
+    private(set) var preparedReadStatementCount = 0
 
     init(url: URL) throws {
         try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -109,6 +111,7 @@ final class TranscriptionHistoryDatabase {
         guard sqlite3_prepare_v2(self.connection, sql, -1, &statement, nil) == SQLITE_OK, let statement else {
             throw self.error()
         }
+        if sqlite3_stmt_readonly(statement) != 0 { self.preparedReadStatementCount += 1 }
         return statement
     }
 

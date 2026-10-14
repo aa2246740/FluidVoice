@@ -232,3 +232,18 @@ builds/
 !README.md
 !CONTRIBUTING.md
 !.github/pull_request_template.md
+
+# Shared agent/quality documentation; keep private setup and generated evidence local.
+!AGENTS.md
+!docs/
+docs/*
+!docs/readiness/
+!docs/readiness/**
+!tools/readiness/**/*.md
+!tools/readiness/**/*.sh
+/.factory/
+/quality-artifacts/
+**/__pycache__/
+/.venv-readiness/
+/.devcontainer/node_modules/
+/DerivedData-Security/

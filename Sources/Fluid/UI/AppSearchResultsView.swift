@@ -84,7 +84,11 @@ struct AppSearchResultsView: View {
             .buttonStyle(.plain)
             .sidebarOptionHover(isSelected: false, reduceMotion: self.reduceMotion)
             .accessibilityLabel("\(group.kind.title) results")
-            .accessibilityValue((self.expanded.contains(group.kind) ? String.fluidLocalizedFormat("Expanded, %@ results", String(describing: group.hits.count)) : String.fluidLocalizedFormat("Showing %@ of %@ results", String(describing: Self.rowsPerGroup), String(describing: group.hits.count))).fluidLocalized)
+            .accessibilityValue((
+                self.expanded.contains(group.kind)
+                    ? String.fluidLocalizedFormat("Expanded, %@ results", String(describing: group.hits.count))
+                    : String.fluidLocalizedFormat("Showing %@ of %@ results", String(describing: Self.rowsPerGroup), String(describing: group.hits.count))
+            ).fluidLocalized)
             .accessibilityHint((self.expanded.contains(group.kind) ? "Show fewer results" : "Show all results").fluidLocalized)
         } else {
             Text(group.kind.title.fluidLocalized)

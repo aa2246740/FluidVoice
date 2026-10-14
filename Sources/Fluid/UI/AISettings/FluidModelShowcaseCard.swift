@@ -103,7 +103,10 @@ struct FluidModelShowcaseCard: View {
         .animation(self.reduceMotion ? nil : .easeOut(duration: 0.12), value: self.hovered)
         .accessibilityLabel("Preview \(self.model.displayName.replacingOccurrences(of: "Fluid-1", with: "Fluid 1"))")
         .accessibilityValue([self.isPreview ? "Previewed" : "", self.isRecommended ? "Recommended for your Mac" : ""].filter { !$0.isEmpty }.joined(separator: ", "))
-        .accessibilityHint((self.showsInfo ? self.infoAccessibilityDescription : String.fluidLocalizedFormat("%@. %@ Browse without changing the selected model.", String(describing: presentation.summary), String(describing: presentation.useCase))).fluidLocalized)
+        .accessibilityHint((
+            self.showsInfo ? self.infoAccessibilityDescription
+                : String.fluidLocalizedFormat("%@. %@ Browse without changing the selected model.", String(describing: presentation.summary), String(describing: presentation.useCase))
+        ).fluidLocalized)
         .overlay(alignment: .topTrailing) {
             // Sibling to the browse button: opening details never selects or activates a model.
             Button { self.showsInfo.toggle() } label: {
@@ -115,7 +118,11 @@ struct FluidModelShowcaseCard: View {
             }
             .buttonStyle(.plain)
             .help((self.showsInfo ? "Close model information" : String.fluidLocalizedFormat("About %@", String(describing: self.model.displayName))).fluidLocalized)
-            .accessibilityLabel((self.showsInfo ? String.fluidLocalizedFormat("Close information for %@", String(describing: self.model.displayName)) : String.fluidLocalizedFormat("About %@", String(describing: self.model.displayName))).fluidLocalized)
+            .accessibilityLabel((
+                self.showsInfo
+                    ? String.fluidLocalizedFormat("Close information for %@", String(describing: self.model.displayName))
+                    : String.fluidLocalizedFormat("About %@", String(describing: self.model.displayName))
+            ).fluidLocalized)
             .accessibilityValue((self.showsInfo ? "Expanded" : "Collapsed").fluidLocalized)
             .padding(14)
         }

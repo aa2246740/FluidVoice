@@ -1,9 +1,7 @@
 #!/bin/sh
 set -eu
 cd "$(dirname "$0")/.."
-task_developer_dir="${DEVELOPER_DIR:-$(xcode-select -p)}"
-test -d "$task_developer_dir/Platforms/MacOSX.platform"
-export DEVELOPER_DIR="$task_developer_dir"
+xcrun --find swiftc >/dev/null
 task_test_dir=$(mktemp -d /tmp/fluidvoice-onboarding-tests.XXXXXX)
 trap 'rm -rf "$task_test_dir"' EXIT
 run_case() {
