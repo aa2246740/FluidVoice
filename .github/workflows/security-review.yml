@@ -79,7 +79,8 @@ jobs:
         timeout-minutes: 10
         uses: github/codeql-action/analyze@v3
         with:
-          output: quality-artifacts/security
+          # CodeQL resets this directory; keep earlier diagnostics in its parent.
+          output: quality-artifacts/security/sarif
           upload: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
       - name: Preserve security diagnostics and assessments
         if: always()

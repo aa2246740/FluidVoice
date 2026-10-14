@@ -54,6 +54,11 @@ While native tests run, a watchdog samples only application executables under
 the current checkout's DerivedData path after a case lasts 90 seconds. The
 `native-diagnostics/` stack samples and JSON status precede XCTest termination;
 sampling failures are retained rather than claimed as successful diagnostics.
+`native-macos-diagnostics` uploads these stacks, status, provenance, timing,
+bundle-size report and compiler/test log separately before the full native
+artifact. Prefer this compact artifact for diagnosis; app archives and xcresult
+bundles remain in `native-macos-validation`. The split is locally validated,
+not yet confirmed by an approved cloud run.
 Temporary test markers distinguished scoped transcription, scope drain and the
 unclaimed legacy path in two passing runs, then were removed. The original test
 passed again without them. Its original hang's root cause remains unproven.
@@ -75,10 +80,15 @@ logs on timeout/interruption. Cleanup targets only the command's own process gro
 Choose a fresh `--log` path; existing logs are rejected rather than overwritten.
 
 Inspect `security-assessment` artifacts for `provenance.txt`, `toolchain.log`,
-`timings.json`, package-resolution/compiler logs and SARIF when analysis produced
-it. `running`/null exit after a hard cancellation is incomplete evidence, not a pass.
+`timings.json`, package-resolution/compiler logs and `sarif/` when analysis produced
+it. CodeQL recursively resets its output directory: keep it below the diagnostic
+directory so analysis cannot erase the earlier evidence. `running`/null exit
+after a hard cancellation is incomplete evidence, not a pass.
 A build timing record does not prove CodeQL analysis. Use the security-scan branch
-in `RUNBOOKS.md` for failures; the revised workflow awaits an approved real scan.
+in `RUNBOOKS.md` for failures. The `a750fa10` round completed a real PR assessment;
+its artifact contained only SARIF before the local output-directory repair.
+That repair still needs cloud confirmation. Check the recorded source ref and
+incremental mode: zero PR-diff findings do not establish a clean full-repository scan.
 
 ## Dependency governance
 

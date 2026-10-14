@@ -3,10 +3,12 @@
 Baseline: `main@9f2ab4a9`, official report 53.85%, Level 3.
 Official baseline date: 2026-10-12. Tracker updated: 2026-10-14.
 This is an implementation tracker, **not a new official score**.
-The latest native validation revision is `ef99f1e2`; this follow-up remains local
-and unpublished. Configuration does not prove remote operation.
+The last completed authorized CI round targets PR head `a750fa10` and failed XCTest.
+The last fully passing native revision is `ef99f1e2`. The diagnostic-retention
+repair below is authorized for publication and one more standard/free CI round;
+cloud confirmation is pending. Configuration does not prove operation.
 
-## 2026-10-14 local follow-up
+## 2026-10-14 follow-up and actual CI results
 
 - All five existing debt comments are registered against the real fork work item
   [#7](https://github.com/aa2246740/FluidVoice/issues/7), with owner, resolution and
@@ -16,7 +18,7 @@ and unpublished. Configuration does not prove remote operation.
 - The scanner distinguishes comments from normal/raw/multiline string literals
   and handles nested block comments. Regressions reproduced the previous missing
   block-comment debt and false literal finding before the repair.
-- The latest existing [CodeQL run](https://github.com/aa2246740/FluidVoice/actions/runs/38353722610)
+- The previous [CodeQL run](https://github.com/aa2246740/FluidVoice/actions/runs/38353722610)
   is confirmed cancelled during compiler tracing after approximately 25 minutes;
   analysis never ran. Its earlier cache post-step was also skipped on cancellation.
   The revised workflow saves resolved package downloads before tracing, partitions
@@ -26,14 +28,45 @@ and unpublished. Configuration does not prove remote operation.
 - The real process runner records `running`, terminal failure/timeout/interruption
   and durations, retains partial logs, and terminates only its own process group,
   including compiler descendants that ignore SIGTERM. Existing logs are preserved,
-  not overwritten. Native full-app compilation/CodeQL extraction under this new
-  workflow remains unverified until an approved cloud run.
-- 54 Python regression tests, repository contracts, no-new-duplication checks and
+  not overwritten. The approved cloud round completed both the native build and
+  CodeQL tracing; successful compilation does not imply successful XCTest.
+- At publication, 54 Python regression tests, repository contracts, no-new-duplication checks and
   workflow YAML/shell syntax pass locally. Seven real Swift programs pass with
   89.61% critical production coverage. One existing onboarding fixture emits the
   Swift 6.4 `WeakMutability` warning; no warning-free full-app claim is made.
-- No branch publication, CI dispatch, release, merge or paid resource was started
-  for this follow-up. Official readiness has not been rerun.
+- The user authorized publication and one standard/free CI round. Commit
+  `a750fa10` was pushed to existing PR #8; no merge, release or paid resource was used.
+  Official readiness has not been rerun.
+- [CodeQL run 38490303355](https://github.com/aa2246740/FluidVoice/actions/runs/38490303355)
+  completed: cold tracing took 25 minutes 44 seconds and analysis 51 seconds.
+  The downloaded SARIF and GitHub analysis record show 27 rules and zero findings,
+  with 83,353 successfully extracted lines and zero unresolved AST nodes.
+  This is a `diff-informed` PR assessment, not a whole-project absence-of-vulnerabilities
+  claim. Its recorded source is PR merge `d359fbf8`, for head `a750fa10`.
+- [Build and Test 38490303292](https://github.com/aa2246740/FluidVoice/actions/runs/38490303292)
+  passed repository quality, strict lint, standalone regressions and app compilation,
+  then failed XCTest. `AppSearchServiceTests.testANewerQueryReplacesOneStillDebouncing`
+  exceeded its 120-second allowance. After the runner restarted,
+  `AudioHardwareRecoveryTests.testPostStartFingerprintTimeoutNeverOpensPacketGate`
+  failed at line 157: zero starts instead of one; preparation had already timed out.
+  The restarted summary reports 1,774 tests, 29 skips and one assertion failure;
+  the overall failed-test list also includes the earlier timeout. It is not a
+  clean 1,811-test result. The former meeting ASR case passed in 0.057 seconds.
+- [PR Archive 38490303328](https://github.com/aa2246740/FluidVoice/actions/runs/38490303328)
+  and PR Policy passed. The native artifact is retained remotely, but its
+  182,370,699-byte download exceeded a 120-second bound; a range-only directory
+  probe also timed out. Stack evidence and local app acceptance remain unavailable.
+  The update modal coinciding with the search test is a candidate, not a proven cause.
+- The downloaded security artifact contained only SARIF: CodeQL v3's `runFinalize`
+  recursively resets its output directory, which previously also held diagnostics.
+  A new local regression reproduces loss of all five diagnostic files. The repair
+  moves SARIF into a child directory and adds an independent compact native
+  diagnostic artifact before the full app/result upload. Both new tests first
+  failed; all 56 tooling regressions now pass locally, with workflow YAML and shell
+  syntax checked. The user authorized publication and one more standard/free round
+  to confirm cloud retention; no result from that follow-up is claimed yet.
+  Product Swift code, test exclusions, native deadlines and the app-size budget
+  are unchanged; the two native test failures remain unresolved.
 
 ## Authorized GitHub follow-up
 
@@ -115,7 +148,7 @@ and unpublished. Configuration does not prove remote operation.
 
 ## Local evidence
 
-- 54 Python tooling regression tests.
+- 56 Python tooling regression tests (54 at published `a750fa10`).
 - Seven instrumented Swift regression programs, critical production line coverage
   89.61% with an enforced 75% floor. Whole-app coverage reports were generated by
   passing cloud validation; their percentages have not yet been retrieved locally.
@@ -137,8 +170,8 @@ and unpublished. Configuration does not prove remote operation.
 - Workflow YAML and shell syntax checked. Native compilation, runner launch and the
   CI-selected XCTest suite now have a successful fourth-run result and durations;
   test omissions and unverified hardware acceptance remain explicit.
-  All three existing CodeQL runs were cancelled; the latest trace was cancelled and
-  `ef99f1e2` analysis step was skipped. No successful security assessment is claimed.
+  The first three CodeQL runs were cancelled and their analysis steps skipped.
+  The approved `a750fa10` follow-up completed the real PR security assessment above.
   Container boot and preview release remain unverified.
 - A temporary no-network probe extracted the actual `TranscriptionExecutor`,
   used a MainActor-bound fake provider, drained it and reused it under the app's
@@ -184,7 +217,7 @@ and unpublished. Configuration does not prove remote operation.
 | deployment_observability | Release/build provenance and artifact metric inspection documented | No verified real-time deployed-user dashboard |
 | branch_protection | Active main PR/force-push/deletion ruleset, no bypass actors, zero required human approvals | Required quality-gate check awaits default-branch activation |
 | codeowners | Valid maintainer ownership and path routing, published on the validation branch | Default-branch activation awaits an authorized merge |
-| automated_security_review | Swift CodeQL cold tracing, pre-trace package cache, independent deadlines and retained failure logs/provenance plus SARIF when produced | Three existing tracing runs cancelled; revised workflow requires a real successful cloud scan, not merely passing tooling tests |
+| automated_security_review | Swift CodeQL cold tracing, pre-trace package cache, independent deadlines and SARIF assessment; local repair isolates logs from the analysis output reset | Run 38490303355 completed PR diff-informed analysis with zero findings; repaired log retention still needs cloud confirmation; default-branch activation remains pending |
 | dependency_update_automation | Weekly Swift/Actions Dependabot configuration with cooldown and labeled groups; repository security updates enabled | Activate version-update configuration on default branch and observe real PRs |
 | log_scrubbing | Real sinks, broad auth/cookie/content/path redaction, private file permissions and regressions | Local sink and privacy tests pass |
 | min_release_age | Explicit seven-day merge policy and seven-day bot cooldown | Apply policy to actual updates |

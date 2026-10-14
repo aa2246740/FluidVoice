@@ -1,4 +1,6 @@
 import re
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -55,6 +57,31 @@ class SecurityWorkflowTests(unittest.TestCase):
         self.assertIn("if-no-files-found: error", artifact)
         self.assertIn("quality-artifacts/security/toolchain.log", self.workflow)
         self.assertIn("quality-artifacts/security/provenance.txt", self.workflow)
+
+    def test_analysis_output_reset_preserves_diagnostic_files(self):
+        analysis = self.workflow.split("name: Analyze traced Swift sources", 1)[1]
+        analysis = analysis.split("name: Preserve security diagnostics and assessments", 1)[0]
+        output = re.search(r"^\s*output:\s*(\S+)\s*$", analysis, re.MULTILINE).group(1)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            diagnostics = root / "quality-artifacts/security"
+            diagnostics.mkdir(parents=True)
+            names = ("provenance.txt", "toolchain.log", "timings.json",
+                     "package-resolution.log", "xcodebuild.log")
+            for name in names:
+                (diagnostics / name).write_text("recorded before analysis")
+            # CodeQL v3 runFinalize removes and recreates its output directory.
+            destination = root / output
+            if destination.exists():
+                shutil.rmtree(destination)
+            destination.mkdir(parents=True)
+            (destination / "swift.sarif").write_text('{"runs": []}')
+            self.assertIn(diagnostics, destination.parents,
+                          "SARIF must remain inside the uploaded artifact tree")
+            for name in names:
+                with self.subTest(name=name):
+                    self.assertTrue((diagnostics / name).is_file(),
+                                    "Analysis must not erase the earlier diagnostic evidence")
 
 
 if __name__ == "__main__":

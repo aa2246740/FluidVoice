@@ -7,7 +7,9 @@ credentials and window titles as private. Never upload raw Library directories.
 
 1. Stop publication; leave the last known-good release available.
 2. Identify the failing run and exact commit in GitHub Actions. Download only
-   relevant quality/native artifacts. Inspect `timings.json`, `xcodebuild.log`,
+   relevant quality/native artifacts. Prefer `native-macos-diagnostics` for stacks,
+   status, provenance and logs without the app archive; the artifact split awaits
+   its first approved cloud confirmation. Inspect `timings.json`, `xcodebuild.log`,
    `FluidTests.xcresult`, coverage and bundle-size reports.
 3. Confirm Xcode 26+, runner architecture, package pins and unsigned/public build.
    Cache corruption: rerun with that run's build cache removed, not new dependency
@@ -25,6 +27,9 @@ credentials and window titles as private. Never upload raw Library directories.
    analysis is not a security assessment, even if the normal app tests passed.
 2. Inspect the `security-assessment` artifact: `provenance.txt`, `toolchain.log`,
    `timings.json`, `package-resolution.log`, `xcodebuild.log` and any actual SARIF.
+   If only SARIF remains, check whether CodeQL's resettable output directory
+   overlapped the diagnostic directory. Keep SARIF in its own child directory;
+   a successful upload containing one file does not prove all logs survived.
    Exit 124 means the command exceeded its deadline; `interrupted` means a signal
    stopped it. A `running` record with null exit means final status was not captured.
 3. Use the last real compiler/resolver records to distinguish download stalls,

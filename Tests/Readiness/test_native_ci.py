@@ -45,6 +45,27 @@ class MetadataTests(unittest.TestCase):
             self.assertEqual(result["sha256"], hashlib.sha256(archive.read_bytes()).hexdigest())
             self.assertFalse(result["working_tree_dirty"])
 
+    def test_compact_diagnostics_upload_precedes_the_full_native_artifact(self):
+        workflow = (ROOT / ".github/workflows/build.yml").read_text()
+        name = "name: Retain compact native diagnostics"
+        self.assertIn(name, workflow)
+        self.assertLess(workflow.index(name),
+                        workflow.index("name: Retain build, coverage, timing and XCTest evidence"))
+        compact = workflow.split(name, 1)[1]
+        compact = compact.split("name: Retain build, coverage, timing and XCTest evidence", 1)[0]
+        self.assertIn("if: always()", compact)
+        self.assertIn("name: native-macos-diagnostics", compact)
+        self.assertIn("if-no-files-found: error", compact)
+        paths = compact.split("path: |", 1)[1].split("retention-days:", 1)[0]
+        self.assertEqual(set(paths.split()), {
+            "quality-artifacts/native-diagnostics/",
+            "quality-artifacts/native-diagnostics.log",
+            "quality-artifacts/build-metadata.json",
+            "quality-artifacts/timings.json",
+            "quality-artifacts/bundle-size.json",
+            "quality-artifacts/xcodebuild.log",
+        })
+
 
 class NativeCIFlowTests(unittest.TestCase):
     script_under_test = (ROOT / "tools/readiness/native_ci.sh").read_text()
