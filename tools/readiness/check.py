@@ -8,6 +8,8 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+from debt import inventory as debt_inventory, verify as verify_debt
+
 ROOT = Path(__file__).resolve().parents[2]
 EXCLUDED = {".git", ".build", "DerivedData", ".factory", ".venv-readiness", "node_modules", "quality-artifacts"}
 
@@ -80,18 +82,6 @@ def verify_flags(root, policy, today=None):
             raise ValueError(f"Temporary flag review overdue: {flag['key']} ({flag['owner']})")
         if not flag["owner"] or not flag["removal_condition"]:
             raise ValueError("Temporary flags require ownership and removal criteria")
-
-
-def debt_inventory(root):
-    debt = []
-    for path in (root / "Sources/Fluid").rglob("*.swift"):
-        for number, line in enumerate(path.read_text().splitlines(), 1):
-            if re.search(r"\b(?:TODO|FIXME|HACK)\b", line) and "//" in line:
-                debt.append({
-                    "file": str(path.relative_to(root)), "line": number,
-                    "marker": line.strip(), "linked_issue": bool(re.search(r"#\d+|https://github.com/.+/issues/\d+", line)),
-                })
-    return debt
 
 
 def dependency_inventory(root):
@@ -205,6 +195,7 @@ def main():
     verify_test_names(ROOT)
     verify_layers(ROOT, policy)
     verify_flags(ROOT, policy)
+    debt = verify_debt(ROOT, policy)
     pins = verify_pins(ROOT)
     api = verify_api(ROOT)
     reference = ROOT / "docs/readiness/API.md"
@@ -219,9 +210,10 @@ def main():
         raise SystemExit("Strict concurrency checking is required for Debug and Release")
     report = {
         "dependency_pins": pins, "dependencies": dependency_inventory(ROOT),
-        "technical_debt": debt_inventory(ROOT), "temporary_flags": policy["temporary_flags"],
+        "technical_debt": debt, "temporary_flags": policy["temporary_flags"],
         "validated_api_operations": sum(len(operations) for operations in api["paths"].values()),
         "test_naming": "passed", "core_boundaries": "passed", "agents_references": "passed",
+        "technical_debt_gate": "passed",
     }
     output = ROOT / "quality-artifacts"
     output.mkdir(exist_ok=True)

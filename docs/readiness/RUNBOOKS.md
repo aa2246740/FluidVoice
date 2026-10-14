@@ -19,6 +19,24 @@ credentials and window titles as private. Never upload raw Library directories.
 6. If a published preview regresses, mark it as a prerelease and direct users to
    the last verified artifact. Preserve evidence and open a labeled incident issue.
 
+## Security scan failure or timeout
+
+1. Identify the exact source commit and failing step. A cancelled trace or skipped
+   analysis is not a security assessment, even if the normal app tests passed.
+2. Inspect the `security-assessment` artifact: `provenance.txt`, `toolchain.log`,
+   `timings.json`, `package-resolution.log`, `xcodebuild.log` and any actual SARIF.
+   Exit 124 means the command exceeded its deadline; `interrupted` means a signal
+   stopped it. A `running` record with null exit means final status was not captured.
+3. Use the last real compiler/resolver records to distinguish download stalls,
+   slow instrumentation and a specific compiler/extractor wait. Do not infer a
+   resolved root cause from increasing the time budget.
+4. Preserve the original failure evidence and pins. Package-download caches may
+   be reused, but product DerivedData stays cold for CodeQL compiler tracing.
+5. Request one bounded standard macOS run after a targeted fix. The workflow
+   preserves logs on failure; analysis must complete and produce a real assessment
+   before treating this signal as verified. Merge, release and paid resources need
+   their own authorization.
+
 ## Dictation or meeting failure
 
 1. Stop recording from the app; do not delete meeting/history data or kill an

@@ -9,8 +9,14 @@
   `python3 tools/readiness/duplicates.py`, and
   `python3 -m unittest discover -s Tests/Readiness -p 'test_*.py' -v`.
 - `.devcontainer/devcontainer.json` supplies Python tooling for repository
-  automation. Linux containers cannot run macOS, Xcode, SwiftUI or audio acceptance.
+  automation. It does not provide the macOS runtime, Xcode or audio acceptance.
   Do not download a local container image on a space-constrained Mac without asking.
+- Experimental Linux macOS cross-compilation is separate from native acceptance;
+  see `LINUX-BUILD-RESEARCH.md`. The authorized Omarchy SDK/toolchain passed an
+  independent SwiftPM arm64 macOS fixture, framework imports, explicit macro
+  expansion, resources and native Mac signature checks. It has not built FluidVoice,
+  validated SwiftBuild or run the macOS app. Uploading/adapting the product requires
+  separate approval. The supported app build remains the Xcode project below.
 - Native validation: use a remote macOS machine with Xcode 26 or newer.
   `bash tools/readiness/native_ci.sh` retains XCTest results, full-app coverage,
   timing, dependency size analysis and an unsigned app with commit/architecture/hash.
@@ -42,18 +48,37 @@ prove acceptance. Failed/interrupted tests still fail CI and retain the archive.
 Each test has a 120-second default allowance and 180-second maximum; the existing
 Tiny Whisper exclusion is unchanged. Build and test timings are separate.
 Use a fresh checkout/evidence directory for a new run; existing native artifacts
-are rejected, not deleted or reused. This control flow is locally fixture-tested,
-but its next real Xcode run still requires explicit approval.
+are rejected, not deleted or reused. This control flow passed three consecutive
+native runs, including marker-free `ef99f1e2`; each new cloud run still needs approval.
 While native tests run, a watchdog samples only application executables under
 the current checkout's DerivedData path after a case lasts 90 seconds. The
 `native-diagnostics/` stack samples and JSON status precede XCTest termination;
 sampling failures are retained rather than claimed as successful diagnostics.
-Temporary `[DEBUG-asr-scope]` test markers distinguished scoped transcription,
-scope drain and the unclaimed legacy path in two passing runs, then were removed
-to avoid timing effects. The original hang's root cause remains unproven.
+Temporary test markers distinguished scoped transcription, scope drain and the
+unclaimed legacy path in two passing runs, then were removed. The original test
+passed again without them. Its original hang's root cause remains unproven.
 Debug validation uses DWARF without an embedded test dSYM. A size-budget failure
 still allows XCTest and stack diagnostics to run, then fails the final native
 gate; the 250 MiB budget is unchanged.
+
+## Security scan evidence
+
+The CodeQL workflow preserves a cold product build so compiler tracing sees the
+actual application sources. Only resolved package downloads are cached, keyed by
+OS, architecture, Xcode version and pins; they are saved before tracing so a later
+cancellation cannot lose the cache. No DerivedData build products are reused.
+
+Resolution is bounded at five minutes, tracing at thirty, analysis at ten, with
+separate step allowances and a sixty-minute job cap. `measure.py` records pending
+state before execution, final status and durations, and retains partial compiler
+logs on timeout/interruption. Cleanup targets only the command's own process group.
+Choose a fresh `--log` path; existing logs are rejected rather than overwritten.
+
+Inspect `security-assessment` artifacts for `provenance.txt`, `toolchain.log`,
+`timings.json`, package-resolution/compiler logs and SARIF when analysis produced
+it. `running`/null exit after a hard cancellation is incomplete evidence, not a pass.
+A build timing record does not prove CodeQL analysis. Use the security-scan branch
+in `RUNBOOKS.md` for failures; the revised workflow awaits an approved real scan.
 
 ## Dependency governance
 
@@ -85,10 +110,14 @@ CI rejects new or expanded clones and retains all legacy findings. Refactor shar
 behavior first. Update individual baseline entries only with an explanation and
 maintainer review; never regenerate the baseline merely to make CI green.
 
-TODO/FIXME/HACK inventories are exported with file/line positions and issue-link
-status on each check. New debt should reference a tracked issue and owner.
-Review unlinked legacy markers during triage; the scanner does not pretend these
-markers have already been resolved.
+TODO/FIXME/HACK comments are exported with live file/line positions. Register each
+occurrence under `technical_debt` in `tools/readiness/policies.json` with its exact
+file/marker, owner, full GitHub issue URL, review deadline and resolution. The gate
+rejects unregistered/copied markers, duplicate or stale registrations, missing
+metadata and overdue reviews. Moving a comment does not require pinning its line.
+When resolving debt, remove both its comment and registration. Strings are not
+debt comments. The five legacy entries are associated with assigned issue #7;
+registration does not mean the product problem has been resolved.
 
 Temporary flags require an owner, source symbol, review deadline and explicit
 removal condition in `policies.json`. CI detects removed/unreferenced/overdue flags.

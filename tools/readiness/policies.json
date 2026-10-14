@@ -19,5 +19,47 @@
       "removal_condition": "Remove after direct AEC3 real-meeting validation confirms no fallback is needed; retain the audio recovery runbook."
     }
   ],
-  "minimum_dependency_release_age_days": 7
+  "minimum_dependency_release_age_days": 7,
+  "technical_debt": [
+    {
+      "file": "Sources/Fluid/Views/BottomOverlayView.swift",
+      "marker": "TODO: Add tap-to-expand for command mode history (future enhancement)",
+      "owner": "@aa2246740",
+      "issue": "https://github.com/aa2246740/FluidVoice/issues/7",
+      "review_by": "2026-11-13",
+      "resolution": "Triage the command-history interaction before implementing and validating the UI."
+    },
+    {
+      "file": "Sources/Fluid/Services/ASRService.swift",
+      "marker": "TODO: Investigate rapid restart while this cold-provider stop is pending (PR #950).",
+      "owner": "@aa2246740",
+      "issue": "https://github.com/aa2246740/FluidVoice/issues/7",
+      "review_by": "2026-11-13",
+      "resolution": "Reproduce the rapid-restart boundary with a fake provider before changing ASR behavior; the source PR reference is not the fork work item."
+    },
+    {
+      "file": "Sources/Fluid/Services/Meeting/MeetingCaptureEngine.swift",
+      "marker": "TODO: Remove this escape hatch once direct AEC3 has completed real-meeting testing and is stable.",
+      "owner": "@aa2246740",
+      "issue": "https://github.com/aa2246740/FluidVoice/issues/7",
+      "review_by": "2026-11-13",
+      "resolution": "Review real-meeting evidence monthly; retain the temporary flag until its separately tracked removal condition is met."
+    },
+    {
+      "file": "Sources/Fluid/Services/Meeting/MeetingMicrophoneCapture.swift",
+      "marker": "TODO(probe): hard-code the measured winner; the alternate order is probe-only, never shipped.",
+      "owner": "@aa2246740",
+      "issue": "https://github.com/aa2246740/FluidVoice/issues/7",
+      "review_by": "2026-11-13",
+      "resolution": "Measure the hardware bind-order candidates before removing the probe alternative."
+    },
+    {
+      "file": "Sources/Fluid/Services/Meeting/MeetingMicrophoneCapture.swift",
+      "marker": "TODO(probe): bind order is a Phase-1 measurement; this hard-codes one attempt.",
+      "owner": "@aa2246740",
+      "issue": "https://github.com/aa2246740/FluidVoice/issues/7",
+      "review_by": "2026-11-13",
+      "resolution": "Record the measured microphone topology and validate the chosen bind sequence before finalizing it."
+    }
+  ]
 }

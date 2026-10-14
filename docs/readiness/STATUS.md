@@ -1,9 +1,39 @@
 # Agent Readiness remediation evidence
 
 Baseline: `main@9f2ab4a9`, official report 53.85%, Level 3.
-Date: 2026-10-12. This is an implementation tracker, **not a new official score**.
-No GitHub setting, commit, push, PR, cloud task or release has been performed during
-the local implementation phase. Configuration does not prove remote operation.
+Official baseline date: 2026-10-12. Tracker updated: 2026-10-14.
+This is an implementation tracker, **not a new official score**.
+The latest native validation revision is `ef99f1e2`; this follow-up remains local
+and unpublished. Configuration does not prove remote operation.
+
+## 2026-10-14 local follow-up
+
+- All five existing debt comments are registered against the real fork work item
+  [#7](https://github.com/aa2246740/FluidVoice/issues/7), with owner, resolution and
+  a 2026-11-13 review deadline. CI now rejects unregistered or copied debt,
+  stale registrations and overdue/missing ownership metadata. The comments and
+  underlying product behavior are unchanged; this is tracking, not debt elimination.
+- The scanner distinguishes comments from normal/raw/multiline string literals
+  and handles nested block comments. Regressions reproduced the previous missing
+  block-comment debt and false literal finding before the repair.
+- The latest existing [CodeQL run](https://github.com/aa2246740/FluidVoice/actions/runs/38353722610)
+  is confirmed cancelled during compiler tracing after approximately 25 minutes;
+  analysis never ran. Its earlier cache post-step was also skipped on cancellation.
+  The revised workflow saves resolved package downloads before tracing, partitions
+  them by toolchain/pins, retains a cold product build, and gives resolution and
+  tracing independent 300/1,800-second deadlines. Analysis has a separate ten-minute
+  allowance within a bounded 60-minute standard-runner job.
+- The real process runner records `running`, terminal failure/timeout/interruption
+  and durations, retains partial logs, and terminates only its own process group,
+  including compiler descendants that ignore SIGTERM. Existing logs are preserved,
+  not overwritten. Native full-app compilation/CodeQL extraction under this new
+  workflow remains unverified until an approved cloud run.
+- 54 Python regression tests, repository contracts, no-new-duplication checks and
+  workflow YAML/shell syntax pass locally. Seven real Swift programs pass with
+  89.61% critical production coverage. One existing onboarding fixture emits the
+  Swift 6.4 `WeakMutability` warning; no warning-free full-app claim is made.
+- No branch publication, CI dispatch, release, merge or paid resource was started
+  for this follow-up. Official readiness has not been rerun.
 
 ## Authorized GitHub follow-up
 
@@ -45,8 +75,9 @@ the local implementation phase. Configuration does not prove remote operation.
 - On 2026-10-13, the user authorized publication of this follow-up, a PR to `main`
   without merging, a third standard/free macOS CI round and evidence-led follow-up
   rounds if needed. Paid runners/services, releases, deletion and merges remain
-  prohibited. Omarchy stays read-only research. Full XCTest, whole-app coverage and
-  local App acceptance remain unverified until actual results exist.
+  prohibited. Omarchy was read-only at that point; a later separate authorization
+  permitted user-directory toolchain installation, not a FluidVoice upload/build.
+  Full XCTest, whole-app coverage and local App acceptance require actual results.
 - Follow-up commit `c23b9afe` is published as [PR #8](https://github.com/aa2246740/FluidVoice/pull/8).
   The third [CI run](https://github.com/aa2246740/FluidVoice/actions/runs/38348120086)
   passed quality/lint/regressions and built for testing successfully. Its App
@@ -70,6 +101,11 @@ the local implementation phase. Configuration does not prove remote operation.
   entry-point case passed in 0.053 seconds; bundle size and critical coverage were
   unchanged. Temporary test markers are removed for a final confirmation without
   their possible timing effects; the permanent watchdog remains.
+- Marker-free revision `ef99f1e2` passed the sixth [CI run](https://github.com/aa2246740/FluidVoice/actions/runs/38353722599):
+  1,811 tests, 29 conditional skips and zero failures in 186.081 seconds. The
+  original meeting case passed in 0.042 seconds; its body is unchanged from
+  `c11c890e`. The bundle was 236,237,041 bytes and critical coverage 89.06%.
+  This is three consecutive native-suite greens, not proof of the hang's cause.
 - PR archive builds passed for both `c23b9afe` and `a8605300`, producing separate
   ad-hoc-signed acceptance artifacts. Large native-artifact downloads to this Mac
   have stalled, while logs/small reports download successfully. Local App launch,
@@ -79,7 +115,7 @@ the local implementation phase. Configuration does not prove remote operation.
 
 ## Local evidence
 
-- 36 Python tooling regression tests.
+- 54 Python tooling regression tests.
 - Seven instrumented Swift regression programs, critical production line coverage
   89.61% with an enforced 75% floor. Whole-app coverage reports were generated by
   passing cloud validation; their percentages have not yet been retrieved locally.
@@ -101,12 +137,19 @@ the local implementation phase. Configuration does not prove remote operation.
 - Workflow YAML and shell syntax checked. Native compilation, runner launch and the
   CI-selected XCTest suite now have a successful fourth-run result and durations;
   test omissions and unverified hardware acceptance remain explicit.
-  The separate CodeQL job reached its 25-minute cap and was cancelled; no successful
-  security assessment is claimed. Container boot and preview release remain unverified.
+  All three existing CodeQL runs were cancelled; the latest trace was cancelled and
+  `ef99f1e2` analysis step was skipped. No successful security assessment is claimed.
+  Container boot and preview release remain unverified.
 - A temporary no-network probe extracted the actual `TranscriptionExecutor`,
   used a MainActor-bound fake provider, drained it and reused it under the app's
   compiler settings. It passed within a 10-second limit. This does not reproduce
   the complete ASRService scope hang; no speculative ASR logic change was made.
+- Separately authorized Omarchy setup registered an official anonymously downloaded
+  CLT 27 macOS SDK. An independent SwiftPM package cross-compiled and ad-hoc signed,
+  with native Mac strict signature verification and tamper rejection. SwiftUI/
+  AppKit/IOKit, explicit macro expansion and resource fixtures passed. SwiftBuild,
+  full FluidVoice compilation and macOS runtime/microphone acceptance were not
+  performed; the experimental linker warning remains. This is not app CI evidence.
 
 ## All 36 signals
 
@@ -115,7 +158,7 @@ the local implementation phase. Configuration does not prove remote operation.
 | strict_typing | Complete concurrency checks in app/baseline Debug and Release; logger tests compile as Swift 6 with warnings-as-errors; real IOKit ABI/actor regression | App compiled in the second run; existing Swift 5 concurrency warnings remain, not a whole-app Swift 6 warning-free claim |
 | duplicate_code_detection | Actual Swift block detector, legacy inventory and new-clone gate | Both cloud checks passed; legacy refactoring remains debt |
 | code_modularization | Enforced core imports/singleton boundaries | Local contract tests pass |
-| tech_debt_tracking | TODO/FIXME/HACK inventory with file/line/work-reference status | Existing unlinked markers remain tracked debt |
+| tech_debt_tracking | Actual-comment inventory and owner/issue/resolution/review-date contract; new/copied/unregistered or stale debt fails CI | All five existing markers link to assigned fork issue #7; resolution and periodic review remain debt |
 | n_plus_one_detection | Production SQLite read-statement counter plus 8,400-row query-budget regression | Local tests pass |
 | automated_pr_review | Privileged-safe consumer generates reviews from real lint findings, with stale-head checks | Enable workflow on default branch; observe real review content |
 | fast_ci_feedback | PR-API-independent diff, parallel quick checks and stable required gate | Fourth PR validation passed; native build/test timing is retained, not inferred from earlier quick failures |
@@ -127,7 +170,7 @@ the local implementation phase. Configuration does not prove remote operation.
 | version_drift_detection | All checked-in resolved graphs compared; six shared pin forks repaired without changing app pins | Local resolver and checks pass; out-of-tree evaluation SDK is separately user-managed |
 | release_automation | Tested-source build, provenance/hash, draft unsigned prerelease pipeline | Activate and run workflow; no stable signing/notarization claimed |
 | dead_feature_flag_detection | Source-use checks, ownership, review deadline, removal condition for AEC3 escape hatch | Local lifecycle checks pass; real-meeting stability controls removal |
-| test_performance_tracking | Per-program/native timers; retained xcresult/log/coverage artifacts; bounded per-test execution | Passing native suite timings: 180.183 seconds in round four, 195.362 seconds in round five; original hang boundary retained |
+| test_performance_tracking | Per-program/native timers; retained xcresult/log/coverage artifacts; bounded per-test execution | Passing native suite timings: 180.183 / 195.362 / 186.081 seconds in rounds four–six; original hang cause remains unproven |
 | test_coverage_thresholds | Actual standalone production coverage enforced at 75% | 89.61% locally, 89.06% on Xcode runner; no whole-app threshold claim |
 | test_naming_conventions | Explicit Swift/Python test/helper roles, docs and rejecting checks | Local tests pass |
 | automated_doc_generation | API reference generation plus stale-output gate | Local generation and checks pass |
@@ -141,7 +184,7 @@ the local implementation phase. Configuration does not prove remote operation.
 | deployment_observability | Release/build provenance and artifact metric inspection documented | No verified real-time deployed-user dashboard |
 | branch_protection | Active main PR/force-push/deletion ruleset, no bypass actors, zero required human approvals | Required quality-gate check awaits default-branch activation |
 | codeowners | Valid maintainer ownership and path routing, published on the validation branch | Default-branch activation awaits an authorized merge |
-| automated_security_review | Swift CodeQL cold instrumented build and retained readable SARIF | Activate/run and verify findings |
+| automated_security_review | Swift CodeQL cold tracing, pre-trace package cache, independent deadlines and retained failure logs/provenance plus SARIF when produced | Three existing tracing runs cancelled; revised workflow requires a real successful cloud scan, not merely passing tooling tests |
 | dependency_update_automation | Weekly Swift/Actions Dependabot configuration with cooldown and labeled groups; repository security updates enabled | Activate version-update configuration on default branch and observe real PRs |
 | log_scrubbing | Real sinks, broad auth/cookie/content/path redaction, private file permissions and regressions | Local sink and privacy tests pass |
 | min_release_age | Explicit seven-day merge policy and seven-day bot cooldown | Apply policy to actual updates |
